@@ -24,8 +24,6 @@ export default function Home() {
 
   // Voice filters
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('All');
-  const [selectedCountry, setSelectedCountry] = useState('All');
   const [selectedGender, setSelectedGender] = useState<'All' | 'Male' | 'Female'>('All');
 
   // Editor state
@@ -93,16 +91,11 @@ export default function Home() {
   useEffect(() => {
     const filtered = voices.filter(v => {
       const matchS = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || v.language.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchL = selectedLanguage === 'All' || v.language === selectedLanguage;
-      const matchC = selectedCountry === 'All' || v.country === selectedCountry;
       const matchG = selectedGender === 'All' || v.gender.toLowerCase() === selectedGender.toLowerCase();
-      return matchS && matchL && matchC && matchG;
+      return matchS && matchG;
     });
     setFilteredVoices(filtered);
-  }, [searchTerm, selectedLanguage, selectedCountry, selectedGender, voices]);
-
-  const uniqueLanguages = ['All', ...Array.from(new Set(voices.map(v => v.language || 'Unknown')))].sort();
-  const uniqueCountries = ['All', ...Array.from(new Set(voices.map(v => v.country || 'Unknown')))].sort();
+  }, [searchTerm, selectedGender, voices]);
 
   // Actions
   const handlePlayPreview = (voice: Voice) => {
@@ -295,9 +288,6 @@ export default function Home() {
                   onSelectVoice={setSelectedVoice} activePreview={activePreview} onPreview={handlePlayPreview}
                   searchTerm={searchTerm} onSearch={setSearchTerm}
                   selectedGender={selectedGender} onGender={setSelectedGender}
-                  selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
-                  selectedCountry={selectedCountry} onCountry={setSelectedCountry}
-                  uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
                 />
 
                 {/* Promo Card w/ Lottie */}
@@ -506,7 +496,7 @@ export default function Home() {
           </div>
 
           <div className="pt-8 border-t border-border">
-            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted mb-6 text-center">Available in</h5>
+            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted mb-6 text-center">Supported languages</h5>
             <div className="flex flex-wrap justify-center gap-4 text-[11px] font-semibold text-muted">
               {[
                 "English", "العربية", "中文", "Français",

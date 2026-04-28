@@ -15,25 +15,13 @@ interface Props {
   onSearch: (s: string) => void;
   selectedGender: 'All' | 'Male' | 'Female';
   onGender: (g: 'All' | 'Male' | 'Female') => void;
-  selectedLanguage: string;
-  onLanguage: (l: string) => void;
-  selectedCountry: string;
-  onCountry: (c: string) => void;
-  uniqueLanguages: string[];
-  uniqueCountries: string[];
 }
 
 export default function VoicePanel({
   voices, filteredVoices, selectedVoice, onSelectVoice,
   activePreview, onPreview, searchTerm, onSearch,
-  selectedGender, onGender, selectedLanguage, onLanguage,
-  selectedCountry, onCountry, uniqueLanguages, uniqueCountries,
+  selectedGender, onGender,
 }: Props) {
-  const [langOpen, setLangOpen] = useState(false);
-  const [countryOpen, setCountryOpen] = useState(false);
-  const [langQ, setLangQ] = useState('');
-  const [countryQ, setCountryQ] = useState('');
-
   return (
     <div className="card flex flex-col overflow-hidden" id="voices">
       {/* Header */}
@@ -72,56 +60,6 @@ export default function VoicePanel({
             >{g}</button>
           ))}
         </div>
-        {/* Language + Country dropdowns */}
-        <div className="grid grid-cols-2 gap-2">
-          {/* Language */}
-          <div className="relative">
-            <button
-              onClick={() => { setLangOpen(!langOpen); setCountryOpen(false); }}
-              className="btn-outline !text-[11px] !px-3 !py-2 w-full justify-between"
-            >
-              <span className="truncate">{selectedLanguage === 'All' ? 'Language' : selectedLanguage}</span>
-              <ChevronDown size={12} className={`shrink-0 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {langOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-paper border border-border rounded-xl shadow-lg z-50 overflow-hidden">
-                <div className="p-2">
-                  <input autoFocus className="field !text-[12px] !py-1.5" placeholder="Filter..." value={langQ} onChange={e => setLangQ(e.target.value)} />
-                </div>
-                <div className="max-h-44 overflow-y-auto pb-1">
-                  {uniqueLanguages.filter(l => l.toLowerCase().includes(langQ.toLowerCase())).map(l => (
-                    <button key={l} onClick={() => { onLanguage(l); setLangOpen(false); setLangQ(''); }}
-                      className={`w-full text-left px-3 py-1.5 text-[12px] transition-colors ${selectedLanguage === l ? 'bg-ink text-paper' : 'hover:bg-surface text-ink'}`}
-                    >{l}</button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-          {/* Country */}
-          <div className="relative">
-            <button
-              onClick={() => { setCountryOpen(!countryOpen); setLangOpen(false); }}
-              className="btn-outline !text-[11px] !px-3 !py-2 w-full justify-between"
-            >
-              <span className="truncate">{selectedCountry === 'All' ? 'Region' : selectedCountry}</span>
-              <ChevronDown size={12} className={`shrink-0 transition-transform ${countryOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {countryOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-paper border border-border rounded-xl shadow-lg z-50 overflow-hidden">
-                <div className="p-2">
-                  <input autoFocus className="field !text-[12px] !py-1.5" placeholder="Filter..." value={countryQ} onChange={e => setCountryQ(e.target.value)} />
-                </div>
-                <div className="max-h-44 overflow-y-auto pb-1">
-                  {uniqueCountries.filter(c => c.toLowerCase().includes(countryQ.toLowerCase())).map(c => (
-                    <button key={c} onClick={() => { onCountry(c); setCountryOpen(false); setCountryQ(''); }}
-                      className={`w-full text-left px-3 py-1.5 text-[12px] transition-colors ${selectedCountry === c ? 'bg-ink text-paper' : 'hover:bg-surface text-ink'}`}
-                    >{c}</button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
