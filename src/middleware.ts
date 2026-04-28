@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
     // Define allowed domains (including localhost for development)
     const allowedDomains = [
       'https://voxaloud-theta.vercel.app',
+      'https://voxaloud.shaaddev.studio/',
       'http://localhost:3000'
     ];
 
@@ -27,13 +28,13 @@ export function middleware(request: NextRequest) {
 
     // Add CORS headers
     const response = NextResponse.next();
-    
+
     if (isAllowedOrigin) {
       response.headers.set('Access-Control-Allow-Origin', origin);
     } else if (process.env.NODE_ENV !== 'production') {
       response.headers.set('Access-Control-Allow-Origin', '*');
     }
-    
+
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
