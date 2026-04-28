@@ -55,7 +55,7 @@ export default function Home() {
   useEffect(() => {
     axios.get('/api/voices').then(res => {
       if (res.data._data) {
-        const str = parseStream(res.data._data, true);
+        const str = parseStream(res.data._data, true) as string;
         const decryptedData = JSON.parse(str);
         setVoices(decryptedData);
         if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
@@ -184,8 +184,8 @@ export default function Home() {
       for (const chunk of chunks) {
         const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate });
         if (res.data._data) {
-          const bytes = parseStream(res.data._data, false);
-          audioChunks.push(new Blob([bytes], { type: 'audio/mpeg' }));
+          const bytes = parseStream(res.data._data, false) as Uint8Array;
+          audioChunks.push(new Blob([bytes as any], { type: 'audio/mpeg' }));
         } else {
           audioChunks.push(res.data);
         }
