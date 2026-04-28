@@ -1,13 +1,24 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 import { formatStream } from "@/lib/stream";
+import fs from 'fs';
+import path from 'path';
 
-const VOICES_URL = "https://raw.githubusercontent.com/jr270504/tsda/refs/heads/main/voices.json";
+const VOICES_URL = "https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/voices.json";
 
 export async function GET() {
   try {
-    const response = await axios.get(VOICES_URL);
-    const voices = (response.data as Array<Record<string, unknown>>).map((v) => ({
+    let rawData;
+    const localPath = path.join(process.cwd(), 'voices_updated.json');
+
+    if (fs.existsSync(localPath)) {
+      rawData = JSON.parse(fs.readFileSync(localPath, 'utf8'));
+    } else {
+      const response = await axios.get(VOICES_URL);
+      rawData = response.data;
+    }
+
+    const voices = (rawData as Array<Record<string, unknown>>).map((v) => ({
       ...v,
       previewAudioPath: formatStream(v.previewAudioPath as string)
     }));

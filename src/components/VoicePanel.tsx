@@ -1,7 +1,7 @@
 "use client";
 import { Search, Play, Pause, Check, Mic2 } from 'lucide-react';
 
-interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; }
+interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; flag?: string; }
 
 interface Props {
   voices: Voice[];
@@ -14,12 +14,19 @@ interface Props {
   onSearch: (s: string) => void;
   selectedGender: 'All' | 'Male' | 'Female';
   onGender: (g: 'All' | 'Male' | 'Female') => void;
+  selectedLanguage: string;
+  onLanguage: (l: string) => void;
+  selectedCountry: string;
+  onCountry: (c: string) => void;
+  uniqueLanguages: string[];
+  uniqueCountries: string[];
 }
 
 export default function VoicePanel({
   voices, filteredVoices, selectedVoice, onSelectVoice,
   activePreview, onPreview, searchTerm, onSearch,
-  selectedGender, onGender,
+  selectedGender, onGender, selectedLanguage, onLanguage,
+  selectedCountry, onCountry, uniqueLanguages, uniqueCountries
 }: Props) {
   return (
     <div className="card flex flex-col overflow-hidden" id="voices">
@@ -37,7 +44,7 @@ export default function VoicePanel({
       </div>
 
       {/* Filters */}
-      <div className="px-4 py-3 border-b border-border space-y-2.5 bg-surface">
+      <div className="px-4 py-3 border-b border-border space-y-3 bg-surface">
         <div className="relative">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
           <input
@@ -47,6 +54,26 @@ export default function VoicePanel({
             onChange={e => onSearch(e.target.value)}
           />
         </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <select 
+            className="field !py-1.5 !text-[11px] !bg-surface-2"
+            value={selectedLanguage}
+            onChange={e => onLanguage(e.target.value)}
+          >
+            <option value="All">All Languages</option>
+            {uniqueLanguages.map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
+          <select 
+            className="field !py-1.5 !text-[11px] !bg-surface-2"
+            value={selectedCountry}
+            onChange={e => onCountry(e.target.value)}
+          >
+            <option value="All">All Countries</option>
+            {uniqueCountries.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+
         {/* Gender tabs */}
         <div className="flex items-center gap-1 bg-surface-2 rounded-lg p-0.5">
           {(['All', 'Male', 'Female'] as const).map(g => (
@@ -76,12 +103,14 @@ export default function VoicePanel({
               className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors group ${isSelected ? 'bg-ink text-paper' : 'hover:bg-surface'}`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0 transition-all ${isSelected ? 'bg-paper/15' : 'bg-surface-2 text-ink group-hover:bg-surface'}`}>
-                  {isSelected ? <Check size={14} /> : voice.name.slice(0,2).toUpperCase()}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0 transition-all ${isSelected ? 'bg-paper/15' : 'bg-surface-2 text-ink group-hover:bg-surface'}`}>
+                  {isSelected ? <Check size={14} className="text-paper" /> : (voice.flag || voice.name.slice(0,2).toUpperCase())}
                 </div>
                 <div className="min-w-0">
                   <p className={`text-[13px] font-semibold truncate ${isSelected ? 'text-paper' : 'text-ink'}`}>{voice.name}</p>
-                  <p className={`text-[11px] truncate ${isSelected ? 'text-paper/60' : 'text-muted'}`}>{voice.language} · {voice.gender}</p>
+                  <p className={`text-[11px] truncate ${isSelected ? 'text-paper/60' : 'text-muted'}`}>
+                    {voice.language} · {voice.country} · {voice.gender}
+                  </p>
                 </div>
               </div>
               <button

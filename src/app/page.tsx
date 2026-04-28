@@ -11,7 +11,7 @@ import HistoryPanel from '@/components/HistoryPanel';
 import VoicePanel from '@/components/VoicePanel';
 import AdBanner from '@/components/AdBanner';
 
-interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; }
+interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; flag?: string; }
 interface AudioHistory { id: string; text: string; voiceName: string; date: string; audioUrl: string; }
 
 const CHAR_LIMIT = 10000;
@@ -24,6 +24,8 @@ export default function Home() {
   // Voice filters
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGender, setSelectedGender] = useState<'All' | 'Male' | 'Female'>('All');
+  const [selectedLanguage, setSelectedLanguage] = useState('All');
+  const [selectedCountry, setSelectedCountry] = useState('All');
 
   // Editor state
   const [text, setText] = useState('');
@@ -58,10 +60,25 @@ export default function Home() {
         const str = parseStream(res.data._data, true) as string;
         const decryptedData = JSON.parse(str);
         setVoices(decryptedData);
-        if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
+        
+        const lastVoiceId = localStorage.getItem('voxaloud_last_voice');
+        if (lastVoiceId) {
+          const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
+          if (lastVoice) setSelectedVoice(lastVoice);
+          else if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
+        } else if (decryptedData.length > 0) {
+          setSelectedVoice(decryptedData[0]);
+        }
       } else {
         setVoices(res.data);
-        if (res.data.length > 0) setSelectedVoice(res.data[0]);
+        const lastVoiceId = localStorage.getItem('voxaloud_last_voice');
+        if (lastVoiceId) {
+          const lastVoice = res.data.find((v: Voice) => v.id === lastVoiceId);
+          if (lastVoice) setSelectedVoice(lastVoice);
+          else if (res.data.length > 0) setSelectedVoice(res.data[0]);
+        } else if (res.data.length > 0) {
+          setSelectedVoice(res.data[0]);
+        }
       }
     }).catch(() => setError("Failed to load voices."));
 
@@ -97,10 +114,19 @@ export default function Home() {
   }, []);
 
   // Filtering
+  const uniqueLanguages = Array.from(new Set(voices.map(v => v.language))).sort();
+  const uniqueCountries = Array.from(new Set(voices.map(v => v.country))).sort();
+
   const filteredVoices = voices.filter(v => {
-    const matchS = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || v.language.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchS = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || v.language.toLowerCase().includes(searchTerm.toLowerCase()) || v.country.toLowerCase().includes(searchTerm.toLowerCase());
     const matchG = selectedGender === 'All' || v.gender.toLowerCase() === selectedGender.toLowerCase();
-    return matchS && matchG;
+    const matchL = selectedLanguage === 'All' || v.language === selectedLanguage;
+    const matchC = selectedCountry === 'All' || v.country === selectedCountry;
+    return matchS && matchG && matchL && matchC;
+  }).sort((a, b) => {
+    if (a.id === selectedVoice?.id) return -1;
+    if (b.id === selectedVoice?.id) return 1;
+    return 0;
   });
 
   // Actions
@@ -213,7 +239,7 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-paper/80 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setView('home'); window.scrollTo(0, 0); }}>
-            <div className="w-8 h-8 bg-ink rounded-lg flex items-center justify-center text-paper font-display font-bold text-lg group-hover:rotate-12 transition-transform">V</div>
+            <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain group-hover:rotate-12 transition-transform rounded-lg" />
             <div>
               <h1 className="text-base font-bold text-ink font-display leading-none">VoxaLoud</h1>
               <p className="text-[10px] text-muted uppercase tracking-widest font-semibold mt-0.5">Neural TTS</p>
@@ -292,9 +318,13 @@ export default function Home() {
 
                 <VoicePanel
                   voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
-                  onSelectVoice={setSelectedVoice} activePreview={activePreview} onPreview={handlePlayPreview}
+                  onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('voxaloud_last_voice', v.id); }} 
+                  activePreview={activePreview} onPreview={handlePlayPreview}
                   searchTerm={searchTerm} onSearch={setSearchTerm}
                   selectedGender={selectedGender} onGender={setSelectedGender}
+                  selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
+                  selectedCountry={selectedCountry} onCountry={setSelectedCountry}
+                  uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
                 />
 
                 {/* Promo Card w/ Lottie */}
@@ -491,7 +521,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
             <div className="flex items-center gap-4 justify-center md:justify-start">
-              <div className="w-8 h-8 bg-ink rounded-lg flex items-center justify-center text-paper font-display font-bold text-lg">V</div>
+              <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain rounded-lg" />
               <span className="font-bold tracking-tight text-ink font-display text-lg">VoxaLoud Studio</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-[11px] font-bold text-muted uppercase tracking-widest">
