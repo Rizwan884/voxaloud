@@ -146,7 +146,7 @@ export default function Home() {
 
   const handleGenerateClick = () => {
     if (!text.trim() || text.length > CHAR_LIMIT) return;
-    
+
     // Trigger Adsterra Smartlink
     window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
 
@@ -289,7 +289,7 @@ export default function Home() {
                 <div className="hidden lg:block">
                   <AdBanner type="300x250" />
                 </div>
-                
+
                 <VoicePanel
                   voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
                   onSelectVoice={setSelectedVoice} activePreview={activePreview} onPreview={handlePlayPreview}
@@ -308,7 +308,7 @@ export default function Home() {
                     You own the audio you make. Use it safely on YouTube, TikTok, or podcasts without any copyright strikes.
                   </p>
                 </div>
-                
+
                 <div className="hidden lg:block">
                   <AdBanner type="160x600" />
                 </div>
@@ -324,7 +324,7 @@ export default function Home() {
                   <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted">AI Voices</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-4xl md:text-6xl font-bold tracking-tighter text-ink font-display">4K</p>
+                  <p className="text-4xl md:text-6xl font-bold tracking-tighter text-ink font-display">10K</p>
                   <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted">Character Limit</p>
                 </div>
                 <div className="space-y-2">
@@ -476,7 +476,7 @@ export default function Home() {
             <button onClick={() => setView('home')} className="btn-outline mt-8">Back to Studio</button>
           </div>
         )}
-        
+
         {/* Global Bottom Ad */}
         <div className="mt-12 hidden md:block">
           <AdBanner type="468x60" />
