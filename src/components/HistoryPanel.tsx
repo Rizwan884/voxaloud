@@ -102,7 +102,13 @@ export default function HistoryPanel({
                     {isPlaying && (
                       <button onClick={onStop} className="btn-ghost !p-1.5" title="Stop"><Square size={14} fill="currentColor" /></button>
                     )}
-                    <a href={item.audioUrl} download={`voxaloud-${item.id.slice(0,6)}.mp3`} className="btn-ghost !p-1.5" title="Download"><Download size={14} /></a>
+                    <a 
+                      href={item.audioUrl} 
+                      download={`voxaloud-${item.id.slice(0,6)}.mp3`} 
+                      onClick={() => window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank')}
+                      className="btn-ghost !p-1.5" 
+                      title="Download"
+                    ><Download size={14} /></a>
                     <button onClick={() => onDelete(item.id)} className="btn-ghost !p-1.5 hover:!text-red-500" title="Delete"><Trash2 size={14} /></button>
                     {item.text.length > 60 && (
                       <button onClick={() => onToggleExpand(item.id)} className="btn-ghost !p-1.5">

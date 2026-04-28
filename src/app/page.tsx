@@ -9,31 +9,32 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import EditorPanel from '@/components/EditorPanel';
 import HistoryPanel from '@/components/HistoryPanel';
 import VoicePanel from '@/components/VoicePanel';
+import AdBanner from '@/components/AdBanner';
 
 interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; }
 interface AudioHistory { id: string; text: string; voiceName: string; date: string; audioUrl: string; }
 
-const CHAR_LIMIT = 4000;
+const CHAR_LIMIT = 10000;
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'privacy' | 'terms'>('home');
   const [voices, setVoices] = useState<Voice[]>([]);
   const [filteredVoices, setFilteredVoices] = useState<Voice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
-  
+
   // Voice filters
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [selectedCountry, setSelectedCountry] = useState('All');
   const [selectedGender, setSelectedGender] = useState<'All' | 'Male' | 'Female'>('All');
-  
+
   // Editor state
   const [text, setText] = useState('');
   const [pitch, setPitch] = useState(0);
   const [rate, setRate] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<{ current: number, total: number } | null>(null);
-  
+
   // Audio state
   const [history, setHistory] = useState<AudioHistory[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -43,12 +44,12 @@ export default function Home() {
   const [expandedHistory, setExpandedHistory] = useState<Record<string, boolean>>({});
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  
+
   // Captcha state
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
   const [generatedCaptcha, setGeneratedCaptcha] = useState('');
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const previewRef = useRef<HTMLAudioElement | null>(null);
 
@@ -65,7 +66,7 @@ export default function Home() {
         if (res.data.length > 0) setSelectedVoice(res.data[0]);
       }
     }).catch(() => setError("Failed to load voices."));
-    
+
     const saved = localStorage.getItem('voxaloud_history');
     if (saved) setHistory(JSON.parse(saved));
   }, []);
@@ -77,7 +78,7 @@ export default function Home() {
     const onTime = () => setCurrentTime(audio.currentTime);
     const onMeta = () => setDuration(audio.duration);
     const onEnd = () => { setPlayingId(null); setCurrentTime(0); };
-    
+
     audio.addEventListener('timeupdate', onTime);
     audio.addEventListener('loadedmetadata', onMeta);
     audio.addEventListener('ended', onEnd);
@@ -146,9 +147,13 @@ export default function Home() {
 
   const handleGenerateClick = () => {
     if (!text.trim() || text.length > CHAR_LIMIT) return;
+    
+    // Trigger Adsterra Smartlink
+    window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
+
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let res = '';
-    for (let i=0; i<6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+    for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
     setGeneratedCaptcha(res);
     setCaptchaValue('');
     setShowCaptcha(true);
@@ -208,7 +213,7 @@ export default function Home() {
       {/* Nav */}
       <nav className="sticky top-0 z-40 bg-paper/80 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setView('home'); window.scrollTo(0,0); }}>
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setView('home'); window.scrollTo(0, 0); }}>
             <div className="w-8 h-8 bg-ink rounded-lg flex items-center justify-center text-paper font-display font-bold text-lg group-hover:rotate-12 transition-transform">V</div>
             <div>
               <h1 className="text-base font-bold text-ink font-display leading-none">VoxaLoud</h1>
@@ -217,8 +222,8 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-6 text-[12px] font-semibold text-muted">
             <button onClick={() => setView('home')} className="hover:text-ink transition-colors">Studio</button>
-            <button onClick={() => { setView('privacy'); window.scrollTo(0,0); }} className="hover:text-ink transition-colors">Privacy</button>
-            <button onClick={() => { setView('terms'); window.scrollTo(0,0); }} className="hover:text-ink transition-colors">Terms</button>
+            <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Privacy</button>
+            <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Terms</button>
           </div>
         </div>
       </nav>
@@ -235,61 +240,82 @@ export default function Home() {
         {view === 'home' && (
           <div className="space-y-24 md:space-y-32">
             <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
-            
-            {/* Left Col */}
-            <div className="space-y-8 min-w-0">
-              <header className="space-y-4">
-                <h2 className="text-4xl md:text-5xl font-bold text-ink font-display tracking-tight leading-[1.1]">
-                  Free AI <br className="hidden md:block"/><span className="text-muted">Voice Generator.</span>
-                </h2>
-                <p className="text-base text-muted max-w-xl leading-relaxed">
-                  Turn text into realistic speech in seconds. Choose from 500+ human-sounding AI voices in 75 languages. 100% free to use anywhere.
-                </p>
-              </header>
 
-              <EditorPanel 
-                text={text} setText={setText} pitch={pitch} setPitch={setPitch} rate={rate} setRate={setRate}
-                selectedVoice={selectedVoice} isProcessing={isProcessing} progress={progress} onGenerate={handleGenerateClick}
-                charLimit={CHAR_LIMIT}
-              />
+              {/* Left Col */}
+              <div className="space-y-8 min-w-0">
+                <header className="space-y-4">
+                  <div className="hidden md:block">
+                    <AdBanner type="728x90" />
+                  </div>
+                  <div className="md:hidden">
+                    <AdBanner type="320x50" />
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold text-ink font-display tracking-tight leading-[1.1]">
+                    Free AI <br className="hidden md:block" /><span className="text-muted">Voice Generator.</span>
+                  </h2>
+                  <p className="text-base text-muted max-w-xl leading-relaxed">
+                    Turn text into realistic speech in seconds. Choose from 500+ human-sounding AI voices in 75 languages. 100% free to use anywhere.
+                  </p>
+                </header>
 
-              <div className="pt-4">
-                <HistoryPanel 
-                  history={history} playingId={playingId} lastCreatedId={lastCreatedId} audioRef={audioRef}
-                  currentTime={currentTime} duration={duration} expandedHistory={expandedHistory}
-                  onToggleExpand={id => setExpandedHistory(p => ({...p, [id]: !p[id]}))}
-                  onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
-                  onSeek={e => { if(audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime=t; setCurrentTime(t); } }}
-                  onDelete={id => { const n = history.filter(h=>h.id!==id); setHistory(n); localStorage.setItem('voxaloud_history', JSON.stringify(n)); }}
-                  onClear={() => { setHistory([]); localStorage.removeItem('voxaloud_history'); }}
+                <EditorPanel
+                  text={text} setText={setText} pitch={pitch} setPitch={setPitch} rate={rate} setRate={setRate}
+                  selectedVoice={selectedVoice} isProcessing={isProcessing} progress={progress} onGenerate={handleGenerateClick}
+                  charLimit={CHAR_LIMIT}
                 />
-              </div>
-            </div>
 
-            {/* Right Col */}
-            <div className="space-y-6 lg:sticky lg:top-24">
-              <VoicePanel
-                voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
-                onSelectVoice={setSelectedVoice} activePreview={activePreview} onPreview={handlePlayPreview}
-                searchTerm={searchTerm} onSearch={setSearchTerm}
-                selectedGender={selectedGender} onGender={setSelectedGender}
-                selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
-                selectedCountry={selectedCountry} onCountry={setSelectedCountry}
-                uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
-              />
-
-              {/* Promo Card w/ Lottie */}
-              <div className="card-surface p-6 overflow-hidden relative group">
-                <div className="absolute right-[-40px] top-[-40px] w-48 h-48 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <DotLottieReact src="https://lottie.host/80e7d7db-e696-4835-93df-f40c7e52d6a7/2LhZ1t72X3.lottie" loop autoplay />
+                <div className="hidden md:block">
+                  <AdBanner type="468x60" />
                 </div>
-                <ShieldCheck size={24} className="text-ink mb-4 relative z-10" />
-                <h4 className="text-lg font-bold text-ink font-display mb-2 relative z-10">Free for Creators</h4>
-                <p className="text-sm text-muted relative z-10 leading-relaxed">
-                  You own the audio you make. Use it safely on YouTube, TikTok, or podcasts without any copyright strikes.
-                </p>
+                <div className="md:hidden">
+                  <AdBanner type="320x50" />
+                </div>
+
+                <div className="pt-4">
+                  <HistoryPanel
+                    history={history} playingId={playingId} lastCreatedId={lastCreatedId} audioRef={audioRef}
+                    currentTime={currentTime} duration={duration} expandedHistory={expandedHistory}
+                    onToggleExpand={id => setExpandedHistory(p => ({ ...p, [id]: !p[id] }))}
+                    onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
+                    onSeek={e => { if (audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime = t; setCurrentTime(t); } }}
+                    onDelete={id => { const n = history.filter(h => h.id !== id); setHistory(n); localStorage.setItem('voxaloud_history', JSON.stringify(n)); }}
+                    onClear={() => { setHistory([]); localStorage.removeItem('voxaloud_history'); }}
+                  />
+                </div>
               </div>
-            </div>
+
+              {/* Right Col */}
+              <div className="space-y-6 lg:sticky lg:top-24">
+                <div className="hidden lg:block">
+                  <AdBanner type="300x250" />
+                </div>
+                
+                <VoicePanel
+                  voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
+                  onSelectVoice={setSelectedVoice} activePreview={activePreview} onPreview={handlePlayPreview}
+                  searchTerm={searchTerm} onSearch={setSearchTerm}
+                  selectedGender={selectedGender} onGender={setSelectedGender}
+                  selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
+                  selectedCountry={selectedCountry} onCountry={setSelectedCountry}
+                  uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
+                />
+
+                {/* Promo Card w/ Lottie */}
+                <div className="card-surface p-6 overflow-hidden relative group">
+                  <div className="absolute right-[-40px] top-[-40px] w-48 h-48 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <DotLottieReact src="https://lottie.host/80e7d7db-e696-4835-93df-f40c7e52d6a7/2LhZ1t72X3.lottie" loop autoplay />
+                  </div>
+                  <ShieldCheck size={24} className="text-ink mb-4 relative z-10" />
+                  <h4 className="text-lg font-bold text-ink font-display mb-2 relative z-10">Free for Creators</h4>
+                  <p className="text-sm text-muted relative z-10 leading-relaxed">
+                    You own the audio you make. Use it safely on YouTube, TikTok, or podcasts without any copyright strikes.
+                  </p>
+                </div>
+                
+                <div className="hidden lg:block">
+                  <AdBanner type="160x600" />
+                </div>
+              </div>
 
             </div>
 
@@ -319,11 +345,11 @@ export default function Home() {
             <section className="flex flex-col lg:flex-row items-center justify-between gap-12">
               <div className="space-y-6 max-w-2xl">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-display text-ink leading-[1.2]">
-                  Free Text-to-Speech <br/><span className="text-muted">for Creators</span>
+                  Free Text-to-Speech <br /><span className="text-muted">for Creators</span>
                 </h2>
                 <p className="text-muted text-base leading-relaxed">
                   VoxaLoud is a free AI voice generator that sounds like a real human. Get access to over 500 premium voices across 75 languages to make your content stand out.
-                  <br/><br/>
+                  <br /><br />
                   You don't need to sign up or add a credit card. Just type your text, choose a voice, and download your audio. It's completely free for commercial use.
                 </p>
               </div>
@@ -375,6 +401,11 @@ export default function Home() {
               ))}
             </section>
 
+            {/* Marketing Section */}
+            <div className="w-full">
+              <AdBanner type="native" />
+            </div>
+
             {/* Use Cases */}
             <section className="bg-ink text-paper p-12 md:p-20 rounded-3xl text-center mx-[-1rem] md:mx-0">
               <h3 className="text-3xl md:text-4xl font-bold font-display mb-12 tracking-tight">USE CASES</h3>
@@ -400,7 +431,7 @@ export default function Home() {
               </header>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { q: "Is there a limit?", a: "You can type up to 4000 characters at once. Need more? Just generate multiple files." },
+                  { q: "Is there a limit?", a: "You can type up to 10000 characters at once. Need more? Just generate multiple files." },
                   { q: "Do the voices sound robotic?", a: "Not at all. We use advanced AI to make sure our voices sound natural and human." },
                   { q: "Can I use this for YouTube or TikTok?", a: "Yes! You can use the audio for any commercial project without paying us." },
                   { q: "Can I change the speed?", a: "Yes, you can adjust the speed and pitch to make the voice match your content perfectly." },
@@ -451,8 +482,8 @@ export default function Home() {
               <span className="font-bold tracking-tight text-ink font-display text-lg">VoxaLoud Studio</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-[11px] font-bold text-muted uppercase tracking-widest">
-              <button onClick={() => { setView('privacy'); window.scrollTo(0,0); }} className="hover:text-ink transition-colors">Privacy</button>
-              <button onClick={() => { setView('terms'); window.scrollTo(0,0); }} className="hover:text-ink transition-colors">Terms</button>
+              <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Privacy</button>
+              <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Terms</button>
               <a href="#" className="hover:text-ink transition-colors">Contact Support</a>
             </div>
             <p className="text-[11px] text-muted font-bold uppercase tracking-widest">&copy; 2026 VOXALOUD</p>
@@ -479,8 +510,8 @@ export default function Home() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-ink/20 backdrop-blur-sm" onClick={() => setShowCaptcha(false)} />
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="card w-full max-w-sm relative z-10 p-6 shadow-2xl">
-              <button onClick={() => setShowCaptcha(false)} className="absolute top-4 right-4 text-muted hover:text-ink"><X size={20}/></button>
-              
+              <button onClick={() => setShowCaptcha(false)} className="absolute top-4 right-4 text-muted hover:text-ink"><X size={20} /></button>
+
               <div className="text-center mb-6">
                 <div className="w-12 h-12 bg-surface rounded-full flex items-center justify-center mx-auto mb-3">
                   <CheckCircle2 size={24} className="text-ink" />
@@ -494,10 +525,10 @@ export default function Home() {
                   {generatedCaptcha}
                 </div>
                 <button onClick={() => {
-                  let res=''; const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-                  for(let i=0;i<6;i++) res+=c.charAt(Math.floor(Math.random()*c.length));
+                  let res = ''; const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                  for (let i = 0; i < 6; i++) res += c.charAt(Math.floor(Math.random() * c.length));
                   setGeneratedCaptcha(res);
-                }} className="text-muted hover:text-ink p-1"><RefreshCw size={16}/></button>
+                }} className="text-muted hover:text-ink p-1"><RefreshCw size={16} /></button>
               </div>
 
               <input autoFocus type="text" placeholder="Enter code" value={captchaValue} onChange={e => setCaptchaValue(e.target.value)}

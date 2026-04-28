@@ -8,8 +8,8 @@ export async function POST(req: NextRequest) {
   try {
     const { text, voice, pitch, rate } = await req.json();
 
-    if (!text || text.length > 4000) {
-      return NextResponse.json({ error: "Invalid text length. Limit is 4000 characters." }, { status: 400 });
+    if (!text || text.length > 10000) {
+      return NextResponse.json({ error: "Invalid text length. Limit is 10000 characters." }, { status: 400 });
     }
 
     // Split text into chunks (1700-1950 chars)
@@ -21,12 +21,12 @@ export async function POST(req: NextRequest) {
         chunks.push(remainingText);
         break;
       }
-      
+
       const chunkSize = Math.floor(Math.random() * (1950 - 1700 + 1)) + 1700;
       let actualSplit = chunkSize;
       const lastPeriod = remainingText.lastIndexOf(". ", chunkSize);
       const lastSpace = remainingText.lastIndexOf(" ", chunkSize);
-      
+
       if (lastPeriod > 1600) actualSplit = lastPeriod + 1;
       else if (lastSpace > 1600) actualSplit = lastSpace;
 
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Merge chunks
     const mergedAudio = Buffer.concat(audioChunks);
-    
+
     // Obfuscate the audio buffer to hide it from the network tab
     const encrypted = formatStream(mergedAudio);
 
