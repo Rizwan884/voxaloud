@@ -136,9 +136,6 @@ export default function Home() {
       setActivePreview(null);
     } else {
       if (previewRef.current) {
-        // Trigger Adsterra Smartlink
-        window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
-
         previewRef.current.src = parseStream(voice.previewAudioPath, true) as string;
         previewRef.current.play();
         setActivePreview(voice.id);
