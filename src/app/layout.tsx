@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
+import AdBlockDetector from "@/components/AdBlockDetector";
 
 export const metadata: Metadata = {
   title: "VoxaLoud - Premium AI TTS",
@@ -21,6 +22,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <AdBlockDetector />
         {children}
         {/* Adsterra Global Scripts */}
         <Script strategy="afterInteractive" src="https://pl29281938.profitablecpmratenetwork.com/b5/ff/e7/b5ffe7bcaf166b0ceda400a483f6faee.js" />

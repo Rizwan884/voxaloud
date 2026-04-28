@@ -445,6 +445,14 @@ export default function Home() {
                 ))}
               </div>
             </section>
+
+            {/* Bottom Ad Space */}
+            <div className="hidden md:block py-4">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden py-4">
+              <AdBanner type="320x50" />
+            </div>
           </div>
         )}
 
@@ -471,6 +479,14 @@ export default function Home() {
             <button onClick={() => setView('home')} className="btn-outline mt-8">Back to Studio</button>
           </div>
         )}
+        
+        {/* Global Bottom Ad */}
+        <div className="mt-12 hidden md:block">
+          <AdBanner type="468x60" />
+        </div>
+        <div className="mt-12 md:hidden">
+          <AdBanner type="320x50" />
+        </div>
       </main>
 
       {/* Footer */}
