@@ -64,8 +64,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ _data: encrypted });
 
-  } catch (error: any) {
-    console.error("TTS processing error:", error.message);
+  } catch (error: unknown) {
+    console.error("TTS processing error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Failed to synthesize speech" }, { status: 500 });
   }
 }

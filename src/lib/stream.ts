@@ -19,7 +19,7 @@ export function formatStream(data: string | Buffer): string {
   return Buffer.from(out).toString('base64');
 }
 
-export function parseStream(b64: string, asString: boolean = false): any {
+export function parseStream(b64: string, asString: boolean = false): unknown {
   // Runs in browser
   const raw = atob(b64);
   const out = new Uint8Array(raw.length);

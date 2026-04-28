@@ -1,0 +1,49 @@
+
+/Users/rizwanrashid/Downloads/voxaloud/src/app/page.tsx
+    3:39   warning  'ChangeEvent' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   70:16   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/rizwanrashid/Downloads/voxaloud/src/app/page.tsx:70:16
+  68 |
+  69 |     const saved = localStorage.getItem('voxaloud_history');
+> 70 |     if (saved) setHistory(JSON.parse(saved));
+     |                ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  71 |   }, []);
+  72 |
+  73 |   // Audio Listeners  react-hooks/set-state-in-effect
+  104:5    error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/rizwanrashid/Downloads/voxaloud/src/app/page.tsx:104:5
+  102 |       return matchS && matchG;
+  103 |     });
+> 104 |     setFilteredVoices(filtered);
+      |     ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  105 |   }, [searchTerm, selectedGender, voices]);
+  106 |
+  107 |   // Actions       react-hooks/set-state-in-effect
+  200:19   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  351:26   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+  351:131  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+  466:107  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+
+/Users/rizwanrashid/Downloads/voxaloud/src/components/HistoryPanel.tsx
+  28:38  warning  'audioRef' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/rizwanrashid/Downloads/voxaloud/src/components/VoicePanel.tsx
+  2:18  warning  'ChevronDown' is defined but never used  @typescript-eslint/no-unused-vars
+  3:10  warning  'useState' is defined but never used     @typescript-eslint/no-unused-vars
+
+✖ 10 problems (6 errors, 4 warnings)
+

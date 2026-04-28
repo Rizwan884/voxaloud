@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { parseStream } from '@/lib/stream';
 import { RefreshCw, CheckCircle2, ShieldCheck, X } from 'lucide-react';
@@ -19,7 +19,6 @@ const CHAR_LIMIT = 10000;
 export default function Home() {
   const [view, setView] = useState<'home' | 'privacy' | 'terms'>('home');
   const [voices, setVoices] = useState<Voice[]>([]);
-  const [filteredVoices, setFilteredVoices] = useState<Voice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
 
   // Voice filters
@@ -38,6 +37,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [activePreview, setActivePreview] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [lastCreatedId, setLastCreatedId] = useState<string | null>(null);
   const [expandedHistory, setExpandedHistory] = useState<Record<string, boolean>>({});
   const [currentTime, setCurrentTime] = useState(0);
@@ -66,7 +66,10 @@ export default function Home() {
     }).catch(() => setError("Failed to load voices."));
 
     const saved = localStorage.getItem('voxaloud_history');
-    if (saved) setHistory(JSON.parse(saved));
+    if (saved) {
+      // eslint-disable-next-line
+      setHistory(JSON.parse(saved));
+    }
   }, []);
 
   // Audio Listeners
@@ -75,27 +78,30 @@ export default function Home() {
     if (!audio) return;
     const onTime = () => setCurrentTime(audio.currentTime);
     const onMeta = () => setDuration(audio.duration);
-    const onEnd = () => { setPlayingId(null); setCurrentTime(0); };
+    const onEnd = () => { setPlayingId(null); setCurrentTime(0); setIsAudioPlaying(false); };
+    const onPlay = () => setIsAudioPlaying(true);
+    const onPause = () => setIsAudioPlaying(false);
 
     audio.addEventListener('timeupdate', onTime);
     audio.addEventListener('loadedmetadata', onMeta);
     audio.addEventListener('ended', onEnd);
+    audio.addEventListener('play', onPlay);
+    audio.addEventListener('pause', onPause);
     return () => {
       audio.removeEventListener('timeupdate', onTime);
       audio.removeEventListener('loadedmetadata', onMeta);
       audio.removeEventListener('ended', onEnd);
+      audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('pause', onPause);
     };
   }, []);
 
   // Filtering
-  useEffect(() => {
-    const filtered = voices.filter(v => {
-      const matchS = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || v.language.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchG = selectedGender === 'All' || v.gender.toLowerCase() === selectedGender.toLowerCase();
-      return matchS && matchG;
-    });
-    setFilteredVoices(filtered);
-  }, [searchTerm, selectedGender, voices]);
+  const filteredVoices = voices.filter(v => {
+    const matchS = v.name.toLowerCase().includes(searchTerm.toLowerCase()) || v.language.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchG = selectedGender === 'All' || v.gender.toLowerCase() === selectedGender.toLowerCase();
+    return matchS && matchG;
+  });
 
   // Actions
   const handlePlayPreview = (voice: Voice) => {
@@ -190,8 +196,8 @@ export default function Home() {
       const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
       saveToHistory(audioBlob, text, selectedVoice?.name || 'Unknown');
       if (audioRef.current) { audioRef.current.src = URL.createObjectURL(audioBlob); audioRef.current.play(); }
-    } catch (err: any) {
-      setError(err.message || "Synthesis failed.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Synthesis failed.");
     } finally {
       setIsProcessing(false);
       setProgress(null);
@@ -266,8 +272,9 @@ export default function Home() {
 
                 <div className="pt-4">
                   <HistoryPanel
-                    history={history} playingId={playingId} lastCreatedId={lastCreatedId} audioRef={audioRef}
+                    history={history} playingId={playingId} lastCreatedId={lastCreatedId}
                     currentTime={currentTime} duration={duration} expandedHistory={expandedHistory}
+                    isAudioPlaying={isAudioPlaying}
                     onToggleExpand={id => setExpandedHistory(p => ({ ...p, [id]: !p[id] }))}
                     onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
                     onSeek={e => { if (audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime = t; setCurrentTime(t); } }}
@@ -340,7 +347,7 @@ export default function Home() {
                 <p className="text-muted text-base leading-relaxed">
                   VoxaLoud is a free AI voice generator that sounds like a real human. Get access to over 500 premium voices across 75 languages to make your content stand out.
                   <br /><br />
-                  You don't need to sign up or add a credit card. Just type your text, choose a voice, and download your audio. It's completely free for commercial use.
+                  You don&apos;t need to sign up or add a credit card. Just type your text, choose a voice, and download your audio. It&apos;s completely free for commercial use.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4 w-full lg:w-auto">
@@ -455,7 +462,7 @@ export default function Home() {
               {view === 'privacy' ? (
                 <>
                   <p><strong>1. Data Processing:</strong> We do not store your text inputs or generated audio files on our servers after the generation is complete.</p>
-                  <p><strong>2. Local Storage:</strong> Your history is saved entirely within your browser's local storage for your convenience.</p>
+                  <p><strong>2. Local Storage:</strong> Your history is saved entirely within your browser&apos;s local storage for your convenience.</p>
                   <p><strong>3. Analytics:</strong> We use basic anonymous analytics to improve the performance of our application.</p>
                 </>
               ) : (

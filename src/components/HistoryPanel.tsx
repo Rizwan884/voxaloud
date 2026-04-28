@@ -7,9 +7,9 @@ interface Props {
   history: AudioHistory[];
   playingId: string | null;
   lastCreatedId: string | null;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
   currentTime: number;
   duration: number;
+  isAudioPlaying: boolean;
   expandedHistory: Record<string, boolean>;
   onToggleExpand: (id: string) => void;
   onPlayPause: (item: AudioHistory) => void;
@@ -24,8 +24,8 @@ function fmt(t: number) {
 }
 
 export default function HistoryPanel({
-  history, playingId, lastCreatedId, audioRef,
-  currentTime, duration, expandedHistory,
+  history, playingId, lastCreatedId,
+  currentTime, duration, isAudioPlaying, expandedHistory,
   onToggleExpand, onPlayPause, onStop, onSeek, onDelete, onClear,
 }: Props) {
   return (
@@ -65,7 +65,7 @@ export default function HistoryPanel({
             const isPlaying = playingId === item.id;
             const isNew = lastCreatedId === item.id;
             const expanded = expandedHistory[item.id];
-            const isActive = isPlaying && !audioRef.current?.paused;
+            const isActive = isPlaying && isAudioPlaying;
             const pct = duration ? (currentTime / duration) * 100 : 0;
 
             return (

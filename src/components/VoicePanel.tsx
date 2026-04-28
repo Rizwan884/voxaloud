@@ -1,6 +1,5 @@
 "use client";
-import { Search, ChevronDown, Play, Pause, Check, Mic2 } from 'lucide-react';
-import { useState } from 'react';
+import { Search, Play, Pause, Check, Mic2 } from 'lucide-react';
 
 interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; }
 
@@ -59,7 +58,6 @@ export default function VoicePanel({
               }`}
             >{g}</button>
           ))}
-        </div>
         </div>
       </div>
 
