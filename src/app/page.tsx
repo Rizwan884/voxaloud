@@ -110,7 +110,7 @@ export default function Home() {
       setActivePreview(null);
     } else {
       if (previewRef.current) {
-        previewRef.current.src = voice.previewAudioPath;
+        previewRef.current.src = parseStream(voice.previewAudioPath, true) as string;
         previewRef.current.play();
         setActivePreview(voice.id);
       }
@@ -185,7 +185,7 @@ export default function Home() {
         const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate });
         if (res.data._data) {
           const bytes = parseStream(res.data._data, false) as Uint8Array;
-          audioChunks.push(new Blob([bytes as any], { type: 'audio/mpeg' }));
+          audioChunks.push(new Blob([bytes as unknown as BlobPart], { type: 'audio/mpeg' }));
         } else {
           audioChunks.push(res.data);
         }
