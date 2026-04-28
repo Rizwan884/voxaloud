@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
+import CryptoJS from "crypto-js";
+
 const TTS_API_URL = "https://speechma.com/com.api/tts-api.php";
+const SECRET = "vxl-sec-key-2026";
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,19 +24,13 @@ export async function POST(req: NextRequest) {
         break;
       }
       
-      // Random chunk size between 1700 and 1950
       const chunkSize = Math.floor(Math.random() * (1950 - 1700 + 1)) + 1700;
-      
-      // Try to split at a sentence or word boundary if possible within the chunk
       let actualSplit = chunkSize;
       const lastPeriod = remainingText.lastIndexOf(". ", chunkSize);
       const lastSpace = remainingText.lastIndexOf(" ", chunkSize);
       
-      if (lastPeriod > 1600) {
-        actualSplit = lastPeriod + 1;
-      } else if (lastSpace > 1600) {
-        actualSplit = lastSpace;
-      }
+      if (lastPeriod > 1600) actualSplit = lastPeriod + 1;
+      else if (lastSpace > 1600) actualSplit = lastSpace;
 
       chunks.push(remainingText.substring(0, actualSplit).trim());
       remainingText = remainingText.substring(actualSplit).trim();
@@ -41,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     const audioChunks: Buffer[] = [];
 
-    // Process chunks sequentially to keep order
+    // Process chunks sequentially
     for (const chunk of chunks) {
       const payload = {
         text: chunk,
@@ -55,7 +52,7 @@ export async function POST(req: NextRequest) {
           'Content-Type': 'application/json',
           'Accept': '*/*',
         },
-        responseType: 'arraybuffer' // Expect audio data
+        responseType: 'arraybuffer'
       });
 
       audioChunks.push(Buffer.from(response.data));
@@ -63,12 +60,12 @@ export async function POST(req: NextRequest) {
 
     // Merge chunks
     const mergedAudio = Buffer.concat(audioChunks);
+    
+    // Encrypt the audio buffer as base64 to hide it from the network tab
+    const base64Audio = mergedAudio.toString('base64');
+    const encrypted = CryptoJS.AES.encrypt(base64Audio, SECRET).toString();
 
-    return new NextResponse(mergedAudio, {
-      headers: {
-        'Content-Type': 'audio/mpeg',
-      },
-    });
+    return NextResponse.json({ e: encrypted });
 
   } catch (error: any) {
     console.error("TTS processing error:", error.message);

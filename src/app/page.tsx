@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
 import { RefreshCw, CheckCircle2, ShieldCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -54,8 +55,15 @@ export default function Home() {
   // Loaders
   useEffect(() => {
     axios.get('/api/voices').then(res => {
-      setVoices(res.data);
-      if (res.data.length > 0) setSelectedVoice(res.data[0]);
+      if (res.data.e) {
+        const bytes = CryptoJS.AES.decrypt(res.data.e, 'vxl-sec-key-2026');
+        const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        setVoices(decryptedData);
+        if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
+      } else {
+        setVoices(res.data);
+        if (res.data.length > 0) setSelectedVoice(res.data[0]);
+      }
     }).catch(() => setError("Failed to load voices."));
     
     const saved = localStorage.getItem('voxaloud_history');
@@ -170,8 +178,18 @@ export default function Home() {
       const audioChunks: Blob[] = [];
       let processed = 0;
       for (const chunk of chunks) {
-        const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate }, { responseType: 'blob' });
-        audioChunks.push(res.data);
+        const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate });
+        if (res.data.e) {
+          const decryptedStr = CryptoJS.AES.decrypt(res.data.e, 'vxl-sec-key-2026').toString(CryptoJS.enc.Utf8);
+          const binaryString = atob(decryptedStr);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          audioChunks.push(new Blob([bytes], { type: 'audio/mpeg' }));
+        } else {
+          audioChunks.push(res.data);
+        }
         processed += chunk.length;
         setProgress({ current: processed, total: text.length });
       }
