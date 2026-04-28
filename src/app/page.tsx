@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import axios from 'axios';
-import CryptoJS from 'crypto-js';
+import { parseStream } from '@/lib/stream';
 import { RefreshCw, CheckCircle2, ShieldCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -55,9 +55,9 @@ export default function Home() {
   // Loaders
   useEffect(() => {
     axios.get('/api/voices').then(res => {
-      if (res.data.e) {
-        const bytes = CryptoJS.AES.decrypt(res.data.e, 'vxl-sec-key-2026');
-        const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      if (res.data._data) {
+        const str = parseStream(res.data._data, true);
+        const decryptedData = JSON.parse(str);
         setVoices(decryptedData);
         if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
       } else {
@@ -179,13 +179,8 @@ export default function Home() {
       let processed = 0;
       for (const chunk of chunks) {
         const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate });
-        if (res.data.e) {
-          const decryptedStr = CryptoJS.AES.decrypt(res.data.e, 'vxl-sec-key-2026').toString(CryptoJS.enc.Utf8);
-          const binaryString = atob(decryptedStr);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
+        if (res.data._data) {
+          const bytes = parseStream(res.data._data, false);
           audioChunks.push(new Blob([bytes], { type: 'audio/mpeg' }));
         } else {
           audioChunks.push(res.data);

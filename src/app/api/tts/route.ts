@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-
-import CryptoJS from "crypto-js";
+import { formatStream } from "@/lib/stream";
 
 const TTS_API_URL = "https://speechma.com/com.api/tts-api.php";
-const SECRET = "vxl-sec-key-2026";
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,11 +59,10 @@ export async function POST(req: NextRequest) {
     // Merge chunks
     const mergedAudio = Buffer.concat(audioChunks);
     
-    // Encrypt the audio buffer as base64 to hide it from the network tab
-    const base64Audio = mergedAudio.toString('base64');
-    const encrypted = CryptoJS.AES.encrypt(base64Audio, SECRET).toString();
+    // Obfuscate the audio buffer to hide it from the network tab
+    const encrypted = formatStream(mergedAudio);
 
-    return NextResponse.json({ e: encrypted });
+    return NextResponse.json({ _data: encrypted });
 
   } catch (error: any) {
     console.error("TTS processing error:", error.message);

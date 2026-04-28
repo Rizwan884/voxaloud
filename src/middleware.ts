@@ -21,16 +21,7 @@ export function middleware(request: NextRequest) {
       // If it's a cross-origin request or same-origin fetch, it should have an origin or referer.
       // If neither is present, or neither matches the allowed list, block it.
       if (!isAllowedOrigin && !isAllowedReferer) {
-        return new NextResponse(
-          JSON.stringify({ 
-            error: 'Access Denied', 
-            message: 'API can only be accessed from the official VoxaLoud domain (voxaloud-theta.vercel.app)' 
-          }),
-          { 
-            status: 403, 
-            headers: { 'Content-Type': 'application/json' }
-          }
-        );
+        return new NextResponse(null, { status: 404 });
       }
     }
 
