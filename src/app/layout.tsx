@@ -6,6 +6,13 @@ import AdBlockDetector from "@/components/AdBlockDetector";
 export const metadata: Metadata = {
   title: "VoxaLoud - Premium AI TTS",
   description: "Experience professional-grade text-to-speech conversion with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
+  openGraph: {
+    images: ["https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/httpsvoxaloud.shaaddev.studio%20(1).png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/httpsvoxaloud.shaaddev.studio%20(1).png"],
+  },
 };
 
 export default function RootLayout({
