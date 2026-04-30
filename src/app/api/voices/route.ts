@@ -18,10 +18,10 @@ export async function GET() {
       rawData = response.data;
     }
 
-    const voices = (rawData as Array<Record<string, unknown>>).map((v) => ({
-      ...v,
-      previewAudioPath: formatStream(v.previewAudioPath as string)
-    }));
+    const voices = (rawData as Array<Record<string, any>>).map((v) => {
+      const { previewAudioPath, ...rest } = v;
+      return rest;
+    });
     const encrypted = formatStream(JSON.stringify(voices));
     return NextResponse.json({ _data: encrypted });
   } catch (error) {

@@ -1,6 +1,7 @@
 "use client";
 import { Play, Pause, Square, Download, Trash2, Clock3, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import AdBanner from './AdBanner';
 
 interface AudioHistory { id: string; text: string; voiceName: string; date: string; audioUrl: string; }
 interface Props {
@@ -58,6 +59,12 @@ export default function HistoryPanel({
           <p className="text-muted text-sm font-medium">Your generated audio will appear here</p>
         </div>
       )}
+      
+      {history.length === 0 && (
+        <div className="mt-4">
+          <AdBanner type="300x250" />
+        </div>
+      )}
 
       <div className="space-y-2">
         <AnimatePresence mode="popLayout">
@@ -105,7 +112,11 @@ export default function HistoryPanel({
                     <a 
                       href={item.audioUrl} 
                       download={`voxaloud-${item.id.slice(0,6)}.mp3`} 
-                      onClick={() => window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank')}
+                      onClick={() => {
+                        if (item.id === history[0]?.id) {
+                          window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
+                        }
+                      }}
                       className="btn-ghost !p-1.5" 
                       title="Download"
                     ><Download size={14} /></a>
@@ -144,6 +155,12 @@ export default function HistoryPanel({
           })}
         </AnimatePresence>
       </div>
+
+      {history.length > 0 && (
+        <div className="mt-4">
+          <AdBanner type="300x250" />
+        </div>
+      )}
     </section>
   );
 }

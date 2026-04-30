@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { formatStream } from "@/lib/stream";
+import { formatStream, parseStream } from "@/lib/stream";
 
 const TTS_API_URL = "https://speechma.com/com.api/tts-api.php";
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, voice, pitch, rate } = await req.json();
+    const { _payload } = await req.json();
+    if (!_payload) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+
+    const decrypted = parseStream(_payload, true) as string;
+    const { text, voice, pitch, rate } = JSON.parse(decrypted);
 
     if (!text || text.length > 10000) {
       return NextResponse.json({ error: "Invalid text length. Limit is 10000 characters." }, { status: 400 });

@@ -46,9 +46,6 @@ export default function RootLayout({
       <body>
         <AdBlockDetector />
         {children}
-        {/* Adsterra Global Scripts */}
-        <Script strategy="afterInteractive" src="https://pl29281938.profitablecpmratenetwork.com/b5/ff/e7/b5ffe7bcaf166b0ceda400a483f6faee.js" />
-        <Script strategy="afterInteractive" src="https://pl29281940.profitablecpmratenetwork.com/2b/5a/3d/2b5a3d0917dee1aad0160264f728f686.js" />
       </body>
     </html>
   );

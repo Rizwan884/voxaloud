@@ -1,7 +1,8 @@
 "use client";
-import { Search, Play, Pause, Check, Mic2 } from 'lucide-react';
+import { Search, Play, Pause, Check, Mic2, Loader2 } from 'lucide-react';
+import AdBanner from './AdBanner';
 
-interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; flag?: string; }
+interface Voice { id: string; name: string; gender: string; language: string; country: string; flag?: string; }
 
 interface Props {
   voices: Voice[];
@@ -9,6 +10,7 @@ interface Props {
   selectedVoice: Voice | null;
   onSelectVoice: (v: Voice) => void;
   activePreview: string | null;
+  loadingPreviewId: string | null;
   onPreview: (v: Voice) => void;
   searchTerm: string;
   onSearch: (s: string) => void;
@@ -24,7 +26,7 @@ interface Props {
 
 export default function VoicePanel({
   voices, filteredVoices, selectedVoice, onSelectVoice,
-  activePreview, onPreview, searchTerm, onSearch,
+  activePreview, loadingPreviewId, onPreview, searchTerm, onSearch,
   selectedGender, onGender, selectedLanguage, onLanguage,
   selectedCountry, onCountry, uniqueLanguages, uniqueCountries
 }: Props) {
@@ -117,14 +119,22 @@ export default function VoicePanel({
                 onClick={e => { e.stopPropagation(); onPreview(voice); }}
                 className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${isPreviewing ? (isSelected ? 'bg-paper/20' : 'bg-ink text-paper') : (isSelected ? 'hover:bg-paper/10' : 'hover:bg-surface-2')}`}
               >
-                {isPreviewing
-                  ? <Pause size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-ink'} />
-                  : <Play size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-muted'} />
-                }
+                {loadingPreviewId === voice.id ? (
+                  <Loader2 size={13} className={`animate-spin ${isSelected ? 'text-white' : 'text-ink'}`} />
+                ) : isPreviewing ? (
+                  <Pause size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-ink'} />
+                ) : (
+                  <Play size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-muted'} />
+                )}
               </button>
             </div>
           );
         })}
+      </div>
+      
+      {/* Inline Ad */}
+      <div className="px-4 pb-2">
+        <AdBanner type="300x250" />
       </div>
     </div>
   );

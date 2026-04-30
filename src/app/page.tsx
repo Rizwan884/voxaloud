@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
-import { parseStream } from '@/lib/stream';
-import { RefreshCw, CheckCircle2, ShieldCheck, X } from 'lucide-react';
+import { parseStream, formatStream } from '@/lib/stream';
+import { RefreshCw, CheckCircle2, ShieldCheck, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import EditorPanel from '@/components/EditorPanel';
@@ -11,13 +12,12 @@ import HistoryPanel from '@/components/HistoryPanel';
 import VoicePanel from '@/components/VoicePanel';
 import AdBanner from '@/components/AdBanner';
 
-interface Voice { id: string; name: string; gender: string; language: string; country: string; previewAudioPath: string; flag?: string; }
+interface Voice { id: string; name: string; gender: string; language: string; country: string; flag?: string; }
 interface AudioHistory { id: string; text: string; voiceName: string; date: string; audioUrl: string; }
 
 const CHAR_LIMIT = 10000;
 
 export default function Home() {
-  const [view, setView] = useState<'home' | 'privacy' | 'terms'>('home');
   const [voices, setVoices] = useState<Voice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
 
@@ -44,9 +44,11 @@ export default function Home() {
   const [expandedHistory, setExpandedHistory] = useState<Record<string, boolean>>({});
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
 
   // Captcha state
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const [showAdNotice, setShowAdNotice] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
   const [generatedCaptcha, setGeneratedCaptcha] = useState('');
 
@@ -60,7 +62,7 @@ export default function Home() {
         const str = parseStream(res.data._data, true) as string;
         const decryptedData = JSON.parse(str);
         setVoices(decryptedData);
-        
+
         const lastVoiceId = localStorage.getItem('voxaloud_last_voice');
         if (lastVoiceId) {
           const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
@@ -134,14 +136,19 @@ export default function Home() {
     if (activePreview === voice.id) {
       previewRef.current?.pause();
       setActivePreview(null);
+      setLoadingPreviewId(null);
     } else {
       if (previewRef.current) {
-        previewRef.current.src = parseStream(voice.previewAudioPath, true) as string;
+        setLoadingPreviewId(voice.id);
+        previewRef.current.src = `/api/preview?id=${voice.id}`;
         previewRef.current.play();
         setActivePreview(voice.id);
       }
     }
   };
+
+  const handleTimeUpdate = () => { if (audioRef.current) setCurrentTime(audioRef.current.currentTime); };
+  const handleLoadedMetadata = () => { if (audioRef.current) setDuration(audioRef.current.duration); };
 
   const handlePlayPauseHistory = (item: AudioHistory) => {
     if (!audioRef.current) return;
@@ -173,20 +180,24 @@ export default function Home() {
   const handleGenerateClick = () => {
     if (!text.trim() || text.length > CHAR_LIMIT) return;
 
-    // Trigger Adsterra Smartlink
-    window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
-
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let res = '';
     for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
     setGeneratedCaptcha(res);
     setCaptchaValue('');
+    setShowAdNotice(false);
     setShowCaptcha(true);
   };
 
-  const executeTTS = async () => {
+  const executeTTS = () => {
     if (captchaValue.toUpperCase() !== generatedCaptcha) { setError("Invalid captcha."); return; }
-    setShowCaptcha(false);
+    setShowAdNotice(true);
+  };
+
+  const startProcessing = async () => {
+    // Trigger Adsterra Smartlink in next tab
+    window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
+
     setIsProcessing(true);
     setProgress({ current: 0, total: text.length });
     setError(null);
@@ -208,7 +219,10 @@ export default function Home() {
       const audioChunks: Blob[] = [];
       let processed = 0;
       for (const chunk of chunks) {
-        const res = await axios.post('/api/tts', { text: chunk, voice: selectedVoice?.id, pitch, rate });
+        const rawPayload = JSON.stringify({ text: chunk, voice: selectedVoice?.id, pitch, rate });
+        const obfuscatedPayload = formatStream(rawPayload);
+        const res = await axios.post('/api/tts', { _payload: obfuscatedPayload });
+
         if (res.data._data) {
           const bytes = parseStream(res.data._data, false) as Uint8Array;
           audioChunks.push(new Blob([bytes as unknown as BlobPart], { type: 'audio/mpeg' }));
@@ -222,8 +236,12 @@ export default function Home() {
       const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
       saveToHistory(audioBlob, text, selectedVoice?.name || 'Unknown');
       if (audioRef.current) { audioRef.current.src = URL.createObjectURL(audioBlob); audioRef.current.play(); }
+      setShowCaptcha(false);
+      setShowAdNotice(false);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Synthesis failed.");
+      setShowCaptcha(false);
+      setShowAdNotice(false);
     } finally {
       setIsProcessing(false);
       setProgress(null);
@@ -232,23 +250,29 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-surface selection:bg-ink/10 flex flex-col">
-      <audio ref={previewRef} onEnded={() => setActivePreview(null)} />
-      <audio ref={audioRef} />
+      <audio 
+        ref={previewRef} 
+        onEnded={() => { setActivePreview(null); setLoadingPreviewId(null); }} 
+        onPlaying={() => setLoadingPreviewId(null)}
+        onPause={() => setLoadingPreviewId(null)}
+        onError={() => { setActivePreview(null); setLoadingPreviewId(null); }}
+      />
+      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoadedMetadata} onEnded={() => setPlayingId(null)} />
 
       {/* Nav */}
       <nav className="sticky top-0 z-40 bg-paper/80 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setView('home'); window.scrollTo(0, 0); }}>
-            <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain group-hover:rotate-12 transition-transform rounded-lg" />
-            <div>
-              <h1 className="text-base font-bold text-ink font-display leading-none">VoxaLoud</h1>
+          <div className="flex items-center gap-3 group">
+            <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform" />
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold text-ink font-display leading-none">VoxaLoud</h1>
               <p className="text-[10px] text-muted uppercase tracking-widest font-semibold mt-0.5">Neural TTS</p>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-6 text-[12px] font-semibold text-muted">
-            <button onClick={() => setView('home')} className="hover:text-ink transition-colors">Studio</button>
-            <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Privacy</button>
-            <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Terms</button>
+            <Link href="/" className="hover:text-ink transition-colors">Studio</Link>
+            <Link href="/privacy" className="hover:text-ink transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-ink transition-colors">Terms</Link>
           </div>
         </div>
       </nav>
@@ -262,8 +286,7 @@ export default function Home() {
           </div>
         )}
 
-        {view === 'home' && (
-          <div className="space-y-24 md:space-y-32">
+        <div className="space-y-24 md:space-y-32">
             <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
 
               {/* Left Col */}
@@ -318,8 +341,8 @@ export default function Home() {
 
                 <VoicePanel
                   voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
-                  onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('voxaloud_last_voice', v.id); }} 
-                  activePreview={activePreview} onPreview={handlePlayPreview}
+                  onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('voxaloud_last_voice', v.id); }}
+                  activePreview={activePreview} loadingPreviewId={loadingPreviewId} onPreview={handlePlayPreview}
                   searchTerm={searchTerm} onSearch={setSearchTerm}
                   selectedGender={selectedGender} onGender={setSelectedGender}
                   selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
@@ -368,6 +391,13 @@ export default function Home() {
               </div>
             </section>
 
+            <div className="hidden md:block">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden">
+              <AdBanner type="320x50" />
+            </div>
+
             {/* Info Block */}
             <section className="flex flex-col lg:flex-row items-center justify-between gap-12">
               <div className="space-y-6 max-w-2xl">
@@ -390,6 +420,10 @@ export default function Home() {
               </div>
             </section>
 
+            <div className="w-full">
+              <AdBanner type="native" />
+            </div>
+
             {/* How to Use */}
             <section>
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight font-display mb-12 text-center text-ink">How to Use <span className="text-muted">VoxaLoud</span></h3>
@@ -409,6 +443,13 @@ export default function Home() {
                 ))}
               </div>
             </section>
+
+            <div className="hidden md:block">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden">
+              <AdBanner type="320x50" />
+            </div>
 
             {/* Platform Features */}
             <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -472,40 +513,7 @@ export default function Home() {
                 ))}
               </div>
             </section>
-
-            {/* Bottom Ad Space */}
-            <div className="hidden md:block py-4">
-              <AdBanner type="728x90" />
-            </div>
-            <div className="md:hidden py-4">
-              <AdBanner type="320x50" />
-            </div>
           </div>
-        )}
-
-        {(view === 'privacy' || view === 'terms') && (
-          <div className="max-w-3xl mx-auto card p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-ink font-display mb-8">
-              {view === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
-            </h2>
-            <div className="prose prose-sm md:prose-base prose-slate text-muted">
-              {view === 'privacy' ? (
-                <>
-                  <p><strong>1. Data Processing:</strong> We do not store your text inputs or generated audio files on our servers after the generation is complete.</p>
-                  <p><strong>2. Local Storage:</strong> Your history is saved entirely within your browser&apos;s local storage for your convenience.</p>
-                  <p><strong>3. Analytics:</strong> We use basic anonymous analytics to improve the performance of our application.</p>
-                </>
-              ) : (
-                <>
-                  <p><strong>1. Usage Rights:</strong> You are granted a commercial license for all audio generated through VoxaLoud. No attribution is required.</p>
-                  <p><strong>2. Abuse:</strong> Do not use automated scripts to abuse the API. Rate limits are in place to ensure fair usage.</p>
-                  <p><strong>3. Content:</strong> You are responsible for the text you synthesize. Do not use the service to generate illegal or harmful content.</p>
-                </>
-              )}
-            </div>
-            <button onClick={() => setView('home')} className="btn-outline mt-8">Back to Studio</button>
-          </div>
-        )}
 
         {/* Global Bottom Ad */}
         <div className="mt-12 hidden md:block">
@@ -525,9 +533,9 @@ export default function Home() {
               <span className="font-bold tracking-tight text-ink font-display text-lg">VoxaLoud Studio</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-[11px] font-bold text-muted uppercase tracking-widest">
-              <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Privacy</button>
-              <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="hover:text-ink transition-colors">Terms</button>
-              <a href="#" className="hover:text-ink transition-colors">Contact Support</a>
+              <Link href="/privacy" className="hover:text-ink transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-ink transition-colors">Terms</Link>
+              <a href="mailto:support@voxaloud.shaaddev.studio" className="hover:text-ink transition-colors">Contact Support</a>
             </div>
             <p className="text-[11px] text-muted font-bold uppercase tracking-widest">&copy; 2026 VOXALOUD</p>
           </div>
@@ -553,32 +561,78 @@ export default function Home() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-ink/20 backdrop-blur-sm" onClick={() => setShowCaptcha(false)} />
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="card w-full max-w-sm relative z-10 p-6 shadow-2xl">
-              <button onClick={() => setShowCaptcha(false)} className="absolute top-4 right-4 text-muted hover:text-ink"><X size={20} /></button>
+              {!isProcessing && <button onClick={() => setShowCaptcha(false)} className="absolute top-4 right-4 text-muted hover:text-ink"><X size={20} /></button>}
 
-              <div className="text-center mb-6">
-                <div className="w-12 h-12 bg-surface rounded-full flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 size={24} className="text-ink" />
+              {!isProcessing && !showAdNotice ? (
+                <>
+                  <div className="text-center mb-6">
+                    <div className="w-12 h-12 bg-surface rounded-full flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle2 size={24} className="text-ink" />
+                    </div>
+                    <h3 className="text-lg font-bold font-display text-ink">Verify Execution</h3>
+                    <p className="text-xs text-muted mt-1">Please enter the code to begin synthesis</p>
+                  </div>
+
+                  <div className="bg-surface rounded-xl p-4 mb-4 flex items-center justify-between">
+                    <div className="text-xl font-mono font-bold tracking-[0.3em] text-ink select-none flex-1 text-center">
+                      {generatedCaptcha}
+                    </div>
+                    <button onClick={() => {
+                      let res = ''; const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                      for (let i = 0; i < 6; i++) res += c.charAt(Math.floor(Math.random() * c.length));
+                      setGeneratedCaptcha(res);
+                    }} className="text-muted hover:text-ink p-1"><RefreshCw size={16} /></button>
+                  </div>
+
+                  <input autoFocus type="text" placeholder="Enter code" value={captchaValue} onChange={e => setCaptchaValue(e.target.value)}
+                    className="field !text-center !font-mono !text-lg !tracking-widest mb-4 uppercase"
+                    onKeyDown={e => e.key === 'Enter' && executeTTS()}
+                  />
+                  <button onClick={executeTTS} className="btn-primary w-full !py-3">Verify Code</button>
+                </>
+              ) : showAdNotice && !isProcessing ? (
+                <div className="text-center py-4 space-y-6">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+                    <ShieldCheck className="w-8 h-8 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold font-display text-green-600">Verification Successful</h3>
+                    <p className="text-[13px] text-muted mt-2 px-2 leading-relaxed">
+                      While we are generating your audio, an ad will be shown in next tab.
+                    </p>
+                    <div className="mt-6 p-4 bg-red-50 rounded-2xl border border-red-100">
+                      <p className="text-[11px] text-red-600 font-bold uppercase tracking-wider">Note</p>
+                      <p className="text-[12px] text-red-700 font-bold mt-1 leading-relaxed">
+                        Please don&apos;t close the new tab while we are generating your audio.
+                      </p>
+                    </div>
+                  </div>
+                  <button onClick={startProcessing} className="btn-primary w-full !py-3">OK, Proceed</button>
                 </div>
-                <h3 className="text-lg font-bold font-display text-ink">Verify Execution</h3>
-                <p className="text-xs text-muted mt-1">Please enter the code to begin synthesis</p>
-              </div>
-
-              <div className="bg-surface rounded-xl p-4 mb-4 flex items-center justify-between">
-                <div className="text-xl font-mono font-bold tracking-[0.3em] text-ink select-none flex-1 text-center">
-                  {generatedCaptcha}
+              ) : (
+                <div className="text-center py-4 space-y-6">
+                  <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto">
+                    <Loader2 className="w-8 h-8 text-ink animate-spin" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold font-display text-ink">Generating Audio...</h3>
+                    <p className="text-[13px] text-muted mt-2 px-2 leading-relaxed">
+                      Please stay on this page while we finish your synthesis.
+                    </p>
+                  </div>
+                  {progress && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-[10px] font-bold text-muted uppercase tracking-widest">
+                        <span>Progress</span>
+                        <span>{Math.round((progress.current / progress.total) * 100)}%</span>
+                      </div>
+                      <div className="w-full bg-surface-2 rounded-full h-1.5 overflow-hidden">
+                        <div className="bg-ink h-full transition-all duration-300" style={{ width: `${(progress.current / progress.total) * 100}%` }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <button onClick={() => {
-                  let res = ''; const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-                  for (let i = 0; i < 6; i++) res += c.charAt(Math.floor(Math.random() * c.length));
-                  setGeneratedCaptcha(res);
-                }} className="text-muted hover:text-ink p-1"><RefreshCw size={16} /></button>
-              </div>
-
-              <input autoFocus type="text" placeholder="Enter code" value={captchaValue} onChange={e => setCaptchaValue(e.target.value)}
-                className="field !text-center !font-mono !text-lg !tracking-widest mb-4 uppercase"
-                onKeyDown={e => e.key === 'Enter' && executeTTS()}
-              />
-              <button onClick={executeTTS} className="btn-primary w-full !py-3">Synthesize Audio</button>
+              )}
             </motion.div>
           </div>
         )}
