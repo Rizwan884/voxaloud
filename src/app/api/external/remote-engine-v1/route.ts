@@ -12,6 +12,18 @@ import axios from "axios";
 
 const REMOTE_URL = "https://api.fish.audio/v1";
 
+export async function GET() {
+  return NextResponse.json({ 
+    status: "alive", 
+    message: "Use POST with correct headers/body to access the engine.",
+    config_check: {
+      has_api_key: !!process.env.FISH_AUDIO_API_KEY,
+      has_secret: !!process.env.APP_INTERNAL_SECRET,
+      has_app_id: !!process.env.ALLOWED_APP_ID
+    }
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Security Check: Obscured Header
