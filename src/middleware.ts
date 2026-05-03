@@ -18,7 +18,8 @@ export function middleware(request: NextRequest) {
     const isAllowedReferer = allowedDomains.some(domain => referer.startsWith(domain));
 
     // In production, enforce that the request comes from the allowed domain
-    if (process.env.NODE_ENV === 'production') {
+    // EXCEPTION: Skip this check for our external bridge API
+    if (process.env.NODE_ENV === 'production' && !request.nextUrl.pathname.startsWith('/api/external/')) {
       // If it's a cross-origin request or same-origin fetch, it should have an origin or referer.
       // If neither is present, or neither matches the allowed list, block it.
       if (!isAllowedOrigin && !isAllowedReferer) {
