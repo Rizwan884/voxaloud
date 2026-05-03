@@ -63,21 +63,23 @@ export async function POST(req: NextRequest) {
         });
 
       case "retrieve_catalog": // Formerly 'list_voices'
-        const catRes = await axios.get(`${REMOTE_URL}/voices`, { headers });
+        // Fish Audio uses /v1/model for listing voices
+        const catRes = await axios.get(`${REMOTE_URL}/model`, { headers });
         return NextResponse.json(catRes.data);
 
       case "examine_asset": // Formerly 'get_voice'
-        if (!data.asset_id) return NextResponse.json({ error: "Missing ref" }, { status: 400 });
-        const assetRes = await axios.get(`${REMOTE_URL}/voices/${data.asset_id}`, { headers });
+        if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
+        const assetRes = await axios.get(`${REMOTE_URL}/model/${data.asset_id}`, { headers });
         return NextResponse.json(assetRes.data);
 
       case "commit_new_entry": // Formerly 'create_voice'
-        const createRes = await axios.post(`${REMOTE_URL}/voices`, data, { headers });
+        // Fish Audio uses /v1/model for creation
+        const createRes = await axios.post(`${REMOTE_URL}/model`, data, { headers });
         return NextResponse.json(createRes.data);
 
       case "purge_entry": // Formerly 'delete_voice'
-        if (!data.asset_id) return NextResponse.json({ error: "Missing ref" }, { status: 400 });
-        const delRes = await axios.delete(`${REMOTE_URL}/voices/${data.asset_id}`, { headers });
+        if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
+        const delRes = await axios.delete(`${REMOTE_URL}/model/${data.asset_id}`, { headers });
         return NextResponse.json(delRes.data);
 
       default:
