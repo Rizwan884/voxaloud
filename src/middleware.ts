@@ -18,8 +18,10 @@ export function middleware(request: NextRequest) {
     const isAllowedReferer = allowedDomains.some(domain => referer.startsWith(domain));
 
     // In production, enforce that the request comes from the allowed domain
-    // EXCEPTION: Skip this check for our external bridge API
-    if (process.env.NODE_ENV === 'production' && !request.nextUrl.pathname.startsWith('/api/external/')) {
+    // EXCEPTION: Skip all checks for our external bridge API
+    const isExternalApi = request.nextUrl.pathname.startsWith('/api/external/');
+
+    if (process.env.NODE_ENV === 'production' && !isExternalApi) {
       // If it's a cross-origin request or same-origin fetch, it should have an origin or referer.
       // If neither is present, or neither matches the allowed list, block it.
       if (!isAllowedOrigin && !isAllowedReferer) {
@@ -37,7 +39,7 @@ export function middleware(request: NextRequest) {
     }
 
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Gateway-Key');
 
     return response;
   }
