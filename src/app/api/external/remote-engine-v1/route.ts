@@ -5,9 +5,7 @@ import axios from "axios";
  * OBSCURED PROXY FOR EXTERNAL SERVICES
  * 
  * Path: /api/external/remote-engine-v1
- * 
- * This endpoint is renamed to be non-obvious to casual crawlers.
- * Actions are also renamed to obscure their true purpose.
+ * Version: 1.0.1 (Triggering Redeploy)
  */
 
 const REMOTE_URL = "https://api.fish.audio/v1";
