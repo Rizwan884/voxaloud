@@ -43,60 +43,79 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Config Error" }, { status: 500 });
     }
 
-    const headers = {
-      'Authorization': `Bearer ${auth}`,
-      'Content-Type': 'application/json',
+    // Helper for forwarding requests to Fish Audio
+    const forwardRequest = async (path: string, options: RequestInit = {}) => {
+      const url = `https://api.fish.audio${path}`;
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          'Authorization': `Bearer ${auth}`,
+          ...options.headers,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || `External API returned ${res.status}`);
+      }
+
+      return res;
     };
 
     switch (op) {
-      case "process_task": // Formerly 'tts'
-        const ttsRes = await axios.post(`${REMOTE_URL}/tts`, data, {
-          headers,
-          responseType: 'arraybuffer'
+      case "process_task": // TTS
+        const ttsRes = await forwardRequest('/v1/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
         });
         
-        return new NextResponse(ttsRes.data, {
+        const audioBuffer = await ttsRes.arrayBuffer();
+        return new NextResponse(audioBuffer, {
           headers: { 
             'Content-Type': 'audio/mpeg',
             'X-Resource-ID': 'stream-audio'
           }
         });
 
-      case "retrieve_catalog": // Formerly 'list_voices'
-        // Fish Audio uses /v1/model for listing voices
-        const catRes = await axios.get(`${REMOTE_URL}/model`, { headers });
-        return NextResponse.json(catRes.data);
+      case "retrieve_catalog":
+        const catRes = await forwardRequest('/model', { method: 'GET' });
+        const catData = await catRes.json();
+        return NextResponse.json(catData);
 
-      case "examine_asset": // Formerly 'get_voice'
+      case "examine_asset":
         if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
-        const assetRes = await axios.get(`${REMOTE_URL}/model/${data.asset_id}`, { headers });
-        return NextResponse.json(assetRes.data);
+        const assetRes = await forwardRequest(`/model/${data.asset_id}`, { method: 'GET' });
+        const assetData = await assetRes.json();
+        return NextResponse.json(assetData);
 
-      case "commit_new_entry": // Formerly 'create_voice'
-        // Fish Audio uses /v1/model for creation
-        const createRes = await axios.post(`${REMOTE_URL}/model`, data, { headers });
-        return NextResponse.json(createRes.data);
+      case "commit_new_entry":
+        const createRes = await forwardRequest('/model', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const createData = await createRes.json();
+        return NextResponse.json(createData);
 
-      case "purge_entry": // Formerly 'delete_voice'
+      case "purge_entry":
         if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
-        const delRes = await axios.delete(`${REMOTE_URL}/model/${data.asset_id}`, { headers });
-        return NextResponse.json(delRes.data);
+        const delRes = await forwardRequest(`/model/${data.asset_id}`, { method: 'DELETE' });
+        const delData = await delRes.json();
+        return NextResponse.json(delData);
 
       default:
         return NextResponse.json({ error: "Invalid Op" }, { status: 400 });
     }
 
   } catch (error: any) {
-    const status = error.response?.status || 500;
-    const errorDetail = error.response?.data || error.message;
-    console.error("Engine Error:", errorDetail);
-    
+    console.error("Engine Error:", error.message);
     return NextResponse.json(
       { 
         error: "Engine execution failed", 
-        detail: errorDetail 
+        detail: error.message 
       },
-      { status }
+      { status: 500 }
     );
   }
 }
