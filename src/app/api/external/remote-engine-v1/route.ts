@@ -85,10 +85,15 @@ export async function POST(req: NextRequest) {
     }
 
   } catch (error: any) {
-    console.error("Engine Error:", error.response?.data || error.message);
     const status = error.response?.status || 500;
+    const errorDetail = error.response?.data || error.message;
+    console.error("Engine Error:", errorDetail);
+    
     return NextResponse.json(
-      { error: "Engine execution failed" },
+      { 
+        error: "Engine execution failed", 
+        detail: errorDetail 
+      },
       { status }
     );
   }
