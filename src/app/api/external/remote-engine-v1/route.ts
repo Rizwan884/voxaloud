@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import fs from "fs";
+import path from "path";
 
 /**
  * OBSCURED PROXY FOR EXTERNAL SERVICES
@@ -103,6 +105,22 @@ export async function POST(req: NextRequest) {
         const delRes = await forwardRequest(`/model/${data.asset_id}`, { method: 'DELETE' });
         const delData = await delRes.json();
         return NextResponse.json(delData);
+
+      case "fetch_ai_voices": {
+        const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
+        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: "Data file not found" }, { status: 500 });
+        const allVoices = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+        const aiVoices = allVoices.filter((v: any) => v.category === "AI Voice");
+        return NextResponse.json(aiVoices);
+      }
+
+      case "fetch_celebrity_voices": {
+        const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
+        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: "Data file not found" }, { status: 500 });
+        const allVoices = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+        const celebrityVoices = allVoices.filter((v: any) => v.category !== "AI Voice");
+        return NextResponse.json(celebrityVoices);
+      }
 
       default:
         return NextResponse.json({ error: "Invalid Op" }, { status: 400 });
