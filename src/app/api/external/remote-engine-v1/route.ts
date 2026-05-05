@@ -1,119 +1,221 @@
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import fs from "fs";
 import path from "path";
 
 /**
- * OBSCURED PROXY FOR EXTERNAL SERVICES
+ * VOXALOUD REMOTE ENGINE GATEWAY (V1)
  * 
- * Path: /api/external/remote-engine-v1
- * Version: 1.0.1 (Triggering Redeploy)
+ * This bridge provides secure access to Fish Audio services for the Flutter application.
+ * It handles authentication, parameter mapping, and local data retrieval.
  */
 
-const REMOTE_URL = "https://api.fish.audio/v1";
+const FISH_API_ROOT = "https://api.fish.audio";
+
+// Simple cache for voice data to avoid repeated disk reads
+let cachedVoices: any[] | null = null;
+let lastCacheUpdate = 0;
+const CACHE_TTL = 60 * 1000; // 1 minute
+
+const getVoicesData = () => {
+  const now = Date.now();
+  if (cachedVoices && (now - lastCacheUpdate < CACHE_TTL)) {
+    return cachedVoices;
+  }
+
+  try {
+    const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
+    if (!fs.existsSync(jsonPath)) {
+      console.error("Data file missing:", jsonPath);
+      return null;
+    }
+    const data = fs.readFileSync(jsonPath, 'utf-8');
+    cachedVoices = JSON.parse(data);
+    lastCacheUpdate = now;
+    return cachedVoices;
+  } catch (error) {
+    console.error("Error loading voice data:", error);
+    return null;
+  }
+};
+
+/**
+ * Maps the internal JSON format to the format expected by the Flutter app.
+ */
+const mapVoiceToClient = (v: any) => ({
+  id: v.fishModelId || String(v.id),
+  name: v.name?.trim() || "Unknown Voice",
+  category: v.category || "Other",
+  image_url: v.image || "",
+  preview_audio_url: v.audioPath || "",
+  description: v.notes || "",
+  is_celebrity: v.category !== "AI Voice",
+  tags: v.language ? [v.language.trim()] : []
+});
 
 export async function GET() {
   return NextResponse.json({ 
-    status: "alive", 
-    message: "Use POST with correct headers/body to access the engine.",
-    config_check: {
-      has_api_key: !!process.env.FISH_AUDIO_API_KEY,
-      has_secret: !!process.env.APP_INTERNAL_SECRET,
-      has_app_id: !!process.env.ALLOWED_APP_ID
+    status: "online", 
+    version: "1.2.1",
+    service: "Voxaloud Engine Bridge",
+    health_check: {
+      api_key_configured: !!process.env.FISH_AUDIO_API_KEY,
+      gateway_secret_set: !!process.env.APP_INTERNAL_SECRET,
+      app_id_configured: !!process.env.ALLOWED_APP_ID,
+      data_source_valid: fs.existsSync(path.join(process.cwd(), 'updated_data_1778009267572.json'))
     }
   });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Security Check: Obscured Header
+    // 1. Authentication Check (X-Gateway-Key)
     const gatewayKey = req.headers.get("X-Gateway-Key");
-    if (gatewayKey !== process.env.APP_INTERNAL_SECRET) {
-      return NextResponse.json({ error: "Access Denied: 401" }, { status: 401 });
+    if (!gatewayKey || gatewayKey !== process.env.APP_INTERNAL_SECRET) {
+      console.warn("Unauthorized access attempt: Invalid Gateway Key");
+      return NextResponse.json({ error: "Unauthorized: Invalid Security Header" }, { status: 401 });
     }
 
-    const body = await req.json();
+    // 2. Parse Request Body
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
     const { op, client_ref, ...data } = body;
+    console.log(`[Engine] Operation: ${op}, Client: ${client_ref}`);
 
-    // 2. Security Check: Reference check
-    if (client_ref !== process.env.ALLOWED_APP_ID) {
-      return NextResponse.json({ error: "Access Denied: 403" }, { status: 403 });
+    // 3. Application ID Check (client_ref)
+    if (!client_ref || client_ref !== process.env.ALLOWED_APP_ID) {
+      console.warn(`Forbidden access attempt: Invalid client_ref (${client_ref})`);
+      return NextResponse.json({ error: "Forbidden: Invalid Client Reference" }, { status: 403 });
     }
 
-    const auth = process.env.FISH_AUDIO_API_KEY;
-    if (!auth) {
-      return NextResponse.json({ error: "Config Error" }, { status: 500 });
+    const apiKey = process.env.FISH_AUDIO_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Server Configuration Error: API Key missing" }, { status: 500 });
     }
 
-    // Helper for forwarding requests to Fish Audio
-    const forwardRequest = async (path: string, options: RequestInit = {}) => {
-      const url = `https://api.fish.audio${path}`;
-      const res = await fetch(url, {
+    // Helper for Fish Audio Requests (JSON)
+    const fishJsonFetch = async (endpoint: string, options: RequestInit = {}) => {
+      const url = `${FISH_API_ROOT}${endpoint}`;
+      const response = await fetch(url, {
         ...options,
         headers: {
-          'Authorization': `Bearer ${auth}`,
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
           ...options.headers,
         },
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || `External API returned ${res.status}`);
+      if (!response.ok) {
+        const errorDetail = await response.text();
+        throw new Error(`Fish Audio API Error (${response.status}): ${errorDetail}`);
       }
 
-      return res;
+      return response;
     };
 
+    // 4. Operation Routing
     switch (op) {
-      case "process_task": // TTS
-        const ttsRes = await forwardRequest('/v1/tts', {
+      case "fetch_ai_voices": {
+        const voices = getVoicesData();
+        if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
+        const aiVoices = voices
+          .filter((v: any) => v.category === "AI Voice")
+          .map(mapVoiceToClient);
+        return NextResponse.json(aiVoices);
+      }
+
+      case "fetch_celebrity_voices": {
+        const voices = getVoicesData();
+        if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
+        const celebrityVoices = voices
+          .filter((v: any) => v.category !== "AI Voice")
+          .map(mapVoiceToClient);
+        return NextResponse.json(celebrityVoices);
+      }
+
+      case "process_task": {
+        // Map Flutter params to Fish Audio params
+        const ttsPayload = {
+          text: data.text,
+          reference_id: data.voice_id,
+          format: data.format || "mp3",
+          normalize: true,
+          latency: "normal"
+        };
+
+        if (!ttsPayload.text || !ttsPayload.reference_id) {
+          return NextResponse.json({ error: "Missing required fields: text or voice_id" }, { status: 400 });
+        }
+
+        const ttsRes = await fishJsonFetch('/v1/tts', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          headers: {
+            'model': 's2-pro' // Required by Fish Audio V1
+          },
+          body: JSON.stringify(ttsPayload),
         });
         
         const audioBuffer = await ttsRes.arrayBuffer();
         return new NextResponse(audioBuffer, {
           headers: { 
             'Content-Type': 'audio/mpeg',
-            'X-Resource-ID': 'stream-audio'
+            'Cache-Control': 'no-cache'
           }
         });
-
-      case "commit_new_entry":
-        const createRes = await forwardRequest('/model', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-        const createData = await createRes.json();
-        return NextResponse.json(createData);
-
-      case "fetch_ai_voices": {
-        const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
-        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: "Data file not found" }, { status: 500 });
-        const allVoices = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-        const aiVoices = allVoices.filter((v: any) => v.category === "AI Voice");
-        return NextResponse.json(aiVoices);
       }
 
-      case "fetch_celebrity_voices": {
-        const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
-        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: "Data file not found" }, { status: 500 });
-        const allVoices = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-        const celebrityVoices = allVoices.filter((v: any) => v.category !== "AI Voice");
-        return NextResponse.json(celebrityVoices);
+      case "commit_new_entry": {
+        // Voice Cloning (Multipart Upload)
+        if (!data.title || !data.voices || !Array.isArray(data.voices)) {
+          return NextResponse.json({ error: "Missing required fields: title or voices (array)" }, { status: 400 });
+        }
+
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("visibility", "private");
+        formData.append("type", "tts");
+        formData.append("train_mode", "fast");
+
+        // Download voices and append to form data as blobs
+        for (let i = 0; i < data.voices.length; i++) {
+          const url = data.voices[i];
+          const voiceRes = await fetch(url);
+          if (!voiceRes.ok) throw new Error(`Failed to download voice sample ${i + 1} from ${url}`);
+          const buffer = await voiceRes.arrayBuffer();
+          const blob = new Blob([buffer], { type: 'audio/mpeg' });
+          formData.append("voices", blob, `sample_${i}.mp3`);
+        }
+
+        const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+          },
+          body: formData,
+        });
+
+        if (!cloneRes.ok) {
+          const errText = await cloneRes.text();
+          throw new Error(`Fish Audio Clone Error (${cloneRes.status}): ${errText}`);
+        }
+
+        const cloneData = await cloneRes.json();
+        return NextResponse.json(cloneData);
       }
 
       default:
-        return NextResponse.json({ error: "Invalid Op" }, { status: 400 });
+        return NextResponse.json({ error: `Unknown operation: ${op}` }, { status: 400 });
     }
 
   } catch (error: any) {
-    console.error("Engine Error:", error.message);
+    console.error("Engine Runtime Error:", error.message);
     return NextResponse.json(
       { 
-        error: "Engine execution failed", 
+        error: "Internal Processing Failed", 
         detail: error.message 
       },
       { status: 500 }
