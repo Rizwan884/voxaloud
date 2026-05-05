@@ -38,19 +38,7 @@ const getVoicesData = () => {
   }
 };
 
-/**
- * Maps the internal JSON format to the format expected by the Flutter app.
- */
-const mapVoiceToClient = (v: any) => ({
-  id: v.fishModelId || String(v.id),
-  name: v.name?.trim() || "Unknown Voice",
-  category: v.category || "Other",
-  image_url: v.image || "",
-  preview_audio_url: v.audioPath || "",
-  description: v.notes || "",
-  is_celebrity: v.category !== "AI Voice",
-  tags: v.language ? [v.language.trim()] : []
-});
+
 
 export async function GET() {
   return NextResponse.json({ 
@@ -122,29 +110,33 @@ export async function POST(req: NextRequest) {
       case "fetch_ai_voices": {
         const voices = getVoicesData();
         if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
-        const aiVoices = voices
-          .filter((v: any) => v.category === "AI Voice")
-          .map(mapVoiceToClient);
+        const aiVoices = voices.filter((v: any) => v.category === "AI Voice");
         return NextResponse.json(aiVoices);
       }
 
       case "fetch_celebrity_voices": {
         const voices = getVoicesData();
         if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
-        const celebrityVoices = voices
-          .filter((v: any) => v.category !== "AI Voice")
-          .map(mapVoiceToClient);
+        const celebrityVoices = voices.filter((v: any) => v.category !== "AI Voice");
         return NextResponse.json(celebrityVoices);
       }
 
       case "process_task": {
         // Map Flutter params to Fish Audio params
+        // Flutter sends: text, voice_id, format, temperature, topP, speed, volume
         const ttsPayload = {
           text: data.text,
           reference_id: data.voice_id,
           format: data.format || "mp3",
           normalize: true,
-          latency: "normal"
+          latency: "normal",
+          temperature: data.temperature ?? 0.7,
+          top_p: data.top_p ?? 0.9,
+          prosody: {
+            speed: data.speed ?? 1.0,
+            volume: data.volume ?? 0.0, // Fish Audio volume is offset in dB
+          },
+          ...data // Forward any other extra params
         };
 
         if (!ttsPayload.text || !ttsPayload.reference_id) {
