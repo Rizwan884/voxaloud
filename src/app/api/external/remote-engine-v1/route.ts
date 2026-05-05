@@ -80,17 +80,6 @@ export async function POST(req: NextRequest) {
           }
         });
 
-      case "retrieve_catalog":
-        const catRes = await forwardRequest('/model', { method: 'GET' });
-        const catData = await catRes.json();
-        return NextResponse.json(catData);
-
-      case "examine_asset":
-        if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
-        const assetRes = await forwardRequest(`/model/${data.asset_id}`, { method: 'GET' });
-        const assetData = await assetRes.json();
-        return NextResponse.json(assetData);
-
       case "commit_new_entry":
         const createRes = await forwardRequest('/model', {
           method: 'POST',
@@ -99,12 +88,6 @@ export async function POST(req: NextRequest) {
         });
         const createData = await createRes.json();
         return NextResponse.json(createData);
-
-      case "purge_entry":
-        if (!data.asset_id) return NextResponse.json({ error: "Missing asset_id" }, { status: 400 });
-        const delRes = await forwardRequest(`/model/${data.asset_id}`, { method: 'DELETE' });
-        const delData = await delRes.json();
-        return NextResponse.json(delData);
 
       case "fetch_ai_voices": {
         const jsonPath = path.join(process.cwd(), 'updated_data_1778009267572.json');
