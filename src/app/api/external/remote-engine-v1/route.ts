@@ -142,6 +142,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(celebrityVoices);
       }
 
+      case "fetch_voice_categories": {
+        const voices = getVoicesData();
+        if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
+        
+        const categories = [...new Set(
+          voices
+            .map((v: any) => v.category)
+            .filter((c: string) => c && c !== "AI Voice")
+        )].sort();
+        
+        return NextResponse.json(categories);
+      }
+
       case "process_task": {
         const ttsPayload = {
           text: data.text,
