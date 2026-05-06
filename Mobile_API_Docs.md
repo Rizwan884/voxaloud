@@ -5,36 +5,21 @@ This documentation describes the interface for the backend bridge to the high-pe
 ## Base Configuration
 
 - **Endpoint URL**: `https://voxaloud.shaaddev.studio/api/external/remote-engine-v1`
-- **Method**: `POST` (All operations use POST for enhanced security)
-- **Test Connectivity (GET)**: `https://voxaloud.shaaddev.studio/api/external/remote-engine-v1`
-
-## Authentication
-
-Every request must include both a secure header and a client reference in the body.
-
-### Required Header
-| Header | Value | Description |
-| :--- | :--- | :--- |
-| `X-Gateway-Key` | `STRING` | Match your `APP_INTERNAL_SECRET` in `.env`. |
-
-### Required Body Field
-| Field | Value | Description |
-| :--- | :--- | :--- |
-| `client_ref` | `STRING` | Match your `ALLOWED_APP_ID` in `.env`. |
-
----
+- **Method**: `POST` (Both JSON and Multipart/Form-Data are supported)
+- **Authentication Header**: `X-Gateway-Key` (Your secure secret)
 
 ## Operations Overview
 
-The `op` field in the request body determines the action to be performed.
+The `op` field in the request body determines the action.
 
 | Operation (`op`) | Description | Data Source |
 | :--- | :--- | :--- |
 | `fetch_ai_voices` | Fetch all AI Voices (TTS) | Local JSON |
 | `fetch_celebrity_voices` | Fetch all Celebrity/Politician voices | Local JSON |
+| `fetch_voice_categories` | Fetch unique categories (non-AI) | Local JSON |
 | `process_task` | Synthesize text into audio | Fish Audio API |
 | `commit_new_entry` | Create/Clone a new voice resource | Fish Audio API |
-| `merge_audio_segments` | Concatenate multiple audio files | Proxy Server |
+| `merge_audio_segments` | Join multiple audio files (Local or URLs) | Proxy Server |
 
 ---
 
@@ -64,8 +49,21 @@ Returns all voices *except* those categorized as "AI Voice".
 
 ---
 
-## 3. Synthesize Audio (`process_task`)
-Generates an MP3 stream from the provided text using Fish Audio.
+## 3. Fetch Voice Categories (`fetch_voice_categories`)
+Returns a unique list of all categories present in the voice data (excluding "AI Voice").
+
+**Request Body:**
+```json
+{
+  "op": "fetch_voice_categories",
+  "client_ref": "YOUR_APP_ID"
+}
+```
+
+---
+
+## 4. Synthesize Audio (`process_task`)
+Generates an MP3 stream using Fish Audio. Supports `temperature`, `top_p`, `speed`, and `volume`.
 
 **Request Body:**
 ```json
@@ -78,12 +76,9 @@ Generates an MP3 stream from the provided text using Fish Audio.
 }
 ```
 
-**Response:**
-- **Success (200)**: Binary data (audio/mpeg stream).
-
 ---
 
-## 4. Create Voice Clone (`commit_new_entry`)
+## 5. Create Voice Clone (`commit_new_entry`)
 Create a new cloned voice resource.
 
 **Request Body:**
@@ -98,30 +93,27 @@ Create a new cloned voice resource.
 
 ---
 
-## 5. Merge Audio Segments (`merge_audio_segments`)
-Combines multiple audio URLs into a single downloadable MP3 file.
+## 6. Merge Audio Segments (`merge_audio_segments`)
+Combines multiple audio files into one. Supports direct file uploads (Multipart) or URLs (JSON).
 
-**Request Body:**
+**Request Body (JSON Example):**
 ```json
 {
   "op": "merge_audio_segments",
   "client_ref": "YOUR_APP_ID",
-  "urls": [
-    "https://example.com/segment1.mp3",
-    "https://example.com/segment2.mp3"
-  ]
+  "urls": ["url1", "url2"]
 }
 ```
 
-**Response:**
-- **Success (200)**: Binary data (audio/mpeg stream of all joined segments).
+**Request Body (Multipart Example):**
+- `op`: `merge_audio_segments`
+- `client_ref`: `YOUR_APP_ID`
+- `audio`: (Multiple file attachments)
 
 ---
 
 ## Error Handling
 
-- `401 Unauthorized`: Invalid or missing `X-Gateway-Key` header.
-- `403 Forbidden`: Invalid `client_ref` provided in the body.
-- `404 Not Found`: Middleware blocking or incorrect URL.
-- `405 Method Not Allowed`: Using GET when only POST is supported (or vice versa).
-- `500 Internal Error`: Data file missing or API communication failed.
+- `401 Unauthorized`: Invalid `X-Gateway-Key` header.
+- `403 Forbidden`: Invalid `client_ref`.
+- `500 Internal Error`: Communication or processing failure.
