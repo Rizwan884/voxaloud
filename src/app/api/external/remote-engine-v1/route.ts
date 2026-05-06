@@ -199,6 +199,27 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(cloneData);
       }
 
+      case "merge_audio_segments": {
+        if (!data.urls || !Array.isArray(data.urls)) {
+          return NextResponse.json({ error: "Missing required fields: urls (array)" }, { status: 400 });
+        }
+
+        const buffers = [];
+        for (const url of data.urls) {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`Failed to download audio segment from ${url}`);
+          buffers.push(Buffer.from(await res.arrayBuffer()));
+        }
+
+        const mergedBuffer = Buffer.concat(buffers);
+        return new NextResponse(mergedBuffer, {
+          headers: { 
+            'Content-Type': 'audio/mpeg',
+            'Cache-Control': 'no-cache'
+          }
+        });
+      }
+
       default:
         return NextResponse.json({ error: `Unknown operation: ${op}` }, { status: 400 });
     }
