@@ -34,6 +34,7 @@ The `op` field in the request body determines the action to be performed.
 | `fetch_celebrity_voices` | Fetch all Celebrity/Politician voices | Local JSON |
 | `process_task` | Synthesize text into audio | Fish Audio API |
 | `commit_new_entry` | Create/Clone a new voice resource | Fish Audio API |
+| `merge_audio_segments` | Concatenate multiple audio files | Proxy Server |
 
 ---
 
@@ -94,6 +95,26 @@ Create a new cloned voice resource.
   "voices": ["URL_TO_AUDIO_SAMPLE"]
 }
 ```
+
+---
+
+## 5. Merge Audio Segments (`merge_audio_segments`)
+Combines multiple audio URLs into a single downloadable MP3 file.
+
+**Request Body:**
+```json
+{
+  "op": "merge_audio_segments",
+  "client_ref": "YOUR_APP_ID",
+  "urls": [
+    "https://example.com/segment1.mp3",
+    "https://example.com/segment2.mp3"
+  ]
+}
+```
+
+**Response:**
+- **Success (200)**: Binary data (audio/mpeg stream of all joined segments).
 
 ---
 
