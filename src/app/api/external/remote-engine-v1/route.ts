@@ -229,28 +229,21 @@ export async function POST(req: NextRequest) {
         formData.append("type", "tts");
         formData.append("train_mode", "fast");
 
-        // Option 1: Direct File Uploads (Multipart)
         if (files.length > 0) {
-          for (const file of files) {
-            formData.append("voices", file, file.name);
-          }
-        } 
-        // Option 2: Audio URLs (JSON)
-        else if (data.voices && Array.isArray(data.voices)) {
+          for (const file of files) formData.append("voices", file, file.name);
+        } else if (data.voices && Array.isArray(data.voices)) {
           for (let i = 0; i < data.voices.length; i++) {
             const url = data.voices[i];
             try {
-              const voiceRes = await fetch(url);
-              if (!voiceRes.ok) throw new Error(`Failed to download voice sample ${i + 1} from ${url}`);
-              const buffer = await voiceRes.arrayBuffer();
-              const blob = new Blob([buffer], { type: 'audio/mpeg' });
-              formData.append("voices", blob, `sample_${i}.mp3`);
-            } catch (err) {
-              console.error(`Error processing voice URL: ${url}`, err);
-            }
+              const res = await fetch(url);
+              if (res.ok) {
+                const blob = new Blob([await res.arrayBuffer()], { type: 'audio/mpeg' });
+                formData.append("voices", blob, `sample_${i}.mp3`);
+              }
+            } catch (err) { console.error(err); }
           }
         } else {
-          return NextResponse.json({ error: "No voice samples provided (upload files or send URLs)" }, { status: 400 });
+          return NextResponse.json({ error: "No voice samples provided" }, { status: 400 });
         }
 
         const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
@@ -261,11 +254,57 @@ export async function POST(req: NextRequest) {
 
         if (!cloneRes.ok) {
           const errText = await cloneRes.text();
-          throw new Error(`Fish Audio Clone Error (${cloneRes.status}): ${errText}`);
+          throw new Error(`Clone Error: ${errText}`);
+        }
+
+        return NextResponse.json(await cloneRes.json());
+      }
+
+      case "instant_speech_synthesis": {
+        // Combine Cloning + TTS for a one-shot experience
+        if (files.length === 0 || !data.text) {
+          return NextResponse.json({ error: "Missing audio sample or text" }, { status: 400 });
+        }
+
+        // 1. Create a Fast Clone
+        const cloneFormData = new FormData();
+        cloneFormData.append("title", `Instant_${Date.now()}`);
+        cloneFormData.append("visibility", "private");
+        cloneFormData.append("type", "tts");
+        cloneFormData.append("train_mode", "fast");
+        cloneFormData.append("voices", files[0], files[0].name);
+
+        const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${apiKey}` },
+          body: cloneFormData,
+        });
+
+        if (!cloneRes.ok) {
+          const errText = await cloneRes.text();
+          throw new Error(`Cloning Phase Failed: ${errText}`);
         }
 
         const cloneData = await cloneRes.json();
-        return NextResponse.json(cloneData);
+        const tempVoiceId = cloneData.id;
+
+        // 2. Immediate Synthesis
+        const ttsRes = await fishJsonFetch('/v1/tts', {
+          method: 'POST',
+          headers: { 'model': 's2-pro' },
+          body: JSON.stringify({
+            text: data.text,
+            reference_id: tempVoiceId,
+            format: "mp3",
+            normalize: true,
+            latency: "normal"
+          }),
+        });
+
+        const audioBuffer = await ttsRes.arrayBuffer();
+        return new NextResponse(audioBuffer, {
+          headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }
+        });
       }
 
       default:
