@@ -163,6 +163,7 @@ export async function POST(req: NextRequest) {
           normalize: data.normalize !== undefined ? data.normalize : true,
           latency: "normal",
           temperature: parseFloat(data.temperature || "0.7"),
+          sample_rate: data.sample_rate ? parseInt(data.sample_rate) : undefined,
           prosody: {
             speed: parseFloat(data.speed || "1.0"),
             volume: parseFloat(data.volume || "0.0"),
@@ -292,7 +293,12 @@ export async function POST(req: NextRequest) {
         }
 
         const cloneData = await cloneRes.json();
-        const tempVoiceId = cloneData.id;
+        const tempVoiceId = cloneData._id || cloneData.id;
+        
+        if (!tempVoiceId) {
+          console.error("[InstantTTS] Clone succeeded but no ID returned", cloneData);
+          throw new Error("Failed to retrieve Voice ID from cloning phase");
+        }
 
         // 2. Immediate Synthesis
         const ttsRes = await fishJsonFetch('/v1/tts', {
@@ -305,6 +311,7 @@ export async function POST(req: NextRequest) {
             normalize: data.normalize !== undefined ? data.normalize : true,
             latency: "normal",
             temperature: parseFloat(data.temperature || "0.7"),
+            sample_rate: data.sample_rate ? parseInt(data.sample_rate) : undefined,
             prosody: {
               speed: parseFloat(data.speed || "1.0"),
               volume: parseFloat(data.volume || "0.0"),
