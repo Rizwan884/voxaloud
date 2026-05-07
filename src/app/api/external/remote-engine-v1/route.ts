@@ -303,7 +303,11 @@ export async function POST(req: NextRequest) {
 
         const audioBuffer = await ttsRes.arrayBuffer();
         return new NextResponse(audioBuffer, {
-          headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }
+          headers: { 
+            'Content-Type': 'audio/mpeg', 
+            'Cache-Control': 'no-cache',
+            'X-Fish-Voice-Id': tempVoiceId
+          }
         });
       }
 
