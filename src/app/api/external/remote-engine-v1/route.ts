@@ -41,8 +41,8 @@ const getVoicesData = () => {
 
 
 export async function GET() {
-  return NextResponse.json({ 
-    status: "online", 
+  return NextResponse.json({
+    status: "online",
     version: "1.2.1",
     service: "Voxaloud Engine Bridge",
     health_check: {
@@ -79,11 +79,11 @@ export async function POST(req: NextRequest) {
       const formData = await req.formData();
       op = formData.get("op") as string;
       client_ref = formData.get("client_ref") as string;
-      
+
       // Extract all uploaded files (expected key: 'audio' or 'files')
       const uploadedFiles = formData.getAll("audio").concat(formData.getAll("files")) as File[];
       files = uploadedFiles.filter(f => f instanceof File);
-      
+
       // Extract other form fields into data
       formData.forEach((value, key) => {
         if (key !== "audio" && key !== "files" && key !== "op" && key !== "client_ref") {
@@ -145,13 +145,13 @@ export async function POST(req: NextRequest) {
       case "fetch_voice_categories": {
         const voices = getVoicesData();
         if (!voices) return NextResponse.json({ error: "Data file missing or corrupt" }, { status: 500 });
-        
+
         const categories = [...new Set(
           voices
             .map((v: any) => v.category)
             .filter((c: string) => c && c !== "AI Voice")
         )].sort();
-        
+
         return NextResponse.json(categories);
       }
 
@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
           headers: { 'model': 's2-pro' },
           body: JSON.stringify(ttsPayload),
         });
-        
+
         const audioBuffer = await ttsRes.arrayBuffer();
         return new NextResponse(audioBuffer, {
           headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }
@@ -194,7 +194,7 @@ export async function POST(req: NextRequest) {
           for (const file of files) {
             buffers.push(Buffer.from(await file.arrayBuffer()));
           }
-        } 
+        }
         // Support for JSON (URLs)
         else if (data.urls && Array.isArray(data.urls)) {
           for (const url of data.urls) {
@@ -276,7 +276,7 @@ export async function POST(req: NextRequest) {
 
         // If the user provided the transcript of the sample audio, include it to improve matching
         if (data.reference_text) {
-            cloneFormData.append("texts", data.reference_text);
+          cloneFormData.append("texts", data.reference_text);
         }
 
         const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
@@ -314,10 +314,10 @@ export async function POST(req: NextRequest) {
 
         const audioBuffer = await ttsRes.arrayBuffer();
         return new NextResponse(audioBuffer, {
-          headers: { 
-            'Content-Type': 'audio/mpeg', 
+          headers: {
+            'Content-Type': 'audio/mpeg',
             'Cache-Control': 'no-cache',
-            'X-Fish-Voice-Id': tempVoiceId 
+            'X-Fish-Voice-Id': tempVoiceId
           }
         });
       }
@@ -330,7 +330,7 @@ export async function POST(req: NextRequest) {
 
         const asrFormData = new FormData();
         asrFormData.append("audio", files[0]);
-        
+
         // Optional language hint
         if (data.language) {
           asrFormData.append("language", data.language);
@@ -352,34 +352,78 @@ export async function POST(req: NextRequest) {
       }
 
       case "voice_conversion": {
-        // Voice-to-Voice conversion using a reference voice ID
+        // Two-step Voice-to-Voice: ASR -> TTS
         if (files.length === 0 || !data.voice_id) {
           return NextResponse.json({ error: "Missing audio sample or voice_id" }, { status: 400 });
         }
 
-        const vcFormData = new FormData();
-        vcFormData.append("audio", files[0]);
-        vcFormData.append("reference_id", data.voice_id);
-        
-        // Optional parameters
-        if (data.normalize) vcFormData.append("normalize", data.normalize.toString());
+        console.log(`[VC] Step 1: Transcribing audio... Reference ID: ${data.voice_id}`);
 
-        const vcRes = await fetch(`${FISH_API_ROOT}/v1/voice-conversion`, {
+        // 1. Transcribe (ASR)
+        const asrFormData = new FormData();
+        asrFormData.append("audio", files[0]);
+        if (data.language) asrFormData.append("language", data.language);
+
+        const asrRes = await fetch(`${FISH_API_ROOT}/v1/asr`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${apiKey}` },
-          body: vcFormData,
+          body: asrFormData,
         });
 
-        if (!vcRes.ok) {
-          const errText = await vcRes.text();
-          throw new Error(`Voice Conversion Failed: ${errText}`);
+        if (!asrRes.ok) {
+          const errText = await asrRes.text();
+          console.error(`[VC] ASR Error: ${errText}`);
+          throw new Error(`Transcription failed: ${errText}`);
         }
 
-        const convertedBuffer = await vcRes.arrayBuffer();
-        return new NextResponse(convertedBuffer, {
-          headers: { 
-            'Content-Type': 'audio/mpeg', 
-            'Cache-Control': 'no-cache'
+        const asrData = await asrRes.json();
+        const transcribedText = asrData.text;
+
+        if (!transcribedText || transcribedText.trim() === "") {
+          return NextResponse.json({ error: "Could not extract text from audio" }, { status: 400 });
+        }
+
+        console.log(`[VC] Step 2: Generating speech. Text: "${transcribedText.substring(0, 50)}..."`);
+
+        // 2. Generate Speech (TTS)
+        const ttsPayload = {
+          text: transcribedText,
+          reference_id: data.voice_id,
+          format: "mp3",
+          normalize: true,
+          latency: "normal",
+          temperature: 0.7,
+          top_p: 0.9,
+          prosody: {
+            speed: 1.0,
+            volume: 0.0,
+          }
+        };
+
+        const ttsRes = await fetch(`${FISH_API_ROOT}/v1/tts`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'model': 's2-pro'
+          },
+          body: JSON.stringify(ttsPayload),
+        });
+
+        if (!ttsRes.ok) {
+          const errText = await ttsRes.text();
+          console.error(`[VC] TTS Error: ${errText}`);
+          throw new Error(`Speech generation failed: ${errText}`);
+        }
+
+        const audioBuffer = await ttsRes.arrayBuffer();
+        console.log("[VC] Pipeline Success. Returning audio.");
+
+        return new NextResponse(audioBuffer, {
+          headers: {
+            'Content-Type': 'audio/mpeg',
+            'Cache-Control': 'no-cache',
+            'X-Transcribed-Text': encodeURIComponent(transcribedText)
           }
         });
       }
