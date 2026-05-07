@@ -160,10 +160,9 @@ export async function POST(req: NextRequest) {
           text: data.text,
           reference_id: data.voice_id,
           format: data.format || "mp3",
-          normalize: true,
+          normalize: data.normalize !== undefined ? data.normalize : true,
           latency: "normal",
           temperature: parseFloat(data.temperature || "0.7"),
-          top_p: parseFloat(data.top_p || "0.9"),
           prosody: {
             speed: parseFloat(data.speed || "1.0"),
             volume: parseFloat(data.volume || "0.0"),
@@ -228,6 +227,7 @@ export async function POST(req: NextRequest) {
         formData.append("visibility", "private");
         formData.append("type", "tts");
         formData.append("train_mode", "fast");
+        formData.append("enhance_audio_quality", "true");
 
         if (files.length > 0) {
           for (const file of files) formData.append("voices", file, file.name);
@@ -272,6 +272,7 @@ export async function POST(req: NextRequest) {
         cloneFormData.append("visibility", "private");
         cloneFormData.append("type", "tts");
         cloneFormData.append("train_mode", "fast");
+        cloneFormData.append("enhance_audio_quality", "true");
         cloneFormData.append("voices", files[0], files[0].name);
 
         // If the user provided the transcript of the sample audio, include it to improve matching
@@ -301,13 +302,12 @@ export async function POST(req: NextRequest) {
             text: data.text,
             reference_id: tempVoiceId,
             format: "mp3",
-            normalize: true,
+            normalize: data.normalize !== undefined ? data.normalize : true,
             latency: "normal",
-            temperature: 0.7,
-            top_p: 0.9,
+            temperature: parseFloat(data.temperature || "0.7"),
             prosody: {
-              speed: 1.0,
-              volume: 0.0
+              speed: parseFloat(data.speed || "1.0"),
+              volume: parseFloat(data.volume || "0.0"),
             }
           }),
         });
@@ -393,7 +393,6 @@ export async function POST(req: NextRequest) {
           normalize: true,
           latency: "normal",
           temperature: 0.7,
-          top_p: 0.9,
           prosody: {
             speed: 1.0,
             volume: 0.0,
