@@ -322,6 +322,68 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      case "speech_to_text": {
+        // Automatic Speech Recognition (ASR)
+        if (files.length === 0) {
+          return NextResponse.json({ error: "No audio file provided" }, { status: 400 });
+        }
+
+        const asrFormData = new FormData();
+        asrFormData.append("audio", files[0]);
+        
+        // Optional language hint
+        if (data.language) {
+          asrFormData.append("language", data.language);
+        }
+
+        const asrRes = await fetch(`${FISH_API_ROOT}/v1/asr`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${apiKey}` },
+          body: asrFormData,
+        });
+
+        if (!asrRes.ok) {
+          const errText = await asrRes.text();
+          throw new Error(`ASR Phase Failed: ${errText}`);
+        }
+
+        const asrData = await asrRes.json();
+        return NextResponse.json(asrData);
+      }
+
+      case "voice_conversion": {
+        // Voice-to-Voice conversion using a reference voice ID
+        if (files.length === 0 || !data.voice_id) {
+          return NextResponse.json({ error: "Missing audio sample or voice_id" }, { status: 400 });
+        }
+
+        const vcFormData = new FormData();
+        vcFormData.append("audio", files[0]);
+        vcFormData.append("reference_id", data.voice_id);
+        
+        // Optional parameters
+        if (data.normalize) vcFormData.append("normalize", data.normalize.toString());
+
+        const vcRes = await fetch(`${FISH_API_ROOT}/v1/voice-conversion`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${apiKey}` },
+          body: vcFormData,
+        });
+
+        if (!vcRes.ok) {
+          const errText = await vcRes.text();
+          throw new Error(`Voice Conversion Failed: ${errText}`);
+        }
+
+        const convertedBuffer = await vcRes.arrayBuffer();
+        return new NextResponse(convertedBuffer, {
+          headers: { 
+            'Content-Type': 'audio/mpeg', 
+            'Cache-Control': 'no-cache'
+          }
+        });
+      }
+
       default:
         return NextResponse.json({ error: `Unknown operation: ${op}` }, { status: 400 });
     }
