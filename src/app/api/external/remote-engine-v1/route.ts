@@ -218,9 +218,9 @@ export async function POST(req: NextRequest) {
       }
 
       case "commit_new_entry": {
-        // Voice Cloning (Multipart Upload)
-        if (!data.title || !data.voices || !Array.isArray(data.voices)) {
-          return NextResponse.json({ error: "Missing required fields: title or voices (array)" }, { status: 400 });
+        // Voice Cloning (Supports Multipart Files or JSON URLs)
+        if (!data.title) {
+          return NextResponse.json({ error: "Missing required field: title" }, { status: 400 });
         }
 
         const formData = new FormData();
@@ -229,13 +229,28 @@ export async function POST(req: NextRequest) {
         formData.append("type", "tts");
         formData.append("train_mode", "fast");
 
-        for (let i = 0; i < data.voices.length; i++) {
-          const url = data.voices[i];
-          const voiceRes = await fetch(url);
-          if (!voiceRes.ok) throw new Error(`Failed to download voice sample ${i + 1} from ${url}`);
-          const buffer = await voiceRes.arrayBuffer();
-          const blob = new Blob([buffer], { type: 'audio/mpeg' });
-          formData.append("voices", blob, `sample_${i}.mp3`);
+        // Option 1: Direct File Uploads (Multipart)
+        if (files.length > 0) {
+          for (const file of files) {
+            formData.append("voices", file, file.name);
+          }
+        } 
+        // Option 2: Audio URLs (JSON)
+        else if (data.voices && Array.isArray(data.voices)) {
+          for (let i = 0; i < data.voices.length; i++) {
+            const url = data.voices[i];
+            try {
+              const voiceRes = await fetch(url);
+              if (!voiceRes.ok) throw new Error(`Failed to download voice sample ${i + 1} from ${url}`);
+              const buffer = await voiceRes.arrayBuffer();
+              const blob = new Blob([buffer], { type: 'audio/mpeg' });
+              formData.append("voices", blob, `sample_${i}.mp3`);
+            } catch (err) {
+              console.error(`Error processing voice URL: ${url}`, err);
+            }
+          }
+        } else {
+          return NextResponse.json({ error: "No voice samples provided (upload files or send URLs)" }, { status: 400 });
         }
 
         const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
