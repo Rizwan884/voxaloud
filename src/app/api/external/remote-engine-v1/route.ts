@@ -303,9 +303,12 @@ export async function POST(req: NextRequest) {
             format: "mp3",
             normalize: true,
             latency: "normal",
-            // Lower temperature (0.2) stays much closer to the reference voice
-            temperature: parseFloat(data.temperature || "0.0"), 
-            top_p: parseFloat(data.top_p || "0.0")
+            temperature: 0.7,
+            top_p: 0.9,
+            prosody: {
+              speed: 1.0,
+              volume: 0.0
+            }
           }),
         });
 
