@@ -274,6 +274,11 @@ export async function POST(req: NextRequest) {
         cloneFormData.append("train_mode", "fast");
         cloneFormData.append("voices", files[0], files[0].name);
 
+        // If the user provided the transcript of the sample audio, include it to improve matching
+        if (data.reference_text) {
+            cloneFormData.append("texts", data.reference_text);
+        }
+
         const cloneRes = await fetch(`${FISH_API_ROOT}/model`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${apiKey}` },
@@ -297,7 +302,10 @@ export async function POST(req: NextRequest) {
             reference_id: tempVoiceId,
             format: "mp3",
             normalize: true,
-            latency: "normal"
+            latency: "normal",
+            // Lower temperature (0.2) stays much closer to the reference voice
+            temperature: parseFloat(data.temperature || "0.2"), 
+            top_p: parseFloat(data.top_p || "0.9")
           }),
         });
 
@@ -306,7 +314,7 @@ export async function POST(req: NextRequest) {
           headers: { 
             'Content-Type': 'audio/mpeg', 
             'Cache-Control': 'no-cache',
-            'X-Fish-Voice-Id': tempVoiceId
+            'X-Fish-Voice-Id': tempVoiceId 
           }
         });
       }
