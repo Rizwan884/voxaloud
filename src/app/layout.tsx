@@ -4,6 +4,7 @@ import "./globals.css";
 import AdBlockDetector from "@/components/AdBlockDetector";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Schema from "@/components/Schema";
 
 export const metadata: Metadata = {
   title: "Fish Audio Online - Premium AI TTS",
@@ -51,6 +52,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <Schema />
         <AdBlockDetector />
         <Navbar />
         <main className="flex-1">
