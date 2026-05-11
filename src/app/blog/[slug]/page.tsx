@@ -32,8 +32,37 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.metadata.title,
+    "description": post.metadata.excerpt,
+    "image": post.metadata.coverImage ? `https://fishaudio.online${post.metadata.coverImage}` : undefined,
+    "datePublished": post.metadata.date,
+    "author": {
+      "@type": "Organization",
+      "name": post.metadata.author,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Fish Audio Online",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fishaudio.online/branding/logo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://fishaudio.online/blog/${params.slug}`
+    }
+  };
+
   return (
     <div className="min-h-screen bg-surface">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <main className="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-12">
         <Link 
           href="/blog" 
