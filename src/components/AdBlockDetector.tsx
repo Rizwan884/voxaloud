@@ -44,7 +44,7 @@ export default function AdBlockDetector() {
         </div>
         <h2 className="text-2xl font-bold font-display text-ink mb-4">Ad Blocker Detected</h2>
         <p className="text-muted mb-8 leading-relaxed">
-          VoxaLoud is 100% free because we show ads. Please support us by pausing your ad blocker or whitelisting our site to continue generating high-quality AI voices.
+          Fish Audio Online is 100% free because we show ads. Please support us by pausing your ad blocker or whitelisting our site to continue generating high-quality AI voices.
         </p>
         <button 
           onClick={() => window.location.reload()} 

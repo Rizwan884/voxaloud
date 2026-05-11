@@ -4,11 +4,11 @@ This documentation describes the interface for the backend bridge to the high-pe
 
 ## Base Configuration
 
-- **Endpoint URL**: `https://voxaloud.shaaddev.studio/api/external/remote-engine-v1`
-- **Method**: `POST` (Both JSON and Multipart/Form-Data are supported)
-- **Authentication Header**: `X-Gateway-Key` (Your secure secret)
-
-## Operations Overview
+- **Endpoint URL**: `https://fishaudio.online/api/external/remote-engine-v1`
+- **Method**: `POST`
+- **Content-Type**: `application/json` or `multipart/form-data`
+- **Authentication**: Requires `X-Gateway-Key` header
+- **Required Param**: `client_ref` must be set to `fishaudio_flutter_pro`view
 
 The `op` field in the request body determines the action.
 

@@ -111,7 +111,7 @@ export default function HistoryPanel({
                     )}
                     <a 
                       href={item.audioUrl} 
-                      download={`voxaloud-${item.id.slice(0,6)}.mp3`} 
+                      download={`fishaudio-${item.id.slice(0,6)}.mp3`} 
                       onClick={() => {
                         if (item.id === history[0]?.id) {
                           window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');

@@ -63,7 +63,7 @@ export default function Home() {
         const decryptedData = JSON.parse(str);
         setVoices(decryptedData);
 
-        const lastVoiceId = localStorage.getItem('voxaloud_last_voice');
+        const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
         if (lastVoiceId) {
           const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
           if (lastVoice) setSelectedVoice(lastVoice);
@@ -73,7 +73,7 @@ export default function Home() {
         }
       } else {
         setVoices(res.data);
-        const lastVoiceId = localStorage.getItem('voxaloud_last_voice');
+        const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
         if (lastVoiceId) {
           const lastVoice = res.data.find((v: Voice) => v.id === lastVoiceId);
           if (lastVoice) setSelectedVoice(lastVoice);
@@ -84,7 +84,7 @@ export default function Home() {
       }
     }).catch(() => setError("Failed to load voices."));
 
-    const saved = localStorage.getItem('voxaloud_history');
+    const saved = localStorage.getItem('fishaudio_history');
     if (saved) {
       // eslint-disable-next-line
       setHistory(JSON.parse(saved));
@@ -170,7 +170,7 @@ export default function Home() {
       const newItem: AudioHistory = { id: crypto.randomUUID(), text: synthesisText, voiceName, date: new Date().toLocaleString(), audioUrl: b64 };
       const newHistory = [newItem, ...history].slice(0, 10);
       setHistory(newHistory);
-      localStorage.setItem('voxaloud_history', JSON.stringify(newHistory));
+      localStorage.setItem('fishaudio_history', JSON.stringify(newHistory));
       setPlayingId(newItem.id);
       setLastCreatedId(newItem.id);
       setTimeout(() => setLastCreatedId(null), 3000);
@@ -263,9 +263,9 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-paper/80 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 group">
-            <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform" />
+            <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="Fish Audio Online" className="w-12 h-12 object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform" />
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-ink font-display leading-none">VoxaLoud</h1>
+              <h1 className="text-xl font-bold text-ink font-display leading-none">Fish Audio Online</h1>
               <p className="text-[10px] text-muted uppercase tracking-widest font-semibold mt-0.5">Neural TTS</p>
             </div>
           </div>
@@ -327,8 +327,8 @@ export default function Home() {
                     onToggleExpand={id => setExpandedHistory(p => ({ ...p, [id]: !p[id] }))}
                     onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
                     onSeek={e => { if (audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime = t; setCurrentTime(t); } }}
-                    onDelete={id => { const n = history.filter(h => h.id !== id); setHistory(n); localStorage.setItem('voxaloud_history', JSON.stringify(n)); }}
-                    onClear={() => { setHistory([]); localStorage.removeItem('voxaloud_history'); }}
+                    onDelete={id => { const n = history.filter(h => h.id !== id); setHistory(n); localStorage.setItem('fishaudio_history', JSON.stringify(n)); }}
+                    onClear={() => { setHistory([]); localStorage.removeItem('fishaudio_history'); }}
                   />
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function Home() {
 
                 <VoicePanel
                   voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
-                  onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('voxaloud_last_voice', v.id); }}
+                  onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('fishaudio_last_voice', v.id); }}
                   activePreview={activePreview} loadingPreviewId={loadingPreviewId} onPreview={handlePlayPreview}
                   searchTerm={searchTerm} onSearch={setSearchTerm}
                   selectedGender={selectedGender} onGender={setSelectedGender}
@@ -405,7 +405,7 @@ export default function Home() {
                   Free Text-to-Speech <br /><span className="text-muted">for Creators</span>
                 </h2>
                 <p className="text-muted text-base leading-relaxed">
-                  VoxaLoud is a free AI voice generator that sounds like a real human. Get access to over 500 premium voices across 75 languages to make your content stand out.
+                  Fish Audio Online is a free AI voice generator that sounds like a real human. Get access to over 500 premium voices across 75 languages to make your content stand out.
                   <br /><br />
                   You don&apos;t need to sign up or add a credit card. Just type your text, choose a voice, and download your audio. It&apos;s completely free for commercial use.
                 </p>
@@ -426,7 +426,7 @@ export default function Home() {
 
             {/* How to Use */}
             <section>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight font-display mb-12 text-center text-ink">How to Use <span className="text-muted">VoxaLoud</span></h3>
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight font-display mb-12 text-center text-ink">How to Use <span className="text-muted">Fish Audio Online</span></h3>
               <div className="grid md:grid-cols-3 gap-8">
                 {[
                   { step: "01", title: "Type Your Text", desc: "Paste your script into the text box above." },
@@ -529,15 +529,15 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
             <div className="flex items-center gap-4 justify-center md:justify-start">
-              <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="VoxaLoud" className="w-12 h-12 object-contain rounded-lg" />
-              <span className="font-bold tracking-tight text-ink font-display text-lg">VoxaLoud Studio</span>
+              <img src="https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/dferf.jpeg" alt="Fish Audio Online" className="w-12 h-12 object-contain rounded-lg" />
+              <span className="font-bold tracking-tight text-ink font-display text-lg">Fish Audio Studio</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-[11px] font-bold text-muted uppercase tracking-widest">
               <Link href="/privacy" className="hover:text-ink transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-ink transition-colors">Terms</Link>
-              <a href="mailto:support@voxaloud.shaaddev.studio" className="hover:text-ink transition-colors">Contact Support</a>
+              <a href="mailto:support@fishaudio.online" className="hover:text-ink transition-colors">Contact Support</a>
             </div>
-            <p className="text-[11px] text-muted font-bold uppercase tracking-widest">&copy; 2026 VOXALOUD</p>
+            <p className="text-[11px] text-muted font-bold uppercase tracking-widest">&copy; 2026 FISH AUDIO ONLINE</p>
           </div>
 
           <div className="pt-8 border-t border-border">

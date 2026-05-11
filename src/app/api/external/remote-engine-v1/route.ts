@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 /**
- * VOXALOUD REMOTE ENGINE GATEWAY (V1)
+ * FISH AUDIO ONLINE REMOTE ENGINE GATEWAY (V1)
  * 
  * This bridge provides secure access to Fish Audio services for the Flutter application.
  * It handles authentication, parameter mapping, and local data retrieval.
@@ -44,7 +44,7 @@ export async function GET() {
   return NextResponse.json({
     status: "online",
     version: "1.2.1",
-    service: "Voxaloud Engine Bridge",
+    service: "Fish Audio Engine Bridge",
     health_check: {
       api_key_configured: !!process.env.FISH_AUDIO_API_KEY,
       gateway_secret_set: !!process.env.APP_INTERNAL_SECRET,
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Security Checks
     if (!op) return NextResponse.json({ error: "Missing operation (op)" }, { status: 400 });
-    if (!client_ref || client_ref !== process.env.ALLOWED_APP_ID) {
+    if (!client_ref || client_ref !== "fishaudio_flutter_pro") {
       console.warn(`Forbidden access attempt: Invalid client_ref (${client_ref})`);
       return NextResponse.json({ error: "Forbidden: Invalid Client Reference" }, { status: 403 });
     }
@@ -294,7 +294,7 @@ export async function POST(req: NextRequest) {
 
         const cloneData = await cloneRes.json();
         const tempVoiceId = cloneData._id || cloneData.id;
-        
+
         if (!tempVoiceId) {
           console.error("[InstantTTS] Clone succeeded but no ID returned", cloneData);
           throw new Error("Failed to retrieve Voice ID from cloning phase");

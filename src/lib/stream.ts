@@ -1,8 +1,9 @@
-// Advanced data stream protection for VoxaLoud
+// Advanced data stream protection for Fish Audio Online
 // Tethers decryption to the official domain
 
-const _K = [0x76, 0x6f, 0x78, 0x61, 0x6c, 0x6f, 0x75, 0x64]; // "voxaloud"
-const _D = "shaaddev.studio";
+const _K = [0x66, 0x69, 0x73, 0x68, 0x61, 0x75, 0x64, 0x69, 0x6f]; // "fishaudio"
+
+const _D = ["shaaddev.studio", "fishaudio.online"];
 
 export function formatStream(data: string | Buffer): string {
   const buf = typeof data === 'string' ? Buffer.from(data, 'utf-8') : (Buffer.isBuffer(data) ? data : Buffer.from(data as any));
@@ -22,7 +23,7 @@ export function formatStream(data: string | Buffer): string {
 export function parseStream(b64: string, asString: boolean = false): unknown {
   if (typeof window !== 'undefined') {
     const h = window.location.hostname;
-    if (!h.includes(_D) && !h.includes('localhost') && !h.includes('127.0.0.1')) {
+    if (!_D.some(d => h.includes(d)) && !h.includes('localhost') && !h.includes('127.0.0.1')) {
       return asString ? "[]" : new Uint8Array();
     }
   }

@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
           <section className="space-y-4">
             <h2 className="text-2xl font-bold text-ink font-display">1. Introduction</h2>
             <p>
-              Welcome to VoxaLoud. Your privacy is critically important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our AI Text-to-Speech service.
+              Welcome to Fish Audio Online. Your privacy is critically important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our AI Text-to-Speech service.
             </p>
           </section>
 
@@ -59,7 +59,7 @@ export default function PrivacyPolicy() {
           <section className="space-y-4">
             <h2 className="text-2xl font-bold text-ink font-display">5. Cookies & Local Storage</h2>
             <p>
-              VoxaLoud uses Local Storage to remember your preferences (such as the last voice used) and to keep a record of your recent audio generations. You can clear this data at any time through your browser settings.
+              Fish Audio Online uses Local Storage to remember your preferences (such as the last voice used) and to keep a record of your recent audio generations. You can clear this data at any time through your browser settings.
             </p>
           </section>
 

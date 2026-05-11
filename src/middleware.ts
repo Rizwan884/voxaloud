@@ -9,10 +9,10 @@ export function middleware(request: NextRequest) {
 
     // Define allowed domains (including localhost for development)
     const allowedDomains = [
-      'https://voxaloud-theta.vercel.app',
-      'https://voxaloud.shaaddev.studio/',
+      'https://fishaudio.online',
       'http://localhost:3000'
     ];
+
 
     const isAllowedOrigin = allowedDomains.includes(origin);
     const isAllowedReferer = allowedDomains.some(domain => referer.startsWith(domain));
