@@ -1,53 +1,79 @@
-import { constructMetadata } from '@/lib/metadata';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { getBlogPosts } from '@/lib/blog';
 import Link from 'next/link';
+import { Calendar, User, Tag } from 'lucide-react';
+import { constructMetadata } from '@/lib/metadata';
 
 export const metadata = constructMetadata({
-  title: 'AI Voice & TTS Blog',
-  description: 'Stay updated with the latest trends in AI voice generation, text-to-speech technology, and creative content guides.',
+  title: 'Blog | AI Voice Insights & Guides',
+  description: 'Stay updated with the latest trends in AI voice generation, neural speech synthesis, and digital content creation.',
   path: '/blog',
 });
 
-const posts = [
-  { id: 1, title: 'The Future of Neural Text-to-Speech', date: 'May 10, 2026', category: 'Technology', desc: 'Exploring the latest breakthroughs in high-fidelity voice synthesis and emotional intelligence in AI voices.' },
-  { id: 2, title: 'How to Choose the Right AI Voice for Your Brand', date: 'May 05, 2026', category: 'Marketing', desc: 'A guide to matching your brand personality with the perfect AI narrator for advertisements and social media.' },
-  { id: 3, title: 'Optimizing TTS for YouTube and Podcasts', date: 'April 28, 2026', category: 'Guides', desc: 'Pro tips on using AI voices to scale your content production while maintaining high engagement rates.' }
-];
+export default async function BlogIndex() {
+  const posts = await getBlogPosts();
 
-export default function BlogPage() {
   return (
     <div className="min-h-screen bg-surface">
-      <main className="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-16">
-        <header className="text-center space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold font-display text-ink">
-            Fish Audio Blog
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16">
+        <header className="text-center space-y-4">
+          <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
+            Our <span className="text-muted">Blog.</span>
           </h1>
-          <p className="text-xl text-muted max-w-2xl mx-auto">
-            Insights, guides, and updates from the world of AI voice generation.
+          <p className="text-muted/80 max-w-2xl mx-auto font-medium">
+            Expert insights into the world of neural speech synthesis and creative technology.
           </p>
         </header>
 
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <div key={post.id} className="card-surface p-8 group cursor-pointer hover:border-ink transition-all">
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-ink bg-surface px-3 py-1 rounded-full border border-border">
-                  {post.category}
-                </span>
-                <span className="text-xs text-muted font-medium">{post.date}</span>
+            <Link 
+              key={post.slug} 
+              href={`/blog/${post.slug}`}
+              className="flex flex-col h-full card hover:border-ink/20 transition-all group overflow-hidden"
+            >
+              <div className="aspect-video bg-ink/5 relative overflow-hidden">
+                {post.coverImage && (
+                  <img 
+                    src={post.coverImage} 
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                )}
               </div>
-              <h2 className="text-2xl font-bold text-ink font-display mb-3 group-hover:text-ink transition-colors">
-                {post.title}
-              </h2>
-              <p className="text-muted text-sm leading-relaxed mb-6">
-                {post.desc}
-              </p>
-              <div className="flex items-center gap-2 text-ink font-bold text-sm">
-                Read Article <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <div className="p-8 flex-1 flex flex-col space-y-4">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted/60">
+                  <span className="flex items-center gap-1">
+                    <Calendar size={12} />
+                    {post.date}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <User size={12} />
+                    {post.author}
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold font-display text-ink leading-tight group-hover:text-ink/80 transition-colors">
+                  {post.title}
+                </h2>
+                <p className="text-sm text-muted/70 line-clamp-3 font-medium leading-relaxed">
+                  {post.excerpt}
+                </p>
+                <div className="pt-4 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <span key={tag} className="px-2 py-1 rounded bg-ink/5 text-[9px] font-bold uppercase tracking-wider text-muted">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
+
+        {posts.length === 0 && (
+          <div className="text-center py-24 bg-ink/5 rounded-[3rem] border border-dashed border-border">
+            <p className="text-muted font-display font-black uppercase tracking-widest">Coming Soon.</p>
+          </div>
+        )}
       </main>
     </div>
   );
