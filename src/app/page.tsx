@@ -7,8 +7,11 @@ import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
 import FAQ from '@/components/sections/FAQ';
 import AdBanner from '@/components/AdBanner';
+import { getVoices } from '@/lib/voices';
 
-export default function Home() {
+export default async function Home() {
+  const initialVoices = await getVoices();
+
   return (
     <div className="min-h-screen bg-surface selection:bg-ink/10 flex flex-col">
       <div className="flex-1 space-y-24 md:space-y-32 pb-20">
@@ -17,7 +20,7 @@ export default function Home() {
         <main className="max-w-6xl w-full mx-auto px-4 md:px-6 py-8 md:py-12 dot-grid">
            <div className="space-y-8">
               <Hero />
-              <StudioClient />
+              <StudioClient initialVoices={initialVoices} />
            </div>
         </main>
 

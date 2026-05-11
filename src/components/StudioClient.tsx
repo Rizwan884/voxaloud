@@ -16,9 +16,10 @@ interface AudioHistory { id: string; text: string; voiceName: string; date: stri
 
 const CHAR_LIMIT = 10000;
 
-export default function StudioClient() {
-  const [voices, setVoices] = useState<Voice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+export default function StudioClient({ initialVoices = [] }: { initialVoices?: Voice[] }) {
+  const [voices, setVoices] = useState<Voice[]>(initialVoices);
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(initialVoices[0] || null);
+  const [isLoading, setIsLoading] = useState(initialVoices.length === 0);
 
   // Voice filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,36 +57,40 @@ export default function StudioClient() {
 
   // Loaders
   useEffect(() => {
-    axios.get('/api/voices').then(res => {
-      if (res.data._data) {
-        const str = parseStream(res.data._data, true) as string;
-        const decryptedData = JSON.parse(str);
+    const fetchVoices = async () => {
+      try {
+        const res = await axios.get('/api/voices');
+        let decryptedData: Voice[] = [];
+        
+        if (res.data._data) {
+          const str = parseStream(res.data._data, true) as string;
+          decryptedData = JSON.parse(str);
+        } else {
+          decryptedData = res.data;
+        }
+
         setVoices(decryptedData);
+        setIsLoading(false);
 
         const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
         if (lastVoiceId) {
           const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
           if (lastVoice) setSelectedVoice(lastVoice);
-          else if (decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
-        } else if (decryptedData.length > 0) {
+          else if (!selectedVoice && decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
+        } else if (!selectedVoice && decryptedData.length > 0) {
           setSelectedVoice(decryptedData[0]);
         }
-      } else {
-        setVoices(res.data);
-        const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
-        if (lastVoiceId) {
-          const lastVoice = res.data.find((v: Voice) => v.id === lastVoiceId);
-          if (lastVoice) setSelectedVoice(lastVoice);
-          else if (res.data.length > 0) setSelectedVoice(res.data[0]);
-        } else if (res.data.length > 0) {
-          setSelectedVoice(res.data[0]);
-        }
+      } catch (err) {
+        console.error("Failed to load voices:", err);
+        if (voices.length === 0) setError("Failed to load voices.");
+        setIsLoading(false);
       }
-    }).catch(() => setError("Failed to load voices."));
+    };
+
+    fetchVoices();
 
     const saved = localStorage.getItem('fishaudio_history');
     if (saved) {
-      // eslint-disable-next-line
       setHistory(JSON.parse(saved));
     }
   }, []);
@@ -265,77 +270,75 @@ export default function StudioClient() {
       )}
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
-          {/* Left Col */}
-          <div className="space-y-8 min-w-0">
-            <EditorPanel
-              text={text} setText={setText} pitch={pitch} setPitch={setPitch} rate={rate} setRate={setRate}
-              selectedVoice={selectedVoice} isProcessing={isProcessing} progress={progress} onGenerate={handleGenerateClick}
-              charLimit={CHAR_LIMIT}
-            />
+        {/* Left Col */}
+        <div className="space-y-8 min-w-0">
+          <EditorPanel
+            text={text} setText={setText} pitch={pitch} setPitch={setPitch} rate={rate} setRate={setRate}
+            selectedVoice={selectedVoice} isProcessing={isProcessing} progress={progress} onGenerate={handleGenerateClick}
+            charLimit={CHAR_LIMIT}
+          />
 
-            <div className="hidden md:block">
-              <AdBanner type="468x60" />
-            </div>
-            <div className="md:hidden">
-              <AdBanner type="320x50" />
-            </div>
-
-            <div className="pt-4">
-              <HistoryPanel
-                history={history} playingId={playingId} lastCreatedId={lastCreatedId}
-                currentTime={currentTime} duration={duration} expandedHistory={expandedHistory}
-                isAudioPlaying={isAudioPlaying}
-                onToggleExpand={id => setExpandedHistory(p => ({ ...p, [id]: !p[id] }))}
-                onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
-                onSeek={e => { if (audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime = t; setCurrentTime(t); } }}
-                onDelete={id => { const n = history.filter(h => h.id !== id); setHistory(n); localStorage.setItem('fishaudio_history', JSON.stringify(n)); }}
-                onClear={() => { setHistory([]); localStorage.removeItem('fishaudio_history'); }}
-              />
-            </div>
+          <div className="hidden md:block">
+            <AdBanner type="468x60" />
+          </div>
+          <div className="md:hidden">
+            <AdBanner type="320x50" />
           </div>
 
-          {/* Right Col */}
-          <div className="space-y-6 lg:sticky lg:top-24">
-            <div className="hidden lg:block">
-              <AdBanner type="300x250" />
-            </div>
-
-            <VoicePanel
-              voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice}
-              onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('fishaudio_last_voice', v.id); }}
-              activePreview={activePreview} loadingPreviewId={loadingPreviewId} onPreview={handlePlayPreview}
-              searchTerm={searchTerm} onSearch={setSearchTerm}
-              selectedGender={selectedGender} onGender={setSelectedGender}
-              selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
-              selectedCountry={selectedCountry} onCountry={setSelectedCountry}
-              uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
+          <div className="pt-4">
+            <HistoryPanel
+              history={history} playingId={playingId} lastCreatedId={lastCreatedId}
+              currentTime={currentTime} duration={duration} expandedHistory={expandedHistory}
+              isAudioPlaying={isAudioPlaying}
+              onToggleExpand={id => setExpandedHistory(p => ({ ...p, [id]: !p[id] }))}
+              onPlayPause={handlePlayPauseHistory} onStop={() => { audioRef.current?.pause(); setPlayingId(null); }}
+              onSeek={e => { if (audioRef.current) { const t = parseFloat(e.target.value); audioRef.current.currentTime = t; setCurrentTime(t); } }}
+              onDelete={id => { const n = history.filter(h => h.id !== id); setHistory(n); localStorage.setItem('fishaudio_history', JSON.stringify(n)); }}
+              onClear={() => { setHistory([]); localStorage.removeItem('fishaudio_history'); }}
             />
+          </div>
+        </div>
 
-            {/* Promo Card w/ Lottie */}
-            <div className="card-surface p-6 overflow-hidden relative group">
-              <div className="absolute right-[-40px] top-[-40px] w-48 h-48 opacity-10 group-hover:opacity-20 transition-opacity">
-                <DotLottieReact src="https://lottie.host/80e7d7db-e696-4835-93df-f40c7e52d6a7/2LhZ1t72X3.lottie" loop autoplay />
-              </div>
-              <ShieldCheck size={24} className="text-ink mb-4 relative z-10" />
-              <h4 className="text-lg font-bold text-ink font-display mb-2 relative z-10">Free for Creators</h4>
-              <p className="text-sm text-muted relative z-10 leading-relaxed">
-                You own the audio you make. Use it safely on YouTube, TikTok, or podcasts without any copyright strikes.
-              </p>
-            </div>
+        {/* Right Col */}
+        <div className="space-y-6 lg:sticky lg:top-24">
+          <div className="hidden lg:block">
+            <AdBanner type="300x250" />
+          </div>
 
-            <div className="hidden lg:block">
-              <AdBanner type="160x600" />
+          <VoicePanel
+            voices={voices} filteredVoices={filteredVoices} selectedVoice={selectedVoice} isLoading={isLoading}
+            onSelectVoice={(v) => { setSelectedVoice(v); localStorage.setItem('fishaudio_last_voice', v.id); }}
+            activePreview={activePreview} loadingPreviewId={loadingPreviewId} onPreview={handlePlayPreview}
+            searchTerm={searchTerm} onSearch={setSearchTerm}
+            selectedGender={selectedGender} onGender={setSelectedGender}
+            selectedLanguage={selectedLanguage} onLanguage={setSelectedLanguage}
+            selectedCountry={selectedCountry} onCountry={setSelectedCountry}
+            uniqueLanguages={uniqueLanguages} uniqueCountries={uniqueCountries}
+          />
+
+          {/* Promo Card w/ Lottie */}
+          <div className="card-surface p-6 overflow-hidden relative group">
+            <div className="absolute right-[-40px] top-[-40px] w-48 h-48 opacity-10 group-hover:opacity-20 transition-opacity">
+              <DotLottieReact src="https://lottie.host/80e7d7db-e696-4835-93df-f40c7e52d6a7/2LhZ1t72X3.lottie" loop autoplay />
             </div>
+            <ShieldCheck size={24} className="text-ink mb-4 relative z-10" />
+            <h4 className="text-lg font-bold text-ink font-display mb-2 relative z-10">Free for Creators</h4>
+            <p className="text-sm text-muted relative z-10 leading-relaxed">
+              You own the audio you make. Use it safely on YouTube, TikTok, or podcasts without any copyright strikes.
+            </p>
+          </div>
+
+          <div className="hidden lg:block">
+            <AdBanner type="160x600" />
           </div>
         </div>
       </div>
-    </>
-  );
+
       <AnimatePresence>
         {showCaptcha && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-ink/20 backdrop-blur-sm" onClick={() => setShowCaptcha(false)} />
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="card w-full max-w-sm relative z-10 p-6 shadow-2xl">
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="card w-full max-sm relative z-10 p-6 shadow-2xl">
               {!isProcessing && <button onClick={() => setShowCaptcha(false)} className="absolute top-4 right-4 text-muted hover:text-ink"><X size={20} /></button>}
 
               {!isProcessing && !showAdNotice ? (

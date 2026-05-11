@@ -8,6 +8,7 @@ interface Props {
   voices: Voice[];
   filteredVoices: Voice[];
   selectedVoice: Voice | null;
+  isLoading: boolean;
   onSelectVoice: (v: Voice) => void;
   activePreview: string | null;
   loadingPreviewId: string | null;
@@ -25,7 +26,7 @@ interface Props {
 }
 
 export default function VoicePanel({
-  voices, filteredVoices, selectedVoice, onSelectVoice,
+  voices, filteredVoices, selectedVoice, isLoading, onSelectVoice,
   activePreview, loadingPreviewId, onPreview, searchTerm, onSearch,
   selectedGender, onGender, selectedLanguage, onLanguage,
   selectedCountry, onCountry, uniqueLanguages, uniqueCountries
@@ -40,7 +41,7 @@ export default function VoicePanel({
           </div>
           <div>
             <p className="text-sm font-semibold text-ink font-display">Voice Library</p>
-            <p className="text-[11px] text-muted">{voices.length} voices</p>
+            <p className="text-[11px] text-muted">{isLoading && voices.length === 0 ? 'Loading...' : `${voices.length} voices`}</p>
           </div>
         </div>
       </div>
@@ -92,44 +93,57 @@ export default function VoicePanel({
 
       {/* Voice list */}
       <div className="overflow-y-auto max-h-[380px] divide-y divide-border">
-        {filteredVoices.length === 0 && (
-          <p className="text-center text-muted text-sm py-10">No voices found.</p>
-        )}
-        {filteredVoices.map(voice => {
-          const isSelected = selectedVoice?.id === voice.id;
-          const isPreviewing = activePreview === voice.id;
-          return (
-            <div
-              key={voice.id}
-              onClick={() => onSelectVoice(voice)}
-              className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors group ${isSelected ? 'bg-ink text-paper' : 'hover:bg-surface'}`}
-            >
+        {isLoading && voices.length === 0 ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between px-4 py-3 animate-pulse">
               <div className="flex items-center gap-3 min-w-0">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0 transition-all ${isSelected ? 'bg-paper/15' : 'bg-surface-2 text-ink group-hover:bg-surface'}`}>
-                  {isSelected ? <Check size={14} className="text-paper" /> : (voice.flag || voice.name.slice(0,2).toUpperCase())}
-                </div>
-                <div className="min-w-0">
-                  <p className={`text-[13px] font-semibold truncate ${isSelected ? 'text-paper' : 'text-ink'}`}>{voice.name}</p>
-                  <p className={`text-[11px] truncate ${isSelected ? 'text-paper/60' : 'text-muted'}`}>
-                    {voice.language} · {voice.country} · {voice.gender}
-                  </p>
+                <div className="w-8 h-8 rounded-lg bg-surface-2 shrink-0" />
+                <div className="space-y-2">
+                  <div className="h-3 w-24 bg-surface-2 rounded" />
+                  <div className="h-2 w-32 bg-surface-2 rounded" />
                 </div>
               </div>
-              <button
-                onClick={e => { e.stopPropagation(); onPreview(voice); }}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${isPreviewing ? (isSelected ? 'bg-paper/20' : 'bg-ink text-paper') : (isSelected ? 'hover:bg-paper/10' : 'hover:bg-surface-2')}`}
-              >
-                {loadingPreviewId === voice.id ? (
-                  <Loader2 size={13} className={`animate-spin ${isSelected ? 'text-white' : 'text-ink'}`} />
-                ) : isPreviewing ? (
-                  <Pause size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-ink'} />
-                ) : (
-                  <Play size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-muted'} />
-                )}
-              </button>
             </div>
-          );
-        })}
+          ))
+        ) : filteredVoices.length === 0 ? (
+          <p className="text-center text-muted text-sm py-10">No voices found.</p>
+        ) : (
+          filteredVoices.map(voice => {
+            const isSelected = selectedVoice?.id === voice.id;
+            const isPreviewing = activePreview === voice.id;
+            return (
+              <div
+                key={voice.id}
+                onClick={() => onSelectVoice(voice)}
+                className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors group ${isSelected ? 'bg-ink text-paper' : 'hover:bg-surface'}`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0 transition-all ${isSelected ? 'bg-paper/15' : 'bg-surface-2 text-ink group-hover:bg-surface'}`}>
+                    {isSelected ? <Check size={14} className="text-paper" /> : (voice.flag || voice.name.slice(0,2).toUpperCase())}
+                  </div>
+                  <div className="min-w-0">
+                    <p className={`text-[13px] font-semibold truncate ${isSelected ? 'text-paper' : 'text-ink'}`}>{voice.name}</p>
+                    <p className={`text-[11px] truncate ${isSelected ? 'text-paper/60' : 'text-muted'}`}>
+                      {voice.language} · {voice.country} · {voice.gender}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={e => { e.stopPropagation(); onPreview(voice); }}
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${isPreviewing ? (isSelected ? 'bg-paper/20' : 'bg-ink text-paper') : (isSelected ? 'hover:bg-paper/10' : 'hover:bg-surface-2')}`}
+                >
+                  {loadingPreviewId === voice.id ? (
+                    <Loader2 size={13} className={`animate-spin ${isSelected ? 'text-white' : 'text-ink'}`} />
+                  ) : isPreviewing ? (
+                    <Pause size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-ink'} />
+                  ) : (
+                    <Play size={13} fill="currentColor" className={isSelected ? 'text-paper' : 'text-muted'} />
+                  )}
+                </button>
+              </div>
+            );
+          })
+        )}
       </div>
       
       {/* Inline Ad */}
