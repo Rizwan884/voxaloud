@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import AdBlockDetector from "@/components/AdBlockDetector";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Fish Audio Online - Premium AI TTS",
@@ -50,7 +52,11 @@ export default function RootLayout({
       </head>
       <body>
         <AdBlockDetector />
-        {children}
+        <Navbar />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
