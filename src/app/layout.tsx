@@ -50,6 +50,9 @@ export const metadata: Metadata = {
     description: "Experience professional-grade text-to-speech conversion with complete commercial freedom.",
     images: ["/branding/og-image.png"],
   },
+  verification: {
+    google: "AF0rsqXRbBlfo1k4uxTHEIkPfOD4IJM_GS9sNtgXXFM",
+  },
 };
 
 export default function RootLayout({
