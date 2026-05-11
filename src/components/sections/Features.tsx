@@ -1,20 +1,50 @@
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Zap, Mic2, Download, Languages, UserCheck } from 'lucide-react';
 
 export default function Features() {
+  const features = [
+    { 
+      title: "Commercial Freedom", 
+      desc: "Full rights to your generated audio. Use it for YouTube, podcasts, ads, or any business project without licensing worries.",
+      icon: ShieldCheck
+    },
+    { 
+      title: "Instant Generation", 
+      desc: "Powered by advanced neural networks, our engine processes thousands of characters in seconds with zero latency.",
+      icon: Zap
+    },
+    { 
+      title: "Studio Quality", 
+      desc: "Export high-fidelity MP3 files at 44.1kHz. Perfect for professional content production and high-end video editing.",
+      icon: Mic2
+    },
+    { 
+      title: "Global Diversity", 
+      desc: "Access 500+ premium voices across 75+ languages and regional accents. Reach a global audience with localized content.",
+      icon: Languages
+    },
+    { 
+      title: "No Strings Attached", 
+      desc: "Completely anonymous usage. No sign-ups, no subscriptions, and no hidden fees. Just open and generate.",
+      icon: UserCheck
+    },
+    { 
+      title: "Easy Integration", 
+      desc: "Download and use your audio files instantly. Compatible with all major video editors and publishing platforms.",
+      icon: Download
+    }
+  ];
+
   return (
     <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[
-        { title: "Use Anywhere", desc: "No copyright strikes. Use your audio for commercial projects safely." },
-        { title: "No Sign Up", desc: "Start generating right away. We don't ask for your email or credit card." },
-        { title: "Custom Voices", desc: "Easily adjust the pitch and speed to get the exact tone you want." },
-        { title: "High Quality Audio", desc: "Download clear, professional MP3 files ready for your video or podcast." },
-        { title: "Global Accents", desc: "Create voiceovers in over 75 languages with natural local accents." },
-        { title: "Human Sounding", desc: "Our AI voices breathe and pause just like real people do." }
-      ].map((feature, i) => (
-        <div key={i} className="p-6 md:p-8 card hover:border-ink/20 transition-colors flex flex-col gap-3">
-          <ShieldCheck size={20} className="text-ink" />
-          <h4 className="text-base font-bold font-display text-ink">{feature.title}</h4>
-          <p className="text-sm text-muted leading-relaxed">{feature.desc}</p>
+      {features.map((feature, i) => (
+        <div key={i} className="p-8 card hover:border-ink/20 transition-all duration-300 flex flex-col gap-4 group">
+          <div className="w-10 h-10 rounded-xl bg-ink/5 flex items-center justify-center text-ink group-hover:bg-ink group-hover:text-paper transition-colors duration-300">
+            <feature.icon size={20} />
+          </div>
+          <div className="space-y-2">
+            <h4 className="text-lg font-bold font-display text-ink">{feature.title}</h4>
+            <p className="text-sm text-muted/80 leading-relaxed">{feature.desc}</p>
+          </div>
         </div>
       ))}
     </section>

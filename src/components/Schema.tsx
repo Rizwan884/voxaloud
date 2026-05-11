@@ -9,7 +9,7 @@ export default function Schema() {
     "logo": "https://fishaudio.online/branding/logo.png",
     "sameAs": [
       "https://twitter.com/fishaudio",
-      "https://github.com/Mob884"
+      "https://github.com/rizwan884"
     ]
   };
 

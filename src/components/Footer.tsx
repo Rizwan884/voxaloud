@@ -49,10 +49,10 @@ export default function Footer() {
               <Link href="https://twitter.com/fishaudio" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
                 <Globe size={16} className="group-hover:scale-110 transition-transform" />
               </Link>
-              <Link href="https://github.com/Mob884" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
+              <Link href="https://github.com/rizwan884" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
                 <Code size={16} className="group-hover:scale-110 transition-transform" />
               </Link>
-              <Link href="mailto:support@fishaudio.online" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
+              <Link href="mailto:rizwanrasheed046@gmail.com" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
                 <Mail size={16} className="group-hover:scale-110 transition-transform" />
               </Link>
             </div>

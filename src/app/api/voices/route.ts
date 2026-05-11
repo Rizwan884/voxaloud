@@ -4,7 +4,7 @@ import { formatStream } from "@/lib/stream";
 import fs from 'fs';
 import path from 'path';
 
-const VOICES_URL = "https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/voices.json";
+const VOICES_URL = "https://raw.githubusercontent.com/rizwan884/tsda/refs/heads/main/voices.json";
 
 export async function GET() {
   try {

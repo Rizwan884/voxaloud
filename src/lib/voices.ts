@@ -10,7 +10,7 @@ export interface Voice {
   flag?: string;
 }
 
-const VOICES_URL = "https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/voices.json";
+const VOICES_URL = "https://raw.githubusercontent.com/rizwan884/tsda/refs/heads/main/voices.json";
 
 // Fallback demo voices in case both remote and local fail
 export const DEMO_VOICES: Voice[] = [

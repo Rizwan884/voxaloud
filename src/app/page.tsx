@@ -6,6 +6,7 @@ import HowToUse from '@/components/sections/HowToUse';
 import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
 import FAQ from '@/components/sections/FAQ';
+import CTA from '@/components/sections/CTA';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
 
@@ -58,6 +59,7 @@ export default async function Home() {
           <UseCases />
 
           <FAQ />
+          <CTA />
         </div>
 
         <div className="mt-12 hidden md:block">
