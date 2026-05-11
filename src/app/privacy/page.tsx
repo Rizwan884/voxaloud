@@ -1,83 +1,76 @@
-import Link from 'next/link';
+import { constructMetadata } from '@/lib/metadata';
 
-export default function PrivacyPolicy() {
+export const metadata = constructMetadata({
+  title: 'Privacy Policy | Fish Audio Online',
+  description: 'Learn how we protect your data and maintain transparency in our neural speech synthesis platform.',
+  path: '/privacy',
+});
+
+export default function PrivacyPage() {
+  const lastUpdated = 'May 11, 2024';
+
   return (
-    <main className="min-h-screen bg-paper py-12 md:py-24 px-4">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-ink transition-colors mb-12 group">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="group-hover:-translate-x-1 transition-transform">
-            <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Back to Studio
-        </Link>
-
-        <header className="mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold font-display text-ink mb-4">Privacy Policy</h1>
-          <p className="text-muted font-medium">Last Updated: April 2026</p>
+    <div className="min-h-screen bg-surface">
+      <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12">
+        <header className="space-y-4">
+          <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
+            Privacy <span className="text-muted">Policy.</span>
+          </h1>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted">
+            Last Updated: {lastUpdated}
+          </p>
         </header>
 
-        <div className="prose prose-slate max-w-none space-y-8 text-muted leading-relaxed">
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">1. Introduction</h2>
-            <p>
-              Welcome to Fish Audio Online. Your privacy is critically important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our AI Text-to-Speech service.
-            </p>
-          </section>
+        <article className="prose prose-ink max-w-none 
+          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
+          prose-p:text-muted/80 prose-p:leading-relaxed prose-p:font-medium
+          prose-strong:text-ink prose-strong:font-black
+          prose-li:text-muted/80
+        ">
+          <p>
+            At Fish Audio Online, we take your privacy seriously. This Privacy Policy describes how your personal information is collected, used, and shared when you visit or use our platform.
+          </p>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">2. Information Collection</h2>
-            <p>
-              <strong>Text Inputs:</strong> We process the text you provide to generate audio. This data is processed in real-time and is not stored on our servers after the generation process is completed.
-            </p>
-            <p>
-              <strong>Local History:</strong> Your generation history is stored exclusively in your browser&apos;s Local Storage. We do not have access to this data on our servers.
-            </p>
-            <p>
-              <strong>Technical Data:</strong> We may collect anonymous data such as IP addresses, browser types, and usage patterns to ensure the security and performance of our service.
-            </p>
-          </section>
+          <h3>1. Data We Collect</h3>
+          <p>
+            We collect minimal data to ensure the performance and security of our services:
+          </p>
+          <ul>
+            <li><strong>Usage Information:</strong> We collect non-identifiable technical data such as IP addresses, browser types, and usage patterns to optimize our infrastructure.</li>
+            <li><strong>Audio Input:</strong> Text scripts provided for synthesis are processed in real-time. We do not store your scripts permanently on our servers unless specifically requested for custom model training.</li>
+          </ul>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">3. Third-Party Services</h2>
-            <p>
-              We utilize third-party services to provide core functionality:
-            </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Speechma:</strong> Used as our underlying TTS engine provider.</li>
-              <li><strong>Adsterra:</strong> Used for displaying advertisements to keep our service free.</li>
-              <li><strong>GitHub:</strong> Used for hosting static assets and voice configuration files.</li>
-            </ul>
-          </section>
+          <h3>2. How We Use Your Information</h3>
+          <p>
+            The information we collect is used solely to:
+          </p>
+          <ul>
+            <li>Provide and maintain our neural speech synthesis service.</li>
+            <li>Analyze usage trends to improve the quality of our AI models.</li>
+            <li>Prevent abuse, spam, or malicious activity on our platform.</li>
+          </ul>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">4. Data Security</h2>
-            <p>
-              We implement industry-standard security measures to protect your data. Since we do not require registration, we do not store sensitive personal information like names, emails, or passwords.
-            </p>
-          </section>
+          <h3>3. Cookies</h3>
+          <p>
+            We use essential cookies to maintain session states and store your preferences (such as selected voices). You can control cookie settings through your browser, but disabling them may limit some functionality.
+          </p>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">5. Cookies & Local Storage</h2>
-            <p>
-              Fish Audio Online uses Local Storage to remember your preferences (such as the last voice used) and to keep a record of your recent audio generations. You can clear this data at any time through your browser settings.
-            </p>
-          </section>
+          <h3>4. Data Security</h3>
+          <p>
+            We implement industry-standard security measures to protect your data during transmission and processing. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.
+          </p>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">6. Changes to This Policy</h2>
-            <p>
-              We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
-            </p>
-          </section>
+          <h3>5. Third-Party Services</h3>
+          <p>
+            We may use third-party analytics and advertising partners (such as Google AdSense) to support our free service. These partners may collect information as described in their own privacy policies.
+          </p>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-bold text-ink font-display">7. Contact Us</h2>
-            <p>
-              If you have any questions about this Privacy Policy, please contact our support team through the official support channels.
-            </p>
-          </section>
-        </div>
-      </div>
-    </main>
+          <h3>6. Contact Us</h3>
+          <p>
+            If you have questions about this policy, please contact us at <strong>rizwanrasheed046@gmail.com</strong>.
+          </p>
+        </article>
+      </main>
+    </div>
   );
 }

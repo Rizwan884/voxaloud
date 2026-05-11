@@ -16,10 +16,10 @@ export default function Footer() {
       ]
     },
     {
-      title: 'Resources',
+      title: 'Company',
       links: [
-        { label: 'Languages', href: '/languages' },
-        { label: 'Commercial Use', href: '/commercial-use' },
+        { label: 'About Us', href: '/about' },
+        { label: 'Contact Us', href: '/contact' },
         { label: 'Blog', href: '/blog' },
         { label: 'FAQ', href: '/faq' },
       ]
@@ -29,7 +29,7 @@ export default function Footer() {
       links: [
         { label: 'Privacy Policy', href: '/privacy' },
         { label: 'Terms of Service', href: '/terms' },
-        { label: 'Pricing', href: '/pricing' },
+        { label: 'Commercial Use', href: '/commercial-use' },
       ]
     }
   ];

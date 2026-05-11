@@ -10,6 +10,8 @@ import AdBanner from '@/components/AdBanner';
 import DynamicStudio from '@/components/DynamicStudio';
 import { getVoices } from '@/lib/voices';
 
+import ConversionPack from '@/components/sections/ConversionPack';
+
 export default async function Home() {
   const initialVoices = await getVoices();
 
@@ -26,6 +28,7 @@ export default async function Home() {
         </main>
 
         <div className="max-w-6xl w-full mx-auto px-4 md:px-6 space-y-24 md:space-y-32">
+          <ConversionPack />
           <Stats />
 
           <div className="hidden md:block">

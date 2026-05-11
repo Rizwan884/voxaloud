@@ -3,6 +3,7 @@ import HowToUse from '@/components/sections/HowToUse';
 import Stats from '@/components/sections/Stats';
 import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
+import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
@@ -94,6 +95,7 @@ export default async function FreeTTSPage() {
         />
 
         <HowToUse />
+        <ConversionPack />
         <InternalLinks />
       </main>
     </div>

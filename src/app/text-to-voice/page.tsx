@@ -2,6 +2,7 @@ import { constructMetadata } from '@/lib/metadata';
 import InfoBlock from '@/components/sections/InfoBlock';
 import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
+import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
@@ -91,6 +92,7 @@ export default async function TextToVoicePage() {
             </>
           }
         />
+        <ConversionPack />
         <InternalLinks />
       </main>
     </div>

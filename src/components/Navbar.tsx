@@ -21,9 +21,10 @@ export default function Navbar() {
         </Link>
         <div className="hidden md:flex items-center gap-6 text-[12px] font-semibold text-muted">
           <Link href="/" className="hover:text-ink transition-colors">Studio</Link>
+          <Link href="/about" className="hover:text-ink transition-colors">About</Link>
           <Link href="/ai-voice-generator" className="hover:text-ink transition-colors">AI Generator</Link>
           <Link href="/languages" className="hover:text-ink transition-colors">Languages</Link>
-          <Link href="/pricing" className="hover:text-ink transition-colors">Pricing</Link>
+          <Link href="/contact" className="hover:text-ink transition-colors">Contact</Link>
           <Link href="/blog" className="hover:text-ink transition-colors">Blog</Link>
         </div>
       </div>
