@@ -1,9 +1,9 @@
 import { constructMetadata } from '@/lib/metadata';
 import HowToUse from '@/components/sections/HowToUse';
 import Stats from '@/components/sections/Stats';
-import StudioClient from '@/components/StudioClient';
 import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
+import DynamicStudio from '@/components/DynamicStudio';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
 
@@ -28,7 +28,7 @@ export default async function FreeTTSPage() {
               Breaking the barriers to professional audio. High-fidelity voice generation accessible to every creator, everywhere.
             </p>
           </div>
-          <StudioClient initialVoices={initialVoices} />
+          <DynamicStudio initialVoices={initialVoices} />
         </section>
 
         <Stats />

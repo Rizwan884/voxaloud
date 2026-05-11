@@ -1,5 +1,6 @@
 import { getBlogPosts } from '@/lib/blog';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calendar, User, Tag } from 'lucide-react';
 import { constructMetadata } from '@/lib/metadata';
 
@@ -33,10 +34,11 @@ export default async function BlogIndex() {
             >
               <div className="aspect-video bg-ink/5 relative overflow-hidden">
                 {post.coverImage && (
-                  <img 
+                  <Image 
                     src={post.coverImage} 
                     alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}
               </div>

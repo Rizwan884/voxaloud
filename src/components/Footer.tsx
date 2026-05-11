@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Code, Globe } from 'lucide-react';
 
 export default function Footer() {
@@ -39,7 +40,13 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-              <img src="/branding/logo.png" alt="Fish Audio" className="w-10 h-10 object-contain" />
+              <Image 
+                src="/branding/logo.png" 
+                alt="Fish Audio" 
+                width={40} 
+                height={40} 
+                className="object-contain" 
+              />
               <span className="text-xl font-bold font-display text-ink">Fish Audio Online</span>
             </div>
             <p className="text-muted text-sm leading-relaxed max-w-sm">

@@ -1,4 +1,3 @@
-import StudioClient from '@/components/StudioClient';
 import Hero from '@/components/sections/Hero';
 import Stats from '@/components/sections/Stats';
 import InfoBlock from '@/components/sections/InfoBlock';
@@ -8,6 +7,7 @@ import UseCases from '@/components/sections/UseCases';
 import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
 import AdBanner from '@/components/AdBanner';
+import DynamicStudio from '@/components/DynamicStudio';
 import { getVoices } from '@/lib/voices';
 
 export default async function Home() {
@@ -21,7 +21,7 @@ export default async function Home() {
         <main className="max-w-6xl w-full mx-auto px-4 md:px-6 py-8 md:py-12 dot-grid">
            <div className="space-y-8">
               <Hero />
-              <StudioClient initialVoices={initialVoices} />
+              <DynamicStudio initialVoices={initialVoices} />
            </div>
         </main>
 

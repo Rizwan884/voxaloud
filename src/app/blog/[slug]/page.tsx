@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Calendar, User, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { constructMetadata } from '@/lib/metadata';
 import InternalLinks from '@/components/sections/InternalLinks';
 
@@ -57,11 +58,13 @@ export default async function BlogPost({ params }: { params: { slug: string } })
             {post.metadata.title}
           </h1>
           {post.metadata.coverImage && (
-            <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-ink/5 border border-border">
-              <img 
+            <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-ink/5 border border-border relative">
+              <Image 
                 src={post.metadata.coverImage} 
                 alt={post.metadata.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority
               />
             </div>
           )}

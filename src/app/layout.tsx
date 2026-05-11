@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
-import Script from "next/script";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import AdBlockDetector from "@/components/AdBlockDetector";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
+
+const inter = Inter({ 
+  subsets: ["latin"], 
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: 'swap',
+});
+
+const outfit = Outfit({ 
+  subsets: ["latin"], 
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-outfit",
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Fish Audio Online - Premium AI TTS",
@@ -51,7 +65,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/dheereshag/coloured-icons@master/app/ci.min.css"
         />
       </head>
-      <body>
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
         <Schema />
         <AdBlockDetector />
         <Navbar />
