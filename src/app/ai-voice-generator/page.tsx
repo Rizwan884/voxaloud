@@ -3,6 +3,7 @@ import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
 import StudioClient from '@/components/StudioClient';
 import SEOArticle from '@/components/sections/SEOArticle';
+import InternalLinks from '@/components/sections/InternalLinks';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
 
@@ -98,6 +99,7 @@ export default async function AIVoiceGeneratorPage() {
         />
 
         <UseCases />
+        <InternalLinks />
       </main>
     </div>
   );

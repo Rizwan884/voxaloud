@@ -2,6 +2,7 @@ import { constructMetadata } from '@/lib/metadata';
 import InfoBlock from '@/components/sections/InfoBlock';
 import StudioClient from '@/components/StudioClient';
 import SEOArticle from '@/components/sections/SEOArticle';
+import InternalLinks from '@/components/sections/InternalLinks';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
 
@@ -90,6 +91,7 @@ export default async function TextToVoicePage() {
             </>
           }
         />
+        <InternalLinks />
       </main>
     </div>
   );
