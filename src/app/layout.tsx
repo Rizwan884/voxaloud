@@ -6,6 +6,11 @@ import AdBlockDetector from "@/components/AdBlockDetector";
 export const metadata: Metadata = {
   title: "Fish Audio Online - Premium AI TTS",
   description: "Experience professional-grade text-to-speech conversion with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
+  icons: {
+    icon: "/branding/favicon.png",
+    shortcut: "/branding/favicon.png",
+    apple: "/branding/favicon.png",
+  },
   openGraph: {
     title: "Fish Audio Online - Premium AI TTS",
     description: "Experience professional-grade text-to-speech conversion with complete commercial freedom.",
@@ -15,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/httpsfishaudio.online%20(1).png",
+        url: "/branding/og-image.png",
         width: 1200,
         height: 630,
         alt: "Fish Audio Online Preview",
@@ -26,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Fish Audio Online - Premium AI TTS",
     description: "Experience professional-grade text-to-speech conversion with complete commercial freedom.",
-    images: ["https://raw.githubusercontent.com/Mob884/tsda/refs/heads/main/httpsfishaudio.online%20(1).png"],
+    images: ["/branding/og-image.png"],
   },
 };
 
