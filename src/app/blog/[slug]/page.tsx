@@ -102,11 +102,16 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         </header>
 
         <article className="prose prose-lg prose-ink max-w-none 
-          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-          prose-p:text-muted/80 prose-p:leading-relaxed prose-p:font-medium
+          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-ink
+          prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-border prose-h2:pb-4
+          prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
+          prose-p:text-muted/90 prose-p:leading-[1.8] prose-p:font-medium prose-p:mb-6
           prose-strong:text-ink prose-strong:font-black
-          prose-blockquote:border-l-ink prose-blockquote:bg-ink/5 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl
-          prose-img:rounded-[2rem] prose-img:border prose-img:border-border
+          prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-3 prose-ul:mb-8
+          prose-li:text-muted/80 prose-li:font-medium
+          prose-blockquote:border-l-4 prose-blockquote:border-l-ink prose-blockquote:bg-ink/[0.02] prose-blockquote:p-8 prose-blockquote:rounded-r-[2rem] prose-blockquote:italic prose-blockquote:text-ink/80 prose-blockquote:my-10
+          prose-img:rounded-[2.5rem] prose-img:border prose-img:border-border prose-img:shadow-2xl prose-img:my-12
+          prose-a:text-ink prose-a:underline prose-a:underline-offset-4 prose-a:decoration-ink/20 hover:prose-a:decoration-ink transition-colors
         ">
           <MDXRemote source={post.content} />
         </article>
