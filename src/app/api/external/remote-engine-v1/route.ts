@@ -159,13 +159,24 @@ export async function POST(req: NextRequest) {
       }
 
       case "process_task": {
-        // Smart Emotion Parsing: If brackets [ ] are detected, we disable normalization 
-        // to prevent the text processor from stripping the emotion tags.
-        const hasEmotionTags = data.text?.includes('[') && data.text?.includes(']');
+        // --- Deep Emotion Parsing & Text Cleaning ---
+        let processedText = data.text || "";
+        
+        // 1. Ensure spaces around brackets so tokens aren't merged (e.g. "name[happy]" -> "name [happy] ")
+        processedText = processedText
+          .replace(/([^\s])\[/g, '$1 [')  // Space before [
+          .replace(/\]([^\s])/g, '] $1')  // Space after ]
+          .replace(/\[\s+/g, '[')         // Remove space inside: [ happy] -> [happy]
+          .replace(/\s+\]/g, ']');        // Remove space inside: [happy ] -> [happy]
+
+        // 2. Detect if emotions are present
+        const hasEmotionTags = processedText.includes('[') && processedText.includes(']');
+        
+        // 3. Smart Normalization: Disable if emotions are present to prevent bracket-stripping
         const shouldNormalize = data.normalize !== undefined ? data.normalize : !hasEmotionTags;
 
         const ttsPayload = {
-          text: data.text,
+          text: processedText,
           reference_id: data.voice_id,
           format: data.format || "mp3",
           normalize: shouldNormalize,
