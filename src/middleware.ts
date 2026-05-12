@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
     const allowedDomains = [
       'https://fishaudio.online',
       'http://localhost:3000',
+      'https://voxaloud.com'
     ];
 
 
