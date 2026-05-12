@@ -96,7 +96,10 @@ export async function POST(req: NextRequest) {
 
     // 3. Security Checks
     if (!op) return NextResponse.json({ error: "Missing operation (op)" }, { status: 400 });
-    if (!client_ref || client_ref !== process.env.ALLOWED_APP_ID) {
+    
+    // Allow both new and legacy client IDs to prevent 403s during the transition
+    const allowedClientIds = [process.env.ALLOWED_APP_ID, "fishaudio_flutter_pro", "voxaloud_flutter_pro"];
+    if (!client_ref || !allowedClientIds.includes(client_ref)) {
       console.warn(`Forbidden access attempt: Invalid client_ref (${client_ref})`);
       return NextResponse.json({ error: "Forbidden: Invalid Client Reference" }, { status: 403 });
     }
