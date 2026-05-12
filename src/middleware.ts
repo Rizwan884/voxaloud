@@ -30,10 +30,22 @@ export function middleware(request: NextRequest) {
       }
     }
 
-    // Add CORS headers
+    // Handle CORS preflight (OPTIONS)
+    if (request.method === 'OPTIONS') {
+      const preflightResponse = new NextResponse(null, { status: 204 });
+      preflightResponse.headers.set('Access-Control-Allow-Origin', isExternalApi ? '*' : (isAllowedOrigin ? origin : ''));
+      preflightResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      preflightResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Gateway-Key');
+      preflightResponse.headers.set('Access-Control-Max-Age', '86400');
+      return preflightResponse;
+    }
+
+    // Add CORS headers to the response
     const response = NextResponse.next();
 
-    if (isAllowedOrigin) {
+    if (isExternalApi) {
+      response.headers.set('Access-Control-Allow-Origin', '*');
+    } else if (isAllowedOrigin) {
       response.headers.set('Access-Control-Allow-Origin', origin);
     } else if (process.env.NODE_ENV !== 'production') {
       response.headers.set('Access-Control-Allow-Origin', '*');
