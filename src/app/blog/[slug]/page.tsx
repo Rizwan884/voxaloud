@@ -14,19 +14,21 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
   if (!post) return {};
 
   return constructMetadata({
     title: post.metadata.title,
     description: post.metadata.excerpt,
-    path: `/blog/${params.slug}`,
+    path: `/blog/${slug}`,
   });
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug);
+export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
 
   if (!post) {
     notFound();
@@ -53,7 +55,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://fishaudio.online/blog/${params.slug}`
+      "@id": `https://fishaudio.online/blog/${slug}`
     }
   };
 

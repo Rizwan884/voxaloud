@@ -52,7 +52,7 @@ export default function Schema() {
         "name": "How many languages are supported?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We support over 50 languages and numerous regional accents from around the world."
+          "text": "We support over 75 languages and numerous regional accents from around the world."
         }
       }
     ]

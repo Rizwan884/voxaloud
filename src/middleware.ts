@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
     // Define allowed domains (including localhost for development)
     const allowedDomains = [
       'https://fishaudio.online',
-      'http://localhost:3000'
+      'http://localhost:3000',
     ];
 
 
