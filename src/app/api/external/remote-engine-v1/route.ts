@@ -166,7 +166,9 @@ export async function POST(req: NextRequest) {
           normalize: data.normalize !== undefined ? data.normalize : true,
           latency: "normal",
           temperature: parseFloat(data.temperature || "0.7"),
-          sample_rate: data.sample_rate ? parseInt(data.sample_rate) : undefined,
+          top_p: parseFloat(data.top_p || "0.7"),
+          repetition_penalty: parseFloat(data.repetition_penalty || "1.2"),
+          sample_rate: data.sample_rate ? parseInt(data.sample_rate) : 44100,
           prosody: {
             speed: parseFloat(data.speed || "1.0"),
             volume: parseFloat(data.volume || "0.0"),
@@ -180,7 +182,10 @@ export async function POST(req: NextRequest) {
         const ttsRes = await fishJsonFetch('/v1/tts', {
           method: 'POST',
           headers: { 'model': 's2-pro' },
-          body: JSON.stringify(ttsPayload),
+          body: JSON.stringify({
+            ...ttsPayload,
+            model: 's2-pro' // Dual injection for compatibility
+          }),
         });
 
         const audioBuffer = await ttsRes.arrayBuffer();
@@ -311,14 +316,17 @@ export async function POST(req: NextRequest) {
             text: data.text,
             reference_id: tempVoiceId,
             format: "mp3",
-            normalize: data.normalize !== undefined ? data.normalize : true,
+            normalize: true,
             latency: "normal",
             temperature: parseFloat(data.temperature || "0.7"),
-            sample_rate: data.sample_rate ? parseInt(data.sample_rate) : undefined,
+            top_p: 0.7,
+            repetition_penalty: 1.2,
+            sample_rate: 44100,
             prosody: {
               speed: parseFloat(data.speed || "1.0"),
               volume: parseFloat(data.volume || "0.0"),
-            }
+            },
+            model: 's2-pro'
           }),
         });
 
@@ -403,6 +411,9 @@ export async function POST(req: NextRequest) {
           normalize: true,
           latency: "normal",
           temperature: 0.7,
+          top_p: 0.7,
+          repetition_penalty: 1.2,
+          sample_rate: 44100,
           prosody: {
             speed: 1.0,
             volume: 0.0,
