@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { constructMetadata } from '@/lib/metadata';
 import InternalLinks from '@/components/sections/InternalLinks';
+import remarkGfm from 'remark-gfm';
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -113,7 +114,14 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           prose-img:rounded-[2.5rem] prose-img:border prose-img:border-border prose-img:shadow-2xl prose-img:my-12
           prose-a:text-ink prose-a:underline prose-a:underline-offset-4 prose-a:decoration-ink/20 hover:prose-a:decoration-ink transition-colors
         ">
-          <MDXRemote source={post.content} />
+          <MDXRemote 
+            source={post.content} 
+            options={{
+              mdxOptions: {
+                remarkPlugins: [remarkGfm],
+              }
+            }}
+          />
         </article>
 
         <div className="pt-16 border-t border-border">
