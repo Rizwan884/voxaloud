@@ -159,11 +159,16 @@ export async function POST(req: NextRequest) {
       }
 
       case "process_task": {
+        // Smart Emotion Parsing: If brackets [ ] are detected, we disable normalization 
+        // to prevent the text processor from stripping the emotion tags.
+        const hasEmotionTags = data.text?.includes('[') && data.text?.includes(']');
+        const shouldNormalize = data.normalize !== undefined ? data.normalize : !hasEmotionTags;
+
         const ttsPayload = {
           text: data.text,
           reference_id: data.voice_id,
           format: data.format || "mp3",
-          normalize: data.normalize !== undefined ? data.normalize : true,
+          normalize: shouldNormalize,
           latency: "normal",
           temperature: parseFloat(data.temperature || "0.7"),
           top_p: parseFloat(data.top_p || "0.7"),
