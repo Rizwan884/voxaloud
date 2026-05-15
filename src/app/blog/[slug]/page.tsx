@@ -51,7 +51,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
       "name": "Fish Audio Online",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fishaudio.online/branding/logo.png"
+        "url": "https://fishaudio.online/branding/app-icon.png"
       }
     },
     "mainEntityOfPage": {

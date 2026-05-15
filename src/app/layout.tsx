@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   title: "Fish Audio Online - Premium AI TTS",
   description: "Experience professional-grade text-to-speech conversion with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
   icons: {
-    icon: "/branding/favicon.png",
-    shortcut: "/branding/favicon.png",
-    apple: "/branding/favicon.png",
+    icon: "/branding/app-icon.png",
+    shortcut: "/branding/app-icon.png",
+    apple: "/branding/app-icon.png",
   },
   openGraph: {
     title: "Fish Audio Online - Premium AI TTS",

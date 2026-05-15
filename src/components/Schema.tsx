@@ -6,7 +6,7 @@ export default function Schema() {
     "@type": "Organization",
     "name": "Fish Audio Online",
     "url": "https://fishaudio.online",
-    "logo": "https://fishaudio.online/branding/logo.png",
+    "logo": "https://fishaudio.online/branding/app-icon.png",
     "sameAs": [
       "https://twitter.com/fishaudio",
       "https://github.com/rizwan884"

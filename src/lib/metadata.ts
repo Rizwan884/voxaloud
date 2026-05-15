@@ -48,9 +48,9 @@ export function constructMetadata({
       creator: '@fishaudio',
     },
     icons: {
-      icon: '/branding/favicon.png',
-      shortcut: '/branding/favicon.png',
-      apple: '/branding/favicon.png',
+      icon: '/branding/app-icon.png',
+      shortcut: '/branding/app-icon.png',
+      apple: '/branding/app-icon.png',
     },
     metadataBase: new URL(BASE_URL),
   };

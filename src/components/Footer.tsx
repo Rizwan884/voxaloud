@@ -41,7 +41,7 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
               <Image 
-                src="/branding/logo.png" 
+                src="/branding/app-icon.png" 
                 alt="Fish Audio" 
                 width={40} 
                 height={40} 
