@@ -112,11 +112,6 @@ export default function HistoryPanel({
                     <a 
                       href={item.audioUrl} 
                       download={`fishaudio-${item.id.slice(0,6)}.mp3`} 
-                      onClick={() => {
-                        if (item.id === history[0]?.id) {
-                          window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
-                        }
-                      }}
                       className="btn-ghost !p-1.5" 
                       title="Download"
                     ><Download size={14} /></a>

@@ -200,12 +200,10 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
 
   const executeTTS = () => {
     if (captchaValue.toUpperCase() !== generatedCaptcha) { setError("Invalid captcha."); return; }
-    setShowAdNotice(true);
+    startProcessing();
   };
 
   const startProcessing = async () => {
-    window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
-
     setIsProcessing(true);
     setProgress({ current: 0, total: text.length });
     setError(null);

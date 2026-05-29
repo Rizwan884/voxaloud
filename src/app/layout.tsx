@@ -68,11 +68,6 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/dheereshag/coloured-icons@master/app/ci.min.css"
         />
-        {/* Popunder script */}
-        <Script 
-          src="https://pl29585426.effectivecpmnetwork.com/88/7a/e7/887ae76b01e2bcb7b171cce371070d28.js" 
-          strategy="afterInteractive" 
-        />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
         <Schema />
