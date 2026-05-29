@@ -6,8 +6,8 @@ import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
 import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
-import AdBanner from '@/components/AdBanner';
 import DynamicStudio from '@/components/DynamicStudio';
+import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
 
 import ConversionPack from '@/components/sections/ConversionPack';

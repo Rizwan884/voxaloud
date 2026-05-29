@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { parseStream, formatStream } from '@/lib/stream';
+import { getApiUrl } from '@/lib/api';
 import { RefreshCw, CheckCircle2, ShieldCheck, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -59,7 +60,7 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
   useEffect(() => {
     const fetchVoices = async () => {
       try {
-        const res = await axios.get('/api/voices');
+        const res = await axios.get(getApiUrl('/api/voices'));
         let decryptedData: Voice[] = [];
         
         if (res.data._data) {
@@ -69,17 +70,21 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
           decryptedData = res.data;
         }
 
-        setVoices(decryptedData);
-        setIsLoading(false);
-
-        const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
-        if (lastVoiceId) {
-          const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
-          if (lastVoice) setSelectedVoice(lastVoice);
-          else if (!selectedVoice && decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
-        } else if (!selectedVoice && decryptedData.length > 0) {
-          setSelectedVoice(decryptedData[0]);
+        if (Array.isArray(decryptedData)) {
+          setVoices(decryptedData);
+          
+          const lastVoiceId = localStorage.getItem('fishaudio_last_voice');
+          if (lastVoiceId) {
+            const lastVoice = decryptedData.find((v: Voice) => v.id === lastVoiceId);
+            if (lastVoice) setSelectedVoice(lastVoice);
+            else if (!selectedVoice && decryptedData.length > 0) setSelectedVoice(decryptedData[0]);
+          } else if (!selectedVoice && decryptedData.length > 0) {
+            setSelectedVoice(decryptedData[0]);
+          }
+        } else {
+          console.warn("Received invalid voices data format:", decryptedData);
         }
+        setIsLoading(false);
       } catch (err) {
         console.error("Failed to load voices:", err);
         if (voices.length === 0) setError("Failed to load voices.");
@@ -144,7 +149,7 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
     } else {
       if (previewRef.current) {
         setLoadingPreviewId(voice.id);
-        previewRef.current.src = `/api/preview?id=${voice.id}`;
+        previewRef.current.src = getApiUrl(`/api/preview?id=${voice.id}`);
         previewRef.current.play();
         setActivePreview(voice.id);
       }
@@ -199,7 +204,7 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
   };
 
   const startProcessing = async () => {
-    window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
+    window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
 
     setIsProcessing(true);
     setProgress({ current: 0, total: text.length });
@@ -224,7 +229,7 @@ export default function StudioClient({ initialVoices = [] }: { initialVoices?: V
       for (const chunk of chunks) {
         const rawPayload = JSON.stringify({ text: chunk, voice: selectedVoice?.id, pitch, rate });
         const obfuscatedPayload = formatStream(rawPayload);
-        const res = await axios.post('/api/tts', { _payload: obfuscatedPayload });
+        const res = await axios.post(getApiUrl('/api/tts'), { _payload: obfuscatedPayload });
 
         if (res.data._data) {
           const bytes = parseStream(res.data._data, false) as Uint8Array;

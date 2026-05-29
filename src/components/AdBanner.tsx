@@ -1,18 +1,18 @@
 export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x250' | '160x600' | '160x300' | '468x60' | 'native' }) {
   const ads = {
-    '728x90': { key: '5b5fb5a6602fbe88bd9e2330f7c9086c', w: 728, h: 90 },
-    '320x50': { key: '39c51df9921f1d732a3eb5037a296cc1', w: 320, h: 50 },
-    '300x250': { key: 'd3b3ab1a5e32de44294c69cd94cbeb2d', w: 300, h: 250 },
-    '160x600': { key: '861a3eb39b6de8415ebaff04ea02495d', w: 160, h: 600 },
-    '160x300': { key: 'a21a96a00e016db30c569de8c4c77830', w: 160, h: 300 },
-    '468x60': { key: '404fa8594329f4699bae4d024d71548f', w: 468, h: 60 }
+    '728x90': { key: 'd3749f5b9a84ef088012c7ef8ffbc1ce', w: 728, h: 90 },
+    '320x50': { key: '2efd3ceb94d31ebcf1e09cde46ebb5fc', w: 320, h: 50 },
+    '300x250': { key: '6c21d3d4c8e6b91b19f8dc18565c1b79', w: 300, h: 250 },
+    '160x600': { key: 'b90175167d7ee365225672538bb8bbea', w: 160, h: 600 },
+    '160x300': { key: 'c1eeb49abe4c994149fce5c73d49992b', w: 160, h: 300 },
+    '468x60': { key: 'fdcbd12a736d4a1164c3981eae791fd2', w: 468, h: 60 }
   };
 
   if (type === 'native') {
     const srcDoc = `
       <style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>
-      <script async="async" data-cfasync="false" src="https://pl29281939.profitablecpmratenetwork.com/baff9cf430798494cebb943dcd8b07c0/invoke.js"></script>
-      <div id="container-baff9cf430798494cebb943dcd8b07c0"></div>
+      <script async="async" data-cfasync="false" src="https://pl29585427.effectivecpmnetwork.com/2a41359e68ff14c9d105434dff8272a9/invoke.js"></script>
+      <div id="container-2a41359e68ff14c9d105434dff8272a9"></div>
     `;
     return <iframe srcDoc={srcDoc} width="100%" height="250" className="border-0 overflow-hidden bg-transparent" scrolling="no" />;
   }
@@ -33,7 +33,7 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
   `;
 
   return (
-    <div className={`flex justify-center items-center my-4 overflow-hidden bg-surface-2 rounded-xl`}>
+    <div className="flex justify-center items-center my-4 overflow-hidden bg-surface-2 rounded-xl">
       <iframe 
         srcDoc={srcDoc} 
         width={ad.w} 

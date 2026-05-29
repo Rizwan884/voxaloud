@@ -9,6 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^7.6.5",
+    "@capacitor/core": "^8.3.4",
+    "@capacitor/ios": "^8.3.4",
     "@lottiefiles/dotlottie-react": "^0.19.0",
     "axios": "^1.15.2",
     "gray-matter": "^4.0.3",

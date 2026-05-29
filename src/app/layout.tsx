@@ -5,6 +5,7 @@ import AdBlockDetector from "@/components/AdBlockDetector";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
+import Script from "next/script";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -67,6 +68,11 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/dheereshag/coloured-icons@master/app/ci.min.css"
         />
+        {/* Popunder script */}
+        <Script 
+          src="https://pl29585426.effectivecpmnetwork.com/88/7a/e7/887ae76b01e2bcb7b171cce371070d28.js" 
+          strategy="afterInteractive" 
+        />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
         <Schema />
@@ -76,6 +82,11 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        {/* Social Bar script */}
+        <Script 
+          src="https://pl29585435.effectivecpmnetwork.com/5f/70/71/5f7071c1fd1ff9b2f754a5cffbc01abc.js" 
+          strategy="afterInteractive" 
+        />
       </body>
     </html>
   );

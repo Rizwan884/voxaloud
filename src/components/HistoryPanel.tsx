@@ -59,7 +59,7 @@ export default function HistoryPanel({
           <p className="text-muted text-sm font-medium">Your generated audio will appear here</p>
         </div>
       )}
-      
+
       {history.length === 0 && (
         <div className="mt-4">
           <AdBanner type="300x250" />
@@ -114,7 +114,7 @@ export default function HistoryPanel({
                       download={`fishaudio-${item.id.slice(0,6)}.mp3`} 
                       onClick={() => {
                         if (item.id === history[0]?.id) {
-                          window.open('https://www.profitablecpmratenetwork.com/aukggsuay?key=080bddfb16a07a1ad242e94ddbdaafed', '_blank');
+                          window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
                         }
                       }}
                       className="btn-ghost !p-1.5" 
