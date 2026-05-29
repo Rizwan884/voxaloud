@@ -91,7 +91,12 @@ export default function HistoryPanel({
                 )}
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => onPlayPause(item)}
+                    onClick={() => {
+                      if (!isActive) {
+                        window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
+                      }
+                      onPlayPause(item);
+                    }}
                     className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? 'bg-ink text-paper' : 'bg-surface hover:bg-surface-2 text-ink'}`}
                   >
                     {isActive ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="ml-0.5" />}
@@ -112,6 +117,9 @@ export default function HistoryPanel({
                     <a 
                       href={item.audioUrl} 
                       download={`fishaudio-${item.id.slice(0,6)}.mp3`} 
+                      onClick={() => {
+                        window.open('https://www.effectivecpmnetwork.com/f8mrsykx70?key=e870401b902074570e55488ba9d77bd4', '_blank');
+                      }}
                       className="btn-ghost !p-1.5" 
                       title="Download"
                     ><Download size={14} /></a>
