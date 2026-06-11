@@ -5,103 +5,167 @@ import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
 import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
+import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
-import Link from 'next/link';
 
 export const metadata = constructMetadata({
-  title: 'Professional AI Voice Generator | Ultra-Realistic Speech',
-  description: 'Generate high-fidelity AI voices instantly. Our professional AI voice generator offers 500+ human-like voices for YouTube, TikTok, and commercial projects.',
+  title: 'Free AI Voice Generator — 500+ Natural Neural Voices | Fish Audio',
+  description: 'The best free AI voice generator online. Choose from 500+ natural neural voices. No login needed. Perfect for YouTube, TikTok, podcasts & more.',
   path: '/ai-voice-generator',
+  useExactTitle: true,
+  keywords: [
+    "ai voice generator",
+    "ai voice generator free",
+    "best ai voice generator",
+    "free ai voice generator",
+    "ai voice online",
+    "text to speech ai",
+    "voice generator",
+    "ai narrator",
+    "voice synthesis",
+    "neural voice generator",
+    "ai voice 2026"
+  ]
 });
 
 export default async function AIVoiceGeneratorPage() {
   const initialVoices = await getVoices();
 
+  const softwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Fish Audio AI Voice Generator",
+    "operatingSystem": "All",
+    "applicationCategory": "MultimediaApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    },
+    "description": "Free AI voice generator online. Choose from 500+ natural neural voices for YouTube, TikTok, podcasts, and commercial use with no login required."
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "AI Voice Generator",
+        "item": "https://fishaudio.online/ai-voice-generator"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-surface">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-24 md:space-y-32">
-        <section className="space-y-12">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95]">
-              Advanced AI <br /><span className="text-muted">Voice Generator.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted/80 max-w-2xl mx-auto font-medium">
-              The industry standard for neural speech synthesis. Realistic, emotive, and engineered for professional creators.
-            </p>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      
+      {/* CSS Grid layout for Sidebar */}
+      <main className="max-w-7xl mx-auto px-4 py-12 md:py-24">
+        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_280px] gap-12 items-start">
+          
+          {/* Main Left Content */}
+          <div className="space-y-24 md:space-y-32 min-w-0">
+            <section className="space-y-12">
+              <div className="text-center space-y-6">
+                <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95] text-left">
+                  Free AI Voice Generator — <br /><span className="text-muted">Natural Neural Voices.</span>
+                </h1>
+                <p className="text-sm md:text-base text-muted/80 max-w-3xl font-medium leading-relaxed text-left">
+                  Welcome to Fish Audio&apos;s AI voice generator — the most advanced free text to speech platform available online. 
+                  Generate realistic AI voices from any text in seconds. Whether you need an AI narrator for YouTube, a natural voice for 
+                  your podcast, or a commercial voiceover for your business, our 500+ premium neural voices have you covered. No login, no limits.
+                </p>
+              </div>
+              <DynamicStudio initialVoices={initialVoices} />
+            </section>
+
+            {/* Normal In-Content ad unit when screen size is below 1200px */}
+            <div className="block min-[1200px]:hidden p-4 border border-border bg-paper/50 rounded-2xl">
+              <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
+              <AdBanner type="300x250" />
+            </div>
+
+            <Features />
+            
+            <SEOArticle 
+              title="Best AI Voice Generator for Content Creators"
+              subtitle="Unlocking professional-grade voice synthesis with neural networks"
+              content={
+                <>
+                  <p>
+                    The search for the <strong>best AI voice generator</strong> ends here. With Fish Audio Online, you get access to a 
+                    premium <strong>free AI voice generator</strong> that requires no registrations or subscriptions. Our technology is 
+                    designed to let you produce natural-sounding <strong>AI voice online</strong> files without the complexity of traditional 
+                    studios. It is the ultimate utility for creators who want to scale their content pipelines efficiently.
+                  </p>
+                  
+                  <h3>Why Use an AI Voice Generator?</h3>
+                  <p>
+                    A high-quality <strong>voice generator</strong> does more than translate text to audio; it adds character, emotion, 
+                    and context. Traditional text-to-speech tools sounded robotic and flat. With modern <strong>voice synthesis</strong> and 
+                    <strong>neural voice generator</strong> models, the synthesized audio sounds indistinguishable from real human speech. 
+                    Whether you need a compelling <strong>AI narrator</strong> for educational guides or professional ads, our tool provides 
+                    the variety you need.
+                  </p>
+                  
+                  <h3>AI Voice Generator Features</h3>
+                  <p>
+                    Our platform stands out by offering robust capabilities completely free. By using Fish Audio Online, you get the benefit of 
+                    <strong>AI voice generator no login</strong> and <strong>AI voice generator free online</strong> generation. We leverage 
+                    sophisticated models to offer:
+                  </p>
+                  <ul>
+                    <li><strong>High-Fidelity Audio:</strong> Synthesized outputs in clear, studio-grade 44kHz quality.</li>
+                    <li><strong>No Restrictions:</strong> Fully functional <strong>AI voice without signup</strong> with high character limits.</li>
+                    <li><strong>Commercial Rights:</strong> Keep and use all generated files commercially without royalty concerns.</li>
+                    <li><strong>Modern Models:</strong> Enjoy advanced <strong>free AI voice 2026</strong> neural synthesis for perfect pronunciation.</li>
+                  </ul>
+
+                  <h3>AI Voice for YouTube, TikTok & Podcasts</h3>
+                  <p>
+                    Content creators are constantly looking for the best audio solutions. If you run a faceless channel, finding the 
+                    <strong>best AI voice generator for YouTube</strong> is critical to keep your audience engaged. Similarly, having a 
+                    reliable <strong>AI voice for TikTok</strong> helps generate viral clips in seconds. 
+                    With Fish Audio, you can customize your narrator style, speed, and pitch to create engaging <strong>AI text to speech free</strong> 
+                    tracks for podcasts, reels, shorts, and corporate training videos.
+                  </p>
+                  
+                  <p>
+                    Ready to transform your scripts into engaging speech? Try our premium <strong>text to speech AI</strong> tools and start 
+                    generating lifelike voiceovers today. No credit cards, no logins — just open the studio and bring your stories to life.
+                  </p>
+                </>
+              }
+            />
+
+            <UseCases />
+            <ConversionPack />
+            <InternalLinks />
           </div>
-          <DynamicStudio initialVoices={initialVoices} />
-        </section>
 
-        <Features />
-        
-        <SEOArticle 
-          title="The Ultimate Guide to AI Voice Generation"
-          subtitle="Unlocking the Power of Neural Speech Synthesis for Modern Creators"
-          content={
-            <>
-              <p>
-                The landscape of digital content creation has been fundamentally transformed by the advent of the <strong>AI Voice Generator</strong>. Gone are the days of monotone, mechanical speech that broke the immersion of your audience. Today, we stand at the pinnacle of neural voice synthesis, where the line between artificial and human audio has effectively vanished. At Fish Audio Online, we provide you with the tools to harness this technology for your own creative projects.
-              </p>
-              
-              <h3>Why Choose a Professional AI Voice Generator?</h3>
-              <p>
-                In an era where attention is the ultimate currency, the quality of your audio can make or break your content. A professional AI voice generator provides more than just a voice; it provides a personality. Whether you are producing a high-stakes corporate presentation, a viral TikTok, or an immersive audiobook, the nuance of the delivery is what captures and holds your audience&apos;s interest. Our platform is engineered to deliver that nuance every single time.
-              </p>
-              
-              <ul>
-                <li><strong>Unmatched Realism:</strong> Our neural models are trained on thousands of hours of human speech, capturing the subtle inflections, breaths, and pauses that make a voice sound truly alive. This is the hallmark of a top-tier <strong>AI voice generator</strong>.</li>
-                <li><strong>Scalability:</strong> Generate hours of high-quality narration in minutes. What used to take days in a recording studio now takes seconds on your dashboard. This efficiency is critical for modern content pipelines.</li>
-                <li><strong>Cost Efficiency:</strong> Eliminate the overhead of hiring voice actors, booking studios, and managing multiple revisions. With our <Link href="/free-text-to-speech">free text to speech</Link> tools, professional quality is accessible to everyone, from hobbyists to enterprise-level production teams.</li>
-              </ul>
-
-              <h3>How Our Technology Works</h3>
-              <p>
-                At the core of Fish Audio Online is a sophisticated neural architecture known as "Neural Text-to-Speech" (NTTS). Unlike traditional concatenative synthesis that stitches together audio snippets, our <strong>AI voice generator</strong> uses deep learning to predict the acoustic features of speech directly from text.
-              </p>
-              <p>
-                This involves a two-stage process. First, a neural linguistic analyzer processes your text to understand the context, emotion, and proper pronunciation. Then, a high-fidelity vocoder generates the actual waveform, ensuring that the resulting audio is smooth, continuous, and free of the digital artifacts common in lesser tools.
-              </p>
-
-              <h3>Global Reach with 75+ Languages</h3>
-              <p>
-                A truly global <strong>AI voice generator</strong> must speak the world&apos;s languages. We support over 75 languages and regional accents, allowing you to localize your content for any market. From the nuances of British vs. American English to the tonal complexities of Mandarin and the rhythmic beauty of Spanish, our voices are trained to sound native and authentic.
-              </p>
-
-              <h3>Industry-Specific Applications</h3>
-              <p>
-                The versatility of our AI voice generator makes it the preferred choice across diverse industries. We provide the tools for <strong>YouTube creators</strong> looking to scale their channels, <strong>educators</strong> creating accessible learning materials, and <strong>game developers</strong> seeking unique character voices.
-              </p>
-
-              <h4>Digital Marketing & Advertising</h4>
-              <p>
-                Marketers use our platform to rapidly prototype ad copy and create localized versions of their campaigns. With 75+ languages supported, you can take your brand global with a single click. The ability to adjust pitch and speed means you can create a high-energy sales voice or a calm, authoritative brand voice with ease.
-              </p>
-
-              <h4>The Future of Accessibility</h4>
-              <p>
-                Beyond entertainment, AI voices are a critical pillar of web accessibility. By providing high-quality <Link href="/text-to-voice">text to voice</Link> conversion, we help ensure that content is inclusive for the visually impaired and those with reading difficulties. Our voices are designed to be clear and easy to understand, even at higher playback speeds.
-              </p>
-
-              <h3>Maximizing Your Creative Output</h3>
-              <p>
-                Using an <strong>AI voice generator</strong> isn&apos;t just about saving time; it&apos;s about expanding your creative horizons. You can experiment with different characters, styles, and tones without the risk of additional costs. Try a friendly, conversational tone for a tutorial, or a deep, dramatic voice for a trailer. The power to iterate is the power to perfect.
-              </p>
-
-              <h3>Safe and Secure Usage</h3>
-              <p>
-                We understand that privacy is paramount. Your text inputs are processed securely, and we do not store your data for longer than necessary to provide the service. Furthermore, all audio you generate comes with full commercial rights, meaning you can use it on any platform, for any purpose, without fear of copyright strikes or licensing disputes.
-              </p>
-
-              <p>
-                Ready to experience the future? Start your project today with our unlimited free access and find out why thousands of professionals trust Fish Audio Online as their primary <strong>AI voice generator</strong>. Whether you need a single sentence or a feature-length script, we are here to provide the perfect voice for your vision.
-              </p>
-            </>
-          }
-        />
-
-        <UseCases />
-        <ConversionPack />
-        <InternalLinks />
+          {/* Sticky desktop right sidebar */}
+          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[250px] space-y-4">
+            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block">Advertisement</span>
+            <AdBanner type="300x600" />
+          </aside>
+          
+        </div>
       </main>
     </div>
   );

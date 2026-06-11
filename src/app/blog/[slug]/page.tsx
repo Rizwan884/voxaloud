@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { constructMetadata } from '@/lib/metadata';
 import InternalLinks from '@/components/sections/InternalLinks';
 import remarkGfm from 'remark-gfm';
+import AdBanner from '@/components/AdBanner';
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -102,6 +103,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           )}
         </header>
 
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <article className="prose prose-lg prose-ink max-w-none 
           prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-ink
           prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-border prose-h2:pb-4
@@ -123,6 +131,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             }}
           />
         </article>
+
+        <div className="hidden md:block pt-8">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden pt-8">
+          <AdBanner type="320x50" />
+        </div>
 
         <div className="pt-16 border-t border-border">
           <InternalLinks />

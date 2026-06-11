@@ -1,17 +1,49 @@
 import { constructMetadata } from '@/lib/metadata';
+import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
-  title: 'Privacy Policy | Fish Audio Online',
-  description: 'Learn how we protect your data and maintain transparency in our neural speech synthesis platform.',
+  title: 'Privacy Policy — Data Protection & Privacy | Fish Audio Online',
+  description: 'Read the Fish Audio Online privacy policy. Learn how we handle your text inputs, protect your data, and manage cookies for secure voice generation.',
   path: '/privacy',
+  useExactTitle: true,
+  keywords: [
+    "privacy policy",
+    "data protection",
+    "data security",
+    "cookies policy",
+    "secure text to speech"
+  ]
 });
 
 export default function PrivacyPage() {
   const lastUpdated = 'May 11, 2026';
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Privacy",
+        "item": "https://fishaudio.online/privacy"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-surface">
-      <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12 text-left">
         <header className="space-y-4">
           <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
             Privacy <span className="text-muted">Policy.</span>
@@ -67,9 +99,16 @@ export default function PrivacyPage() {
 
           <h3>6. Contact Us</h3>
           <p>
-            If you have questions about this policy, please contact us at <strong>rizwanrasheed046@gmail.com</strong>.
+            If you have questions about this policy, please contact us at <strong>contact@fishaudio.online</strong>.
           </p>
         </article>
+
+        <div className="hidden md:block pt-8">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden pt-8">
+          <AdBanner type="320x50" />
+        </div>
       </main>
     </div>
   );

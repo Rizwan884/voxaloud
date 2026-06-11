@@ -5,6 +5,8 @@ import AdBlockDetector from "@/components/AdBlockDetector";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
+import StickyAdBanner from "@/components/StickyAdBanner";
 import Script from "next/script";
 
 const inter = Inter({ 
@@ -72,8 +74,10 @@ export default function RootLayout({
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
         <Schema />
         <AdBlockDetector />
+        <ExitIntentPopup />
+        <StickyAdBanner />
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 pb-[90px] md:pb-[110px]">
           {children}
         </main>
         <Footer />

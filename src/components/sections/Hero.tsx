@@ -1,60 +1,48 @@
-import AdBanner from '@/components/AdBanner';
-import { ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
+import { Sparkles, ShieldCheck, Users } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <header className="space-y-12 pb-8">
-      {/* Ad Section */}
-      <div className="space-y-4">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+    <div className="space-y-6">
+      {/* Release Badge */}
+      <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/5 border border-ink/10 text-[9px] font-black uppercase tracking-[0.15em] text-ink w-fit">
+        <Sparkles size={11} className="text-muted" />
+        <span>Neural Model v2.0 Released</span>
       </div>
 
-      <div className="space-y-8 max-w-4xl">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ink/5 border border-ink/10 text-[10px] font-black uppercase tracking-[0.15em] text-ink animate-fade-in">
-          <Sparkles size={12} className="text-muted" />
-          <span>New: Neural Model v2.0 Released</span>
-        </div>
-
-        {/* Heading */}
-        <h1 className="text-4xl md:text-8xl font-black font-display text-ink uppercase tracking-tight leading-[0.95]">
+      {/* Main Heading */}
+      <div className="space-y-4">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95] text-left">
           Voices That <br /> 
           <span className="text-muted">Feel Human.</span>
         </h1>
 
-        {/* Subtext */}
-        <p className="text-lg md:text-xl text-muted/80 max-w-2xl font-medium leading-relaxed">
-          The industry standard for professional neural speech. 
-          Unlimited generations in 75+ languages. <span className="text-ink underline decoration-ink/10 underline-offset-4">100% Free for Commercial Use.</span>
-        </p>
-
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link href="#studio" className="btn-primary w-full sm:w-auto px-10 py-5 text-base rounded-2xl shadow-2xl shadow-ink/10 hover:scale-[1.02] transition-all">
-            Start Generating
-            <ArrowRight size={20} />
-          </Link>
-          <Link href="/ai-voice-generator" className="btn-outline w-full sm:w-auto px-10 py-5 text-base rounded-2xl">
-            Explore 500+ Voices
-          </Link>
+        {/* Trust Badge repositioned right beneath main headline */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-100 text-[10px] font-black uppercase tracking-widest w-fit">
+          <Users size={12} />
+          Trusted by 50,000+ Creators
         </div>
 
-        {/* Trust Indicators */}
-        <div className="flex items-center gap-6 pt-2 text-[10px] font-black uppercase tracking-widest text-muted/40">
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck size={14} />
-            <span>Commercial License</span>
-          </div>
-          <div className="w-1.5 h-1.5 rounded-full bg-border" />
-          <span>No Login Required</span>
-        </div>
+        <h2 className="text-lg md:text-xl font-black font-display text-ink uppercase tracking-tight text-left">
+          The #1 Free AI Text to Speech Generator — 500+ Natural Voices, 75+ Languages
+        </h2>
       </div>
-    </header>
+
+      {/* Subtext description */}
+      <p className="text-sm md:text-base text-muted/80 max-w-xl font-medium leading-relaxed text-left">
+        Experience the most advanced natural text to speech platform. Our realistic voice generator 
+        delivers high-fidelity human-like voice AI with absolute ease. Use our AI voice online free 
+        with text to speech, no signup required. <span className="text-ink underline decoration-ink/10 underline-offset-4">100% Free for Commercial Use.</span>
+      </p>
+
+      {/* Trust Indicators */}
+      <div className="flex items-center gap-6 pt-2 text-[9px] font-black uppercase tracking-widest text-muted/40">
+        <div className="flex items-center gap-1.5">
+          <ShieldCheck size={14} />
+          <span>Commercial License</span>
+        </div>
+        <div className="w-1.5 h-1.5 rounded-full bg-border" />
+        <span>No Login Required</span>
+      </div>
+    </div>
   );
 }

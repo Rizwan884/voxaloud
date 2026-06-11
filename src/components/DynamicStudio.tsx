@@ -7,6 +7,8 @@ const StudioClient = dynamic(() => import('./StudioClient'), {
   ssr: false
 });
 
-export default function DynamicStudio({ initialVoices }: { initialVoices: any }) {
+interface Voice { id: string; name: string; gender: string; language: string; country: string; flag?: string; }
+
+export default function DynamicStudio({ initialVoices }: { initialVoices: Voice[] }) {
   return <StudioClient initialVoices={initialVoices} />;
 }

@@ -20,18 +20,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/terms',
   ];
 
-  const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
-    url: `${BASE_URL}${route}`,
-    lastModified: new Date(),
-    changeFrequency: route === '' ? 'daily' : 'weekly',
-    priority: route === '' ? 1 : 0.8,
-  }));
+  const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((route) => {
+    let priority = 0.8;
+    let changeFrequency: 'weekly' | 'monthly' = 'monthly';
+
+    if (route === '') {
+      priority = 1.0;
+      changeFrequency = 'weekly';
+    } else if (route === '/ai-voice-generator' || route === '/free-text-to-speech') {
+      priority = 0.9;
+      changeFrequency = 'monthly';
+    }
+
+    return {
+      url: `${BASE_URL}${route}`,
+      lastModified: new Date(),
+      changeFrequency,
+      priority,
+    };
+  });
 
   const blogEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly',
-    priority: 0.6,
+    priority: 0.8,
   }));
 
   return [...staticEntries, ...blogEntries];

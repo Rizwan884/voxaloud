@@ -1,9 +1,38 @@
+"use client";
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Code, Globe } from 'lucide-react';
+import { Mail, Globe, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'footer_form' }),
+      });
+
+      if (res.ok) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus('error');
+    }
+  };
 
   const sections = [
     {
@@ -42,24 +71,21 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Image 
                 src="/branding/app-icon.png" 
-                alt="Fish Audio" 
+                alt="Fish Audio Online — free AI text to speech generator with natural voices" 
                 width={40} 
                 height={40} 
                 className="object-contain" 
               />
               <span className="text-xl font-bold font-display text-ink">Fish Audio Online</span>
             </div>
-            <p className="text-muted text-sm leading-relaxed max-w-sm">
+            <p className="text-muted text-sm leading-relaxed max-w-sm font-medium">
               The world&apos;s most advanced neural text-to-speech platform. Empowering creators with natural, emotive AI voices for every project.
             </p>
             <div className="flex items-center gap-4">
-              <Link href="https://twitter.com/fishaudio" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
+              <Link href="https://twitter.com/fishaudio" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
                 <Globe size={16} className="group-hover:scale-110 transition-transform" />
               </Link>
-              <Link href="https://github.com/rizwan884" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
-                <Code size={16} className="group-hover:scale-110 transition-transform" />
-              </Link>
-              <Link href="mailto:rizwanrasheed046@gmail.com" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
+              <Link href="mailto:contact@fishaudio.online" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
                 <Mail size={16} className="group-hover:scale-110 transition-transform" />
               </Link>
             </div>
@@ -67,7 +93,7 @@ export default function Footer() {
 
           {sections.map((section) => (
             <div key={section.title} className="space-y-6">
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-ink">{section.title}</h4>
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-ink">{section.title}</h4>
               <ul className="space-y-4">
                 {section.links.map((link) => (
                   <li key={link.label}>
@@ -79,6 +105,56 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        <div className="border-t border-border/60 pt-8 pb-4">
+          <p className="text-xs text-muted/70 leading-relaxed font-medium">
+            Fish Audio Online is the world&apos;s leading free text to speech platform. 
+            Convert text to speech online using 500+ AI voices in 75+ languages. 
+            Our natural voice generator offers realistic AI narration, voice cloning, 
+            and commercial-use audio — all completely free. No registration required.
+          </p>
+        </div>
+
+        {/* Inline Email Capture Form */}
+        <div className="border-t border-border/60 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1.5 max-w-md">
+            <h4 className="text-sm font-black uppercase tracking-wider text-ink">Subscribe to updates</h4>
+            <p className="text-xs text-muted font-medium">Get notified when we release new voice models and features.</p>
+          </div>
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+            <div className="relative flex-1">
+              <input 
+                type="email" 
+                required
+                placeholder="Your email address" 
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="field !py-3 !px-4 !rounded-xl text-xs"
+                disabled={status === 'loading'}
+              />
+              {status === 'success' && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-green-600 text-[10px] font-bold uppercase tracking-wider bg-paper pl-2">
+                  <CheckCircle2 size={12} />
+                  Subscribed!
+                </div>
+              )}
+            </div>
+            <button 
+              type="submit" 
+              className="btn-primary !px-5 !py-3 !rounded-xl text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2"
+              disabled={status === 'loading'}
+            >
+              {status === 'loading' ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <>
+                  Subscribe
+                  <ArrowRight size={14} />
+                </>
+              )}
+            </button>
+          </form>
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">

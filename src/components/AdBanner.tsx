@@ -1,8 +1,9 @@
-export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x250' | '160x600' | '160x300' | '468x60' | 'native' }) {
+export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x250' | '300x600' | '160x600' | '160x300' | '468x60' | 'native' }) {
   const ads = {
     '728x90': { key: 'd3749f5b9a84ef088012c7ef8ffbc1ce', w: 728, h: 90 },
     '320x50': { key: '2efd3ceb94d31ebcf1e09cde46ebb5fc', w: 320, h: 50 },
     '300x250': { key: '6c21d3d4c8e6b91b19f8dc18565c1b79', w: 300, h: 250 },
+    '300x600': { key: 'a6b328a9b2d354a7df1e0a2df3d85bc9', w: 300, h: 600 },
     '160x600': { key: 'b90175167d7ee365225672538bb8bbea', w: 160, h: 600 },
     '160x300': { key: 'c1eeb49abe4c994149fce5c73d49992b', w: 160, h: 300 },
     '468x60': { key: 'fdcbd12a736d4a1164c3981eae791fd2', w: 468, h: 60 }

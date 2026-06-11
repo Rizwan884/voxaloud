@@ -1,23 +1,59 @@
 import { constructMetadata } from '@/lib/metadata';
 import { Mic2, Globe, ShieldCheck, Heart } from 'lucide-react';
 import Link from 'next/link';
+import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
-  title: 'About Us | The Mission Behind Fish Audio Online',
-  description: 'Learn about our journey to democratize high-fidelity AI voice generation and our commitment to the creative community.',
+  title: 'About Fish Audio Online — The Free AI Text to Speech Platform',
+  description: 'Learn about Fish Audio Online — the professional-grade free AI text to speech platform. 500+ natural voices, 75+ languages, commercial use, no login.',
   path: '/about',
+  useExactTitle: true,
+  keywords: [
+    "about fish audio",
+    "ai voice platform",
+    "neural tts platform",
+    "text to speech company",
+    "ai voice generator about",
+    "professional voice synthesis"
+  ]
 });
 
 export default function AboutPage() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About",
+        "item": "https://fishaudio.online/about"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-surface">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-20">
         <header className="text-center space-y-6">
           <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
             Our <span className="text-muted">Mission.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted/80 max-w-2xl mx-auto font-medium leading-relaxed">
-            We are building the future of vocal expression—one syllable at a time. Our goal is to make professional-grade neural speech synthesis accessible to every creator on the planet.
+          <p className="text-lg md:text-xl text-muted/80 max-w-3xl mx-auto font-medium leading-relaxed">
+            We are building the world&apos;s leading <strong>free text to speech platform</strong> — one syllable at a time. 
+            Our goal is to make professional-grade <strong>ai voice synthesis</strong> and <strong>neural text to speech</strong> accessible 
+            to every creator on the planet. By offering a high-fidelity <strong>natural voice generator</strong> that produces 
+            <strong>human-like ai voice</strong> files, we empower users with a reliable, registration-free <strong>commercial tts platform</strong>.
           </p>
         </header>
 
@@ -73,6 +109,13 @@ export default function AboutPage() {
             </Link>
           </div>
         </section>
+
+        <div className="hidden md:block pt-8">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden pt-8">
+          <AdBanner type="320x50" />
+        </div>
       </main>
     </div>
   );

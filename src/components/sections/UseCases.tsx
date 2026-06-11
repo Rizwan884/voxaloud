@@ -4,17 +4,17 @@ export default function UseCases() {
   const cases = [
     { 
       title: "Content Creators", 
-      desc: "Perfect for YouTube videos, TikTok, and Instagram Reels. Add natural narration to your visuals without hiring voice actors.",
+      desc: "Perfect for creating text to speech for YouTube, tts for TikTok, and Instagram Reels. Add professional ai voiceover for youtube and social shorts without a mic.",
       icon: Play
     },
     { 
       title: "Audiobooks & Podcasts", 
-      desc: "Convert long-form text into engaging audio content. Ideal for bloggers looking to provide an audio version of their articles.",
+      desc: "Convert text to speech for audiobooks and generate high-fidelity tts for podcasts. Deliver engaging stories with customized narration.",
       icon: Music2
     },
     { 
       title: "Business & Education", 
-      desc: "Elevate your presentations, corporate training videos, and e-learning modules with clear, professional narration.",
+      desc: "Elevate training modules with clear text to speech for e-learning. Use our engine as a professional ai narrator for videos and presentations.",
       icon: Presentation
     },
     { 

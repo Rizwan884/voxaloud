@@ -4,21 +4,55 @@ import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
 import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
+import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
 import Link from 'next/link';
 
 export const metadata = constructMetadata({
-  title: 'Instant Text to Voice Conversion | Neural Speech Synthesis',
-  description: 'Transform your written text into realistic human-like voices instantly. The most advanced text to voice technology for professional creators and businesses.',
+  title: 'Text to Voice Online — Convert Text to Speech Free | Fish Audio',
+  description: 'Convert text to voice online free. Choose from 500+ realistic AI voices in 75+ languages. Perfect for videos, podcasts, and presentations. Try now.',
   path: '/text-to-voice',
+  useExactTitle: true,
+  keywords: [
+    "text to voice",
+    "text to voice online",
+    "convert text to voice",
+    "text to voice free",
+    "voice reader",
+    "speech generator",
+    "audio generator"
+  ]
 });
 
 export default async function TextToVoicePage() {
   const initialVoices = await getVoices();
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Text to Voice",
+        "item": "https://fishaudio.online/text-to-voice"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-surface">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-24 md:space-y-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-24 md:space-y-32 text-left">
         <section className="space-y-12">
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95]">
@@ -31,7 +65,19 @@ export default async function TextToVoicePage() {
           <DynamicStudio initialVoices={initialVoices} />
         </section>
 
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <InfoBlock />
+
+        <div className="w-full py-4 border-t border-b border-border/40 space-y-2 bg-paper/30 rounded-2xl p-6">
+          <div className="text-[9px] font-black uppercase tracking-wider text-muted/50 text-left">Sponsored Advertisements</div>
+          <AdBanner type="native" />
+        </div>
         
         <SEOArticle 
           title="The Ultimate Guide to Text to Voice Conversion"
@@ -44,7 +90,7 @@ export default async function TextToVoicePage() {
               
               <h3>The Neural Conversion Pipeline</h3>
               <p>
-                Modern <strong>text to voice</strong> technology has moved beyond the simple "text-to-speech" engines of the past. Our pipeline involves multiple layers of neural analysis to ensure peak realism:
+                Modern <strong>text to voice</strong> technology has moved beyond the simple &quot;text-to-speech&quot; engines of the past. Our pipeline involves multiple layers of neural analysis to ensure peak realism:
               </p>
               
               <ul>
@@ -55,7 +101,7 @@ export default async function TextToVoicePage() {
 
               <h3>Why Performance Matters in Audio</h3>
               <p>
-                In a world saturated with digital content, the "feel" of a voice is just as important as the clarity. A robotic voice sends a signal of low quality to your audience. By using our advanced <Link href="/ai-voice-generator">AI voice generator</Link>, you are investing in the credibility of your brand. Our voices carry the weight and authority required for corporate training, the excitement needed for gaming, and the warmth essential for storytelling.
+                In a world saturated with digital content, the &quot;feel&quot; of a voice is just as important as the clarity. A robotic voice sends a signal of low quality to your audience. By using our advanced <Link href="/ai-voice-generator">AI voice generator</Link>, you are investing in the credibility of your brand. Our voices carry the weight and authority required for corporate training, the excitement needed for gaming, and the warmth essential for storytelling.
               </p>
               <p>
                 This level of <strong>text to voice</strong> performance is what differentiates a viral video from one that is quickly scrolled past. When a voice breathes, pauses, and emphasizes the right words, it builds an emotional connection with the listener that text alone cannot achieve.
@@ -78,7 +124,7 @@ export default async function TextToVoicePage() {
 
               <h3>How to Optimize Your Conversion</h3>
               <p>
-                To get the most out of our <strong>text to voice</strong> engine, consider the "flow" of your script. Short, punchy sentences often perform best for social media ads, while longer, more rhythmic sentences are ideal for long-form narration like podcasts or audiobooks. Don&apos;t be afraid to use phonetic spellings for unique names or industry-specific terms to guide the AI for a perfect delivery.
+                To get the most out of our <strong>text to voice</strong> engine, consider the &quot;flow&quot; of your script. Short, punchy sentences often perform best for social media ads, while longer, more rhythmic sentences are ideal for long-form narration like podcasts or audiobooks. Don&apos;t be afraid to use phonetic spellings for unique names or industry-specific terms to guide the AI for a perfect delivery.
               </p>
 
               <h3>Integration with Modern Workflows</h3>
@@ -92,7 +138,23 @@ export default async function TextToVoicePage() {
             </>
           }
         />
+
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <ConversionPack />
+
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <InternalLinks />
       </main>
     </div>

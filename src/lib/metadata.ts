@@ -7,6 +7,8 @@ interface MetadataProps {
   description: string;
   path: string;
   image?: string;
+  keywords?: string[];
+  useExactTitle?: boolean;
 }
 
 export function constructMetadata({
@@ -14,13 +16,16 @@ export function constructMetadata({
   description,
   path,
   image = '/branding/og-image.png',
+  keywords,
+  useExactTitle = false,
 }: MetadataProps): Metadata {
-  const fullTitle = `${title} | Fish Audio`;
+  const fullTitle = useExactTitle ? title : `${title} | Fish Audio`;
   const url = `${BASE_URL}${path}`;
 
   return {
     title: fullTitle,
     description,
+    keywords,
     alternates: {
       canonical: url,
     },

@@ -1,11 +1,20 @@
 import { constructMetadata } from '@/lib/metadata';
 import { Check, Zap, Crown, Building2 } from 'lucide-react';
 import Link from 'next/link';
+import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
-  title: 'Simple & Transparent Pricing',
-  description: 'Choose the perfect plan for your voice generation needs. Free tier available for beginners, with professional options for power users.',
+  title: 'Simple & Transparent Pricing Plans | Fish Audio Online',
+  description: 'Explore our flexible pricing plans. Fish Audio Online offers a generous free text to speech plan and premium features for content creators.',
   path: '/pricing',
+  useExactTitle: true,
+  keywords: [
+    "text to speech pricing",
+    "ai voice generator cost",
+    "free vs paid tts",
+    "fish audio pricing plans",
+    "voice cloning cost"
+  ]
 });
 
 const plans = [
@@ -34,9 +43,32 @@ const plans = [
 ];
 
 export default function PricingPage() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Pricing",
+        "item": "https://fishaudio.online/pricing"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-surface">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16 text-left">
         <header className="text-center space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold font-display text-ink">
             Simple, Transparent Pricing
@@ -78,6 +110,13 @@ export default function PricingPage() {
               </Link>
             </div>
           ))}
+        </div>
+
+        <div className="hidden md:block pt-8">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden pt-8">
+          <AdBanner type="320x50" />
         </div>
       </main>
     </div>
