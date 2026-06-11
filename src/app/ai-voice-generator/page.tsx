@@ -77,7 +77,7 @@ export default async function AIVoiceGeneratorPage() {
       
       {/* CSS Grid layout for Sidebar */}
       <main className="max-w-7xl mx-auto px-4 py-12 md:py-24">
-        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_280px] gap-12 items-start">
+        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_300px] gap-12 items-start">
           
           {/* Main Left Content */}
           <div className="space-y-24 md:space-y-32 min-w-0">
@@ -92,6 +92,14 @@ export default async function AIVoiceGeneratorPage() {
                   your podcast, or a commercial voiceover for your business, our 500+ premium neural voices have you covered. No login, no limits.
                 </p>
               </div>
+
+              <div className="hidden md:block">
+                <AdBanner type="728x90" />
+              </div>
+              <div className="md:hidden">
+                <AdBanner type="320x50" />
+              </div>
+
               <DynamicStudio initialVoices={initialVoices} />
             </section>
 
@@ -157,10 +165,17 @@ export default async function AIVoiceGeneratorPage() {
             <UseCases />
             <ConversionPack />
             <InternalLinks />
+
+            <div className="hidden md:block pt-8">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden pt-8">
+              <AdBanner type="320x50" />
+            </div>
           </div>
 
           {/* Sticky desktop right sidebar */}
-          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[250px] space-y-4">
+          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[300px] space-y-4">
             <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block">Advertisement</span>
             <AdBanner type="300x600" />
           </aside>

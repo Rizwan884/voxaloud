@@ -67,7 +67,7 @@ export default async function LanguagesPage() {
       />
       
       <main className="max-w-7xl mx-auto px-4 py-12 md:py-24">
-        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_280px] gap-12 items-start">
+        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_300px] gap-12 items-start">
           
           {/* Main Left Content */}
           <div className="space-y-24 min-w-0">
@@ -81,6 +81,13 @@ export default async function LanguagesPage() {
                 <strong> multilingual text to speech</strong> in over 75 languages instantly.
               </p>
             </header>
+
+            <div className="hidden md:block">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden">
+              <AdBanner type="320x50" />
+            </div>
 
             {/* Normal In-Content ad unit when screen size is below 1200px */}
             <div className="block min-[1200px]:hidden p-4 border border-border bg-paper/50 rounded-2xl">
@@ -167,10 +174,17 @@ export default async function LanguagesPage() {
                 Go to Studio
               </Link>
             </div>
+
+            <div className="hidden md:block pt-8">
+              <AdBanner type="728x90" />
+            </div>
+            <div className="md:hidden pt-8">
+              <AdBanner type="320x50" />
+            </div>
           </div>
 
           {/* Sticky desktop right sidebar */}
-          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[250px] space-y-4">
+          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[300px] space-y-4">
             <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block">Advertisement</span>
             <AdBanner type="300x600" />
           </aside>

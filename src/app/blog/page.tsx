@@ -26,6 +26,13 @@ export default async function BlogIndex() {
           </p>
         </header>
 
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.flatMap((post, index) => {
@@ -95,6 +102,13 @@ export default async function BlogIndex() {
             <p className="text-muted font-display font-black uppercase tracking-widest">Coming Soon.</p>
           </div>
         )}
+
+        <div className="hidden md:block pt-8">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden pt-8">
+          <AdBanner type="320x50" />
+        </div>
       </main>
     </div>
   );
