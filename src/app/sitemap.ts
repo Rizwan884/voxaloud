@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getBlogPosts } from '@/lib/blog';
 
+// Base URL for the Fish Audio Online production site
 const BASE_URL = 'https://fishaudio.online';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
