@@ -61,6 +61,13 @@ export default function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16">
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <header className="text-center space-y-6">
           <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-none">
             Text to Speech FAQ — <br /><span className="text-muted text-3xl md:text-6xl">Common Questions.</span>

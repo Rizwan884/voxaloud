@@ -45,6 +45,13 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-20">
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <header className="text-center space-y-6">
           <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
             Our <span className="text-muted">Mission.</span>

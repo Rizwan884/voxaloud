@@ -69,6 +69,13 @@ export default function PricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16 text-left">
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <header className="text-center space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold font-display text-ink">
             Simple, Transparent Pricing
@@ -110,6 +117,11 @@ export default function PricingPage() {
               </Link>
             </div>
           ))}
+        </div>
+
+        <div className="p-4 border border-border bg-paper/50 rounded-2xl">
+          <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
+          <AdBanner type="native" />
         </div>
 
         <div className="hidden md:block pt-8">

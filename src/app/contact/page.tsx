@@ -42,6 +42,14 @@ export default function ContactPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      <div className="max-w-6xl mx-auto px-4 pt-8">
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+      </div>
       <ContactClient />
       <div className="max-w-6xl mx-auto px-4 pb-16">
         <div className="hidden md:block">

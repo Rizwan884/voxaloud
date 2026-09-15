@@ -44,6 +44,13 @@ export default function TermsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12 text-left">
+        <div className="hidden md:block">
+          <AdBanner type="728x90" />
+        </div>
+        <div className="md:hidden">
+          <AdBanner type="320x50" />
+        </div>
+
         <header className="space-y-4">
           <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
             Terms of <span className="text-muted">Service.</span>
@@ -82,6 +89,11 @@ export default function TermsPage() {
             <li>Creating &quot;deepfakes&quot; intended to mislead or harm individuals.</li>
             <li>Attempting to bypass our security measures or reverse-engineer our AI models.</li>
           </ul>
+
+          <div className="not-prose my-10 p-4 border border-border bg-paper/50 rounded-2xl">
+            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
+            <AdBanner type="native" />
+          </div>
 
           <h3>4. Service Availability</h3>
           <p>
