@@ -47,8 +47,30 @@ export async function POST(req: NextRequest) {
 
     if (!cloneRes.ok) {
       const detail = await cloneRes.text();
-      console.error("[voice-clone/create] Fish Audio error:", detail);
-      return NextResponse.json({ error: "Voice cloning failed. Please try a clearer recording." }, { status: 502 });
+      console.error(`[voice-clone/create] Fish Audio error (${cloneRes.status}):`, detail);
+
+      if (cloneRes.status === 401 || cloneRes.status === 403) {
+        return NextResponse.json(
+          { error: "Voice cloning is temporarily unavailable (server configuration issue). Please try again later." },
+          { status: 502 }
+        );
+      }
+
+      // Fish Audio returns a plain, user-safe validation message — forward it
+      // so the real cause (bad format, duration, etc.) is visible instead of
+      // a generic catch-all.
+      let upstreamMessage: string | null = null;
+      try {
+        const parsed = JSON.parse(detail);
+        if (typeof parsed?.message === "string") upstreamMessage = parsed.message;
+      } catch {
+        // not JSON — ignore
+      }
+
+      return NextResponse.json(
+        { error: upstreamMessage ? `Voice cloning failed: ${upstreamMessage}` : "Voice cloning failed. Please try a clearer recording." },
+        { status: 502 }
+      );
     }
 
     const data = await cloneRes.json();
