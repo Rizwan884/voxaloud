@@ -5,7 +5,7 @@ import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
 import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
-import DynamicStudio from '@/components/DynamicStudio';
+import HomeStudioSwitcher from '@/components/HomeStudioSwitcher';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
 import { constructMetadata } from '@/lib/metadata';
@@ -13,11 +13,14 @@ import { GLOBAL_FAQS } from '@/lib/faqs';
 import ConversionPack from '@/components/sections/ConversionPack';
 
 export const metadata = constructMetadata({
-  title: "Fish Audio Online — Free AI Text to Speech | Natural Voice Generator",
-  description: "Generate natural AI voices free. 500+ realistic text to speech voices in 75+ languages. No login, no limits. Full commercial use. Try free now.",
+  title: "Fish Audio Online — Free AI Voice Cloning & Text to Speech",
+  description: "Clone any voice from a 15-second sample and generate natural AI speech free. 500+ ready-made voices, 75+ languages, instant voice cloning. No login required.",
   path: "/",
   useExactTitle: true,
   keywords: [
+    "ai voice cloning",
+    "voice cloning free",
+    "clone your voice online",
     "text to speech",
     "ai voice generator",
     "natural voice generator",
@@ -42,7 +45,7 @@ export default async function Home() {
     "applicationCategory": "MultimediaApplication",
     "operatingSystem": "Web",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "featureList": ["Natural voice generator","AI voice cloning","Text to speech free","500+ AI voices","75+ languages","Voice cloning","Commercial license"]
+    "featureList": ["AI voice cloning","Instant voice clone from short sample","Natural voice generator","Text to speech free","500+ AI voices","75+ languages","Commercial license"]
   };
 
   const faqSchema = {
@@ -80,7 +83,7 @@ export default async function Home() {
             
             {/* Compact studio panel */}
             <div className="lg:col-span-6 w-full">
-              <DynamicStudio initialVoices={initialVoices} />
+              <HomeStudioSwitcher initialVoices={initialVoices} />
             </div>
           </div>
         </main>

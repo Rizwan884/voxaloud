@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import StickyAdBanner from "@/components/StickyAdBanner";
-import Script from "next/script";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -72,20 +72,17 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
-        <Schema />
-        <AdBlockDetector />
-        <ExitIntentPopup />
-        <StickyAdBanner />
-        <Navbar />
-        <main className="flex-1 pb-[90px] md:pb-[110px]">
-          {children}
-        </main>
-        <Footer />
-        {/* Social Bar script */}
-        <Script 
-          src="https://pl29585435.effectivecpmnetwork.com/5f/70/71/5f7071c1fd1ff9b2f754a5cffbc01abc.js" 
-          strategy="afterInteractive" 
-        />
+        <AuthProvider>
+          <Schema />
+          <AdBlockDetector />
+          <ExitIntentPopup />
+          <StickyAdBanner />
+          <Navbar />
+          <main className="flex-1 pb-[90px] md:pb-[110px]">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

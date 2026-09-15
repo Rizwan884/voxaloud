@@ -39,6 +39,7 @@ export default function Footer() {
       title: 'Product',
       links: [
         { label: 'Studio', href: '/' },
+        { label: 'Voice Cloning', href: '/voice-clone' },
         { label: 'AI Voice Generator', href: '/ai-voice-generator' },
         { label: 'Free Text to Speech', href: '/free-text-to-speech' },
         { label: 'Text to Voice', href: '/text-to-voice' },

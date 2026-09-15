@@ -3,6 +3,7 @@ import { Sparkles } from 'lucide-react';
 
 export default function InternalLinks() {
   const links = [
+    { href: '/voice-clone', label: 'AI Voice Cloning', desc: 'Clone any voice in 15 seconds' },
     { href: '/ai-voice-generator', label: 'AI Voice Generator', desc: 'Professional neural synthesis' },
     { href: '/free-text-to-speech', label: 'Free Text to Speech', desc: 'No-cost unlimited generation' },
     { href: '/text-to-voice', label: 'Text to Voice', desc: 'Instant realistic conversion' },

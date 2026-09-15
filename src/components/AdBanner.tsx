@@ -15,7 +15,17 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
       <script async="async" data-cfasync="false" src="https://pl29585427.effectivecpmnetwork.com/2a41359e68ff14c9d105434dff8272a9/invoke.js"></script>
       <div id="container-2a41359e68ff14c9d105434dff8272a9"></div>
     `;
-    return <iframe srcDoc={srcDoc} width="100%" height="250" className="border-0 overflow-hidden bg-transparent" scrolling="no" />;
+    return (
+      <iframe
+        srcDoc={srcDoc}
+        width="100%"
+        height="250"
+        className="border-0 overflow-hidden bg-transparent"
+        scrolling="no"
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+        referrerPolicy="no-referrer"
+      />
+    );
   }
 
   const ad = ads[type];
@@ -35,12 +45,14 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
 
   return (
     <div className="flex justify-center items-center my-4 overflow-hidden bg-surface-2 rounded-xl">
-      <iframe 
-        srcDoc={srcDoc} 
-        width={ad.w} 
-        height={ad.h} 
-        className="border-0 bg-transparent" 
-        scrolling="no" 
+      <iframe
+        srcDoc={srcDoc}
+        width={ad.w}
+        height={ad.h}
+        className="border-0 bg-transparent"
+        scrolling="no"
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+        referrerPolicy="no-referrer"
       />
     </div>
   );

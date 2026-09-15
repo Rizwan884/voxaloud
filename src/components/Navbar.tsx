@@ -5,11 +5,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import UserMenu from '@/components/auth/UserMenu';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
+    { label: 'Voice Clone', href: '/voice-clone', badge: 'NEW' },
     { label: 'AI Generator', href: '/ai-voice-generator' },
     { label: 'Languages', href: '/languages' },
     { label: 'Blog', href: '/blog' },
@@ -37,13 +39,17 @@ export default function Navbar() {
         {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-8 text-[12px] font-bold uppercase tracking-wider text-muted">
           {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="hover:text-ink transition-colors">
+            <Link key={link.label} href={link.href} className="hover:text-ink transition-colors flex items-center gap-1.5">
               {link.label}
+              {link.badge && (
+                <span className="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">{link.badge}</span>
+              )}
             </Link>
           ))}
           <Link href="/" className="btn-primary !px-5 !py-2 !rounded-full !text-[11px] uppercase tracking-wider">
             Studio
           </Link>
+          <UserMenu />
         </div>
 
         {/* Mobile Hamburger Trigger */}
@@ -102,22 +108,26 @@ export default function Navbar() {
                 {/* List Links */}
                 <div className="flex flex-col gap-6 text-sm font-bold uppercase tracking-wider text-muted">
                   {navLinks.map((link) => (
-                    <Link 
-                      key={link.label} 
-                      href={link.href} 
+                    <Link
+                      key={link.label}
+                      href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="hover:text-ink transition-colors py-1"
+                      className="hover:text-ink transition-colors py-1 flex items-center gap-2"
                     >
                       {link.label}
+                      {link.badge && (
+                        <span className="bg-green-100 text-green-700 text-[8px] font-black px-1.5 py-0.5 rounded-full">{link.badge}</span>
+                      )}
                     </Link>
                   ))}
                 </div>
               </div>
 
               {/* Drawer Bottom CTA */}
-              <div className="pt-6 border-t border-border">
-                <Link 
-                  href="/" 
+              <div className="pt-6 border-t border-border space-y-4">
+                <UserMenu variant="mobile" />
+                <Link
+                  href="/"
                   onClick={() => setIsOpen(false)}
                   className="btn-primary w-full !py-3.5 !rounded-xl text-center uppercase tracking-widest text-xs font-black shadow-md shadow-ink/10"
                 >
