@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Globe, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import AppBadges from './AppBadges';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -108,9 +109,18 @@ export default function Footer() {
           ))}
         </div>
 
+        {/* Big, prominent mobile app CTA — shown on every page via this footer */}
+        <div className="rounded-3xl bg-ink text-paper p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 mb-4">
+          <div className="text-center md:text-left space-y-1.5">
+            <h4 className="text-xl md:text-2xl font-black font-display uppercase tracking-tight">Take Fish Audio Anywhere</h4>
+            <p className="text-sm text-paper/70 font-medium">Clone your voice and generate speech on the go — download the free app.</p>
+          </div>
+          <AppBadges size="large" onDark className="justify-center" />
+        </div>
+
         <div className="border-t border-border/60 pt-8 pb-4">
           <p className="text-xs text-muted/70 leading-relaxed font-medium">
-            Fish Audio Online is the world&apos;s leading free text to speech platform. 
+            Fish Audio Online is the world&apos;s leading free text to speech platform.
             Convert text to speech online using 500+ AI voices in 75+ languages. 
             Our natural voice generator offers realistic AI narration, voice cloning, 
             and commercial-use audio — all completely free. No registration required.

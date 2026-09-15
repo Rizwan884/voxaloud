@@ -5,12 +5,17 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com
 
 interface Props {
   className?: string;
-  size?: 'default' | 'compact';
+  size?: 'compact' | 'default' | 'large';
+  /** Badges are black-on-transparent by default (their official style) — on
+   * a dark section, wrap them in a light card instead of recoloring them. */
+  onDark?: boolean;
 }
 
-export default function AppBadges({ className = '', size = 'default' }: Props) {
-  const h = size === 'compact' ? 30 : 42;
-  const w = size === 'compact' ? 100 : 140;
+const SIZES = { compact: { w: 100, h: 30 }, default: { w: 140, h: 42 }, large: { w: 190, h: 56 } };
+
+export default function AppBadges({ className = '', size = 'default', onDark = false }: Props) {
+  const { w, h } = SIZES[size];
+  const wrapClass = onDark ? 'bg-paper rounded-xl p-1.5 shadow-md' : '';
 
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
@@ -18,7 +23,7 @@ export default function AppBadges({ className = '', size = 'default' }: Props) {
         href={APP_STORE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block hover:opacity-80 active:scale-[0.98] transition-all"
+        className={`inline-flex hover:opacity-80 active:scale-[0.98] transition-all ${wrapClass}`}
         aria-label="Download Fish Audio on the App Store"
       >
         <Image
@@ -34,7 +39,7 @@ export default function AppBadges({ className = '', size = 'default' }: Props) {
         href={PLAY_STORE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block hover:opacity-80 active:scale-[0.98] transition-all"
+        className={`inline-flex hover:opacity-80 active:scale-[0.98] transition-all ${wrapClass}`}
         aria-label="Get Fish Audio on Google Play"
       >
         <Image

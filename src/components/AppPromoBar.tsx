@@ -51,7 +51,7 @@ export default function AppPromoBar() {
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">
-              <AppBadges size="compact" className="!gap-2 [&_img]:!brightness-0 [&_img]:!invert" />
+              <AppBadges size="compact" onDark className="!gap-2" />
               <button onClick={handleDismiss} aria-label="Dismiss" className="p-1 text-paper/60 hover:text-paper hover:bg-paper/10 rounded-full transition-all">
                 <X size={15} />
               </button>
