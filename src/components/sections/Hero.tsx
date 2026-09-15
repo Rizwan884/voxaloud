@@ -1,4 +1,5 @@
 import { Mic2, ShieldCheck, Users } from 'lucide-react';
+import AppBadges from '@/components/AppBadges';
 
 export default function Hero() {
   return (
@@ -43,6 +44,9 @@ export default function Hero() {
         <div className="w-1.5 h-1.5 rounded-full bg-border" />
         <span>No Login Required</span>
       </div>
+
+      {/* Mobile App Badges */}
+      <AppBadges className="pt-2" />
     </div>
   );
 }
