@@ -289,7 +289,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
 
           {!isFull && (
             <Link href="/voice-clone" className="inline-flex items-center gap-1.5 text-[10px] font-bold text-muted hover:text-ink uppercase tracking-wider transition-colors">
-              Search 1,000+ community voices in the full studio <ArrowRight size={11} />
+              Search 1M+ community voices in the full studio <ArrowRight size={11} />
             </Link>
           )}
         </div>

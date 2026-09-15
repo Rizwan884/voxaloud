@@ -45,7 +45,7 @@ const CLONE_FAQS = [
   },
   {
     q: 'Can I search and use other people’s public voices?',
-    a: 'Yes — the Discover Library tab lets you search thousands of community-shared voice models and use any of them instantly for your own text to speech generations.',
+    a: 'Yes — the Discover Library tab lets you search over 1 million community-shared voice models and use any of them instantly for your own text to speech generations.',
   },
   {
     q: 'What can I use a cloned voice for?',
@@ -115,7 +115,7 @@ export default function VoiceClonePage() {
                 </h1>
                 <p className="text-sm md:text-base text-muted/80 max-w-3xl mx-auto font-medium leading-relaxed text-left md:text-center">
                   Record or upload a short sample and our neural engine builds a private voice model in seconds.
-                  Type anything and hear it spoken back in that voice — or search thousands of community voices
+                  Type anything and hear it spoken back in that voice — or search 1M+ community voices
                   in the Discover Library. No signup, no watermark, up to 1,000 characters per generation.
                 </p>
               </div>
@@ -131,7 +131,7 @@ export default function VoiceClonePage() {
                 <div className="card p-5 flex items-start gap-3">
                   <Globe2 size={18} className="text-ink shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-black uppercase tracking-wide text-ink">1,000+ Community Voices</p>
+                    <p className="text-xs font-black uppercase tracking-wide text-ink">1M+ Community Voices</p>
                     <p className="text-[11px] text-muted mt-1 leading-relaxed">Search and reuse public voice models instantly.</p>
                   </div>
                 </div>
@@ -184,7 +184,7 @@ export default function VoiceClonePage() {
                   <h3>Search the Community Voice Library</h3>
                   <p>
                     Don&apos;t want to record your own sample? The <strong>Discover Library</strong> tab lets you search and
-                    preview thousands of publicly shared voice models — from narrators and podcast hosts to character voices —
+                    preview over 1 million publicly shared voice models — from narrators and podcast hosts to character voices —
                     and use any of them instantly for your own <strong>text to speech voice clone</strong> generations.
                   </p>
 

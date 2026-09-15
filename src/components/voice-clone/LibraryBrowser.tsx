@@ -21,6 +21,33 @@ interface Props {
   onUse: (voice: PublicVoice) => void;
 }
 
+// Fish Audio doesn't expose a public CDN URL for its voice cover images, so
+// each card gets a deterministic avatar instead — same voice always gets the
+// same color + initials, and it never 404s like a hotlinked image could.
+const AVATAR_PALETTE = [
+  'bg-blue-50 text-blue-700',
+  'bg-rose-50 text-rose-700',
+  'bg-amber-50 text-amber-700',
+  'bg-emerald-50 text-emerald-700',
+  'bg-violet-50 text-violet-700',
+  'bg-cyan-50 text-cyan-700',
+  'bg-orange-50 text-orange-700',
+  'bg-slate-100 text-slate-700',
+];
+
+function avatarClass(id: string) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+}
+
+function initials(title: string) {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return '?';
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
 export default function LibraryBrowser({ selectedId, onUse }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicVoice[]>([]);
@@ -69,7 +96,7 @@ export default function LibraryBrowser({ selectedId, onUse }: Props) {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search 1,000+ community voices — try “narrator”, “calm female”, “deep male”…"
+          placeholder="Search 1M+ community voices — try “narrator”, “calm female”, “deep male”…"
           className="field !pl-10 !py-3 !text-xs !rounded-xl"
         />
       </div>
@@ -96,11 +123,16 @@ export default function LibraryBrowser({ selectedId, onUse }: Props) {
                 className={`card p-4 flex flex-col gap-3 transition-all ${isSelected ? 'border-ink/30 ring-2 ring-ink/5' : 'hover:border-ink/10'}`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-xs font-black uppercase tracking-tight text-ink truncate">{voice.title}</p>
-                    <p className="text-[9px] text-muted font-bold uppercase tracking-widest mt-1">
-                      {voice.languages.join(', ') || 'Multilingual'} · by {voice.author}
-                    </p>
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <span className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[11px] font-black border border-black/5 ${avatarClass(voice.id)}`}>
+                      {initials(voice.title)}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-black uppercase tracking-tight text-ink truncate">{voice.title}</p>
+                      <p className="text-[9px] text-muted font-bold uppercase tracking-widest mt-1">
+                        {voice.languages.join(', ') || 'Multilingual'} · by {voice.author}
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => togglePreview(voice)}
