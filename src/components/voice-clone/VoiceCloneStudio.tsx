@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Mic2, Plus, Play, Pause, X, Loader2, Download, ArrowRight,
-  Library, Sparkles, Volume2, RefreshCw
+  Library, Sparkles, Volume2, RefreshCw, Check, PenLine, Wand2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import CloneRecorder from './CloneRecorder';
@@ -49,6 +49,11 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [justSelected, setJustSelected] = useState(false);
+  const voicePickerRef = useRef<HTMLDivElement | null>(null);
+  const textCardRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -71,12 +76,29 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
     };
   }, []);
 
+  // After any voice is selected, guide the user straight to "what's next":
+  // scroll the text editor into view, focus it, and briefly highlight it.
+  const goToTextEditor = () => {
+    setTimeout(() => {
+      textCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      textareaRef.current?.focus();
+      setJustSelected(true);
+      setTimeout(() => setJustSelected(false), 1600);
+    }, 50);
+  };
+
+  const handleSelectVoice = (voice: ClonedVoice) => {
+    setSelectedVoice(voice);
+    goToTextEditor();
+  };
+
   const handleCloned = (voice: ClonedVoice) => {
     const next = saveClonedVoice(voice);
     setVoices(next);
     setSelectedVoice(voice);
     setShowRecorder(false);
     setTab('my');
+    goToTextEditor();
   };
 
   const handleUseLibraryVoice = (voice: PublicVoice) => {
@@ -89,6 +111,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
     const next = saveClonedVoice(cloned);
     setVoices(next);
     setSelectedVoice(cloned);
+    goToTextEditor();
   };
 
   const handleDeleteVoice = async (id: string) => {
@@ -175,11 +198,43 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
     return <AuthGate variant={variant} configured={configured} />;
   }
 
+  const step = !selectedVoice ? 1 : !text.trim() ? 2 : 3;
+
   return (
     <div className="space-y-5">
       <audio ref={audioRef} />
 
+      {/* Step guide — always tells the user exactly what to do next */}
+      <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest">
+        {[
+          { n: 1, label: 'Pick a voice', icon: Mic2 },
+          { n: 2, label: 'Write your script', icon: PenLine },
+          { n: 3, label: 'Generate', icon: Wand2 },
+        ].map((s, i) => {
+          const isActive = step === s.n;
+          const isDone = step > s.n;
+          return (
+            <div key={s.n} className="flex items-center gap-1.5">
+              <div
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border transition-all ${
+                  isActive
+                    ? 'bg-ink text-paper border-ink'
+                    : isDone
+                    ? 'bg-green-50 text-green-700 border-green-100'
+                    : 'bg-paper text-muted/50 border-border'
+                }`}
+              >
+                {isDone ? <Check size={11} /> : <s.icon size={11} />}
+                <span className="hidden sm:inline">{s.label}</span>
+              </div>
+              {i < 2 && <div className={`w-3 h-px ${isDone ? 'bg-green-200' : 'bg-border'}`} />}
+            </div>
+          );
+        })}
+      </div>
+
       {/* Tabs */}
+      <div ref={voicePickerRef}>
       {isFull && (
         <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-xl w-fit">
           <button
@@ -196,6 +251,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
           </button>
         </div>
       )}
+      </div>
 
       {(!isFull || tab === 'my') && (
         <div className="space-y-4">
@@ -206,7 +262,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
                 return (
                   <div
                     key={v.id}
-                    onClick={() => setSelectedVoice(v)}
+                    onClick={() => handleSelectVoice(v)}
                     className={`group flex items-center gap-2 pl-3 pr-2 py-2 rounded-xl border cursor-pointer transition-all ${isSelected ? 'bg-ink text-paper border-ink' : 'bg-paper border-border hover:border-ink/20'}`}
                   >
                     <Volume2 size={13} className={isSelected ? 'text-paper/70' : 'text-muted'} />
@@ -245,12 +301,40 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
 
       {/* Text + Generate */}
       {voices.length > 0 && !showRecorder && (
-        <div className="card-surface overflow-hidden border-border/60">
+        <div
+          ref={textCardRef}
+          className={`card-surface overflow-hidden transition-all duration-500 ${justSelected ? 'ring-4 ring-ink/15 border-ink/30' : 'border-border/60'}`}
+        >
+          {/* Prominent, unmissable "who you're writing for" header */}
+          <div className={`flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/60 transition-colors ${selectedVoice ? 'bg-ink/[0.03]' : 'bg-amber-50/60'}`}>
+            {selectedVoice ? (
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-6 h-6 rounded-full bg-ink text-paper flex items-center justify-center shrink-0">
+                  <Volume2 size={12} />
+                </span>
+                <p className="text-xs font-black text-ink truncate">
+                  Now writing for <span className="uppercase">{selectedVoice.name}</span>
+                </p>
+              </div>
+            ) : (
+              <p className="text-xs font-black text-amber-700 flex items-center gap-2">
+                <Mic2 size={13} /> Pick a voice above to get started
+              </p>
+            )}
+            <button
+              onClick={() => voicePickerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+              className="text-[10px] font-bold text-muted hover:text-ink uppercase tracking-wider shrink-0 transition-colors"
+            >
+              {selectedVoice ? 'Change' : 'Choose voice'}
+            </button>
+          </div>
+
           <div className="relative">
             <textarea
+              ref={textareaRef}
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, CHAR_LIMIT))}
-              placeholder={selectedVoice ? `Type what ${selectedVoice.name} should say…` : 'Select a voice above, then type your script…'}
+              placeholder={selectedVoice ? `Type what ${selectedVoice.name} should say, then hit Generate…` : 'Select a voice above first — then type your script here…'}
               disabled={!selectedVoice}
               className="w-full min-h-[120px] px-5 py-4 text-sm text-ink placeholder:text-muted/40 bg-paper resize-none outline-none leading-relaxed disabled:opacity-50"
             />
@@ -258,10 +342,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
               {text.length}/{CHAR_LIMIT}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-border/60 bg-paper/50">
-            <span className="text-[9px] text-muted font-bold uppercase tracking-widest truncate">
-              {selectedVoice ? `Voice: ${selectedVoice.name}` : 'No voice selected'}
-            </span>
+          <div className="flex items-center justify-end gap-3 px-5 py-4 border-t border-border/60 bg-paper/50">
             <button
               onClick={handleGenerate}
               disabled={!text.trim() || !selectedVoice || isGenerating}

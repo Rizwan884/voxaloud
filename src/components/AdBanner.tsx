@@ -22,8 +22,7 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
         height="250"
         className="border-0 overflow-hidden bg-transparent"
         scrolling="no"
-        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
-        referrerPolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
       />
     );
   }
@@ -51,8 +50,7 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
         height={ad.h}
         className="border-0 bg-transparent"
         scrolling="no"
-        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
-        referrerPolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
       />
     </div>
   );
