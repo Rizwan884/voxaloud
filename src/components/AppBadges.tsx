@@ -1,9 +1,17 @@
 import Image from 'next/image';
 
-const APP_STORE_URL = 'https://apps.apple.com/app/id6775396336';
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.fishaudio.studio&hl=en';
+export const APP_STORE_URL = 'https://apps.apple.com/app/id6775396336';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.fishaudio.studio&hl=en';
 
-export default function AppBadges({ className = '' }: { className?: string }) {
+interface Props {
+  className?: string;
+  size?: 'default' | 'compact';
+}
+
+export default function AppBadges({ className = '', size = 'default' }: Props) {
+  const h = size === 'compact' ? 30 : 42;
+  const w = size === 'compact' ? 100 : 140;
+
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       <a
@@ -16,9 +24,9 @@ export default function AppBadges({ className = '' }: { className?: string }) {
         <Image
           src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us"
           alt="Download on the App Store"
-          width={140}
-          height={42}
-          className="h-[42px] w-auto"
+          width={w}
+          height={h}
+          style={{ height: h, width: 'auto' }}
           unoptimized
         />
       </a>
@@ -32,9 +40,9 @@ export default function AppBadges({ className = '' }: { className?: string }) {
         <Image
           src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
           alt="Get it on Google Play"
-          width={140}
-          height={42}
-          className="h-[42px] w-auto"
+          width={w}
+          height={h}
+          style={{ height: h, width: 'auto' }}
           unoptimized
         />
       </a>

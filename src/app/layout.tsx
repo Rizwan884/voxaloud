@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import StickyAdBanner from "@/components/StickyAdBanner";
+import AppPromoBar from "@/components/AppPromoBar";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 
 const inter = Inter({ 
@@ -77,6 +78,7 @@ export default function RootLayout({
           <AdBlockDetector />
           <ExitIntentPopup />
           <StickyAdBanner />
+          <AppPromoBar />
           <Navbar />
           <main className="flex-1 pb-[90px] md:pb-[110px]">
             {children}

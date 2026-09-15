@@ -342,7 +342,10 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
               {text.length}/{CHAR_LIMIT}
             </span>
           </div>
-          <div className="flex items-center justify-end gap-3 px-5 py-4 border-t border-border/60 bg-paper/50">
+          <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-border/60 bg-paper/50">
+            <span className="text-[9px] text-muted/60 font-bold uppercase tracking-widest hidden sm:flex items-center gap-1.5">
+              <Sparkles size={11} /> A short sponsor ad plays while it generates
+            </span>
             <button
               onClick={handleGenerate}
               disabled={!text.trim() || !selectedVoice || isGenerating}
@@ -377,13 +380,14 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
           >
             <div className="flex items-center gap-3">
               <Loader2 size={18} className="animate-spin text-ink" />
-              <span className="text-xs font-black uppercase tracking-wider text-ink">Cloning your voice&apos;s speech pattern…</span>
+              <span className="text-xs font-black uppercase tracking-wider text-ink">Generating your speech…</span>
             </div>
             <p className="text-[10px] text-muted font-semibold uppercase tracking-wider">
-              This usually takes a few seconds. Thanks for the patience — a quick word from our sponsors:
+              Sponsor ad showing now — it&apos;s what keeps voice cloning free. Your audio will be ready in a few seconds.
             </p>
-            <div className="w-full flex justify-center bg-surface-2 rounded-xl overflow-hidden">
+            <div className="w-full flex flex-col items-center gap-3 bg-surface-2 rounded-xl overflow-hidden py-3">
               <AdBanner type="300x250" />
+              <AdBanner type="native" />
             </div>
           </motion.div>
         ) : latestAudio ? (
