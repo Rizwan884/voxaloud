@@ -12,7 +12,7 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
   if (type === 'native') {
     const srcDoc = `
       <style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>
-      <script async="async" data-cfasync="false" src="https://pl29585427.effectivecpmnetwork.com/2a41359e68ff14c9d105434dff8272a9/invoke.js"></script>
+      <script async="async" data-cfasync="false" src="https://pl29585427.profitableratecpmnetwork.com/2a41359e68ff14c9d105434dff8272a9/invoke.js"></script>
       <div id="container-2a41359e68ff14c9d105434dff8272a9"></div>
     `;
     return (
@@ -39,7 +39,7 @@ export default function AdBanner({ type }: { type: '728x90' | '320x50' | '300x25
         'params' : {}
       };
     </script>
-    <script src="https://www.highperformanceformat.com/${ad.key}/invoke.js"></script>
+    <script src="https://www.highrevenueformat.com/${ad.key}/invoke.js"></script>
   `;
 
   return (
