@@ -9,7 +9,7 @@ export default function InternalLinks() {
     { href: '/text-to-voice', label: 'Text to Voice Converter', desc: 'Instant audio narration in 75+ languages' },
     { href: '/languages', label: '75+ Global Languages', desc: 'Explore regional accents and dialect models' },
     { href: '/commercial-use', label: 'Commercial Rights License', desc: '100% safe for YouTube monetization & ads' },
-    { href: '/pricing', label: 'Simple Pricing & Plans', desc: 'Explore generous free tier and creator pro features' },
+    { href: '/blog', label: 'Creator Blog & Tutorials', desc: 'Step-by-step guides on voice cloning & speech synthesis' },
   ];
 
   return (

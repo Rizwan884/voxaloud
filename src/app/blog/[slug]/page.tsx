@@ -1,13 +1,55 @@
 import { getBlogPost, getBlogPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Clock, Sparkles, ArrowRight, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { constructMetadata } from '@/lib/metadata';
 import InternalLinks from '@/components/sections/InternalLinks';
 import AdBanner from '@/components/AdBanner';
+import AppBadges from '@/components/AppBadges';
 import remarkGfm from 'remark-gfm';
+
+const mdxComponents = {
+  a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    if (!href) return <span {...props}>{children}</span>;
+    let finalHref = href;
+    if (href.includes('id6766869439')) {
+      finalHref = 'https://apps.apple.com/app/id6775396336';
+    } else if (href.includes('com.fishaudio.ai.tts.clone')) {
+      finalHref = 'https://play.google.com/store/apps/details?id=com.fishaudio.studio&hl=en';
+    }
+    const isInternal = finalHref.startsWith('/') || finalHref.startsWith('#');
+    if (isInternal) {
+      return (
+        <Link href={finalHref} className="text-accent hover:text-accent-hover font-semibold underline underline-offset-2 transition-colors" {...props}>
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <a href={finalHref} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover font-semibold underline underline-offset-2 transition-colors" {...props}>
+        {children}
+      </a>
+    );
+  },
+  img: ({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
+    let resolvedSrc = src;
+    if (typeof src === 'string' && (src === '/icon.png' || src.includes('icon.png'))) {
+      resolvedSrc = '/branding/app-icon.png';
+    }
+    return (
+      <img
+        src={resolvedSrc}
+        alt={alt || "Fish Audio Online"}
+        loading="lazy"
+        className="rounded-2xl max-w-full h-auto shadow-sm my-4 border border-border"
+        {...props}
+      />
+    );
+  },
+  AppBadges,
+};
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -36,6 +78,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   if (!post) {
     notFound();
   }
+
+  const allPosts = await getBlogPosts();
+  const relatedPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 3);
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -98,7 +143,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-12">
         
         {/* Navigation Breadcrumb Back */}
         <Link 
@@ -157,6 +202,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         ">
           <MDXRemote 
             source={post.content} 
+            components={mdxComponents}
             options={{
               mdxOptions: {
                 remarkPlugins: [remarkGfm],
@@ -164,6 +210,70 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             }}
           />
         </article>
+
+        {/* Dedicated Mobile & Web Studio Callout on EVERY blog article */}
+        <section className="card p-6 sm:p-8 bg-surface-2/80 border border-border space-y-5 rounded-3xl">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 relative rounded-2xl overflow-hidden shadow-sm border border-border shrink-0">
+                <Image src="/branding/app-icon.png" alt="Fish Audio App" fill sizes="48px" className="object-contain" />
+              </div>
+              <div>
+                <h4 className="text-base sm:text-lg font-bold font-display text-ink leading-tight">
+                  Try Fish Audio Free on Mobile &amp; Web
+                </h4>
+                <p className="text-xs sm:text-sm text-muted mt-0.5">
+                  Instant 15-second voice cloning, 500+ voices &bull; Full commercial rights
+                </p>
+              </div>
+            </div>
+            <Link href="/voice-clone" className="btn-accent !px-5 !py-2.5 !text-xs !font-semibold shrink-0">
+              <Sparkles size={14} />
+              <span>Clone Voice Online</span>
+            </Link>
+          </div>
+          <div className="pt-4 border-t border-border/70 flex flex-wrap items-center justify-between gap-4">
+            <p className="text-xs font-medium text-ink-2">
+              Download the official mobile app:
+            </p>
+            <AppBadges size="default" />
+          </div>
+        </section>
+
+        {/* Related Articles SEO Grid */}
+        {relatedPosts.length > 0 && (
+          <section className="space-y-6 pt-6">
+            <div className="flex items-center gap-2">
+              <BookOpen size={18} className="text-accent" />
+              <h3 className="text-xl font-bold font-display text-ink tracking-tight">
+                Recommended Articles
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedPosts.map((rel) => (
+                <Link
+                  key={rel.slug}
+                  href={`/blog/${rel.slug}`}
+                  className="card p-4 hover:border-accent/40 transition-all flex flex-col justify-between group"
+                >
+                  <div className="space-y-2">
+                    <p className="text-[11px] text-muted">{rel.date}</p>
+                    <h4 className="text-xs sm:text-sm font-bold font-display text-ink group-hover:text-accent transition-colors line-clamp-2">
+                      {rel.title}
+                    </h4>
+                    <p className="text-[11px] text-muted line-clamp-2">
+                      {rel.excerpt}
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t border-border/60 flex items-center justify-between text-[11px] font-semibold text-accent mt-3">
+                    <span>Read Guide</span>
+                    <ArrowRight size={11} className="group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Responsive In-Content Ad */}
         <AdBanner type="responsive" label={true} />

@@ -27,8 +27,11 @@ export const metadata: Metadata = {
   title: "Fish Audio Online — Free AI Voice Cloning & Text to Speech",
   description: "Experience professional-grade AI text-to-speech conversion and instant 15-second voice cloning with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
   icons: {
-    icon: "/branding/app-icon.png",
-    shortcut: "/branding/app-icon.png",
+    icon: [
+      { url: "/branding/favicon.png", sizes: "64x64", type: "image/png" },
+      { url: "/branding/app-icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/branding/favicon.png",
     apple: "/branding/app-icon.png",
   },
   openGraph: {
