@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Globe, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, ArrowRight, Loader2, CheckCircle2, ShieldCheck, Sparkles, Globe } from 'lucide-react';
 import AppBadges from './AppBadges';
 
 export default function Footer() {
@@ -29,154 +29,195 @@ export default function Footer() {
       } else {
         setStatus('error');
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       setStatus('error');
     }
   };
 
-  const sections = [
+  const navGroups = [
     {
       title: 'Product',
       links: [
-        { label: 'Studio', href: '/' },
-        { label: 'Voice Cloning', href: '/voice-clone' },
+        { label: 'Voice Cloning Studio', href: '/voice-clone', badge: 'New' },
         { label: 'AI Voice Generator', href: '/ai-voice-generator' },
         { label: 'Free Text to Speech', href: '/free-text-to-speech' },
-        { label: 'Text to Voice', href: '/text-to-voice' },
+        { label: 'Text to Voice Converter', href: '/text-to-voice' },
+        { label: '75+ Languages Library', href: '/languages' },
+        { label: 'Pricing & Plans', href: '/pricing' },
       ]
     },
     {
-      title: 'Company',
+      title: 'Solutions',
       links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'Blog', href: '/blog' },
-        { label: 'FAQ', href: '/faq' },
+        { label: 'YouTube & Video Creators', href: '/commercial-use' },
+        { label: 'Audiobooks & Podcasts', href: '/text-to-voice' },
+        { label: 'Commercial & Advertising', href: '/commercial-use' },
+        { label: 'Game & Indie Dev Audio', href: '/voice-clone' },
+        { label: 'Multilingual Dubbing', href: '/languages' },
       ]
     },
     {
-      title: 'Legal',
+      title: 'Resources',
       links: [
+        { label: 'Blog & Tutorials', href: '/blog' },
+        { label: 'Frequently Asked Questions', href: '/faq' },
+        { label: 'How to Clone a Voice', href: '/blog/how-to-clone-your-voice-with-ai' },
+        { label: 'Best Free TTS (2026)', href: '/blog/best-free-text-to-speech-2026' },
+      ]
+    },
+    {
+      title: 'Company & Legal',
+      links: [
+        { label: 'About Fish Audio', href: '/about' },
+        { label: 'Contact Support', href: '/contact' },
+        { label: 'Commercial License', href: '/commercial-use' },
         { label: 'Privacy Policy', href: '/privacy' },
         { label: 'Terms of Service', href: '/terms' },
-        { label: 'Commercial Use', href: '/commercial-use' },
       ]
     }
   ];
 
   return (
-    <footer className="bg-paper border-t border-border pt-16 pb-8">
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
-          <div className="col-span-2 lg:col-span-2 space-y-6">
-            <div className="flex items-center gap-3">
-              <Image 
-                src="/branding/app-icon.png" 
-                alt="Fish Audio Online — free AI text to speech generator with natural voices" 
-                width={40} 
-                height={40} 
-                className="object-contain" 
-              />
-              <span className="text-xl font-bold font-display text-ink">Fish Audio Online</span>
-            </div>
-            <p className="text-muted text-sm leading-relaxed max-w-sm font-medium">
-              The world&apos;s most advanced neural text-to-speech platform. Empowering creators with natural, emotive AI voices for every project.
+    <footer className="bg-surface border-t border-border mt-auto pt-16 pb-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        {/* Main Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-12 pb-14 border-b border-border/70">
+          
+          {/* Brand & Mission Column */}
+          <div className="col-span-2 md:col-span-6 lg:col-span-4 space-y-5">
+            <Link href="/" className="flex items-center gap-3 w-fit group">
+              <div className="relative w-8 h-8 rounded-xl overflow-hidden shadow-sm border border-border">
+                <Image 
+                  src="/branding/app-icon.png" 
+                  alt="Fish Audio Online Logo" 
+                  fill
+                  sizes="32px"
+                  className="object-contain" 
+                />
+              </div>
+              <span className="text-lg font-bold font-display text-ink">Fish Audio Online</span>
+            </Link>
+
+            <p className="text-muted text-sm leading-relaxed font-normal max-w-sm">
+              The high-fidelity neural voice cloning and text-to-speech platform. Empowering creators with natural, emotive AI narration in 75+ languages.
             </p>
-            <div className="flex items-center gap-4">
-              <Link href="https://twitter.com/fishaudio" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
-                <Globe size={16} className="group-hover:scale-110 transition-transform" />
-              </Link>
-              <Link href="mailto:contact@fishaudio.online" className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:text-ink hover:bg-paper transition-all border border-border shadow-sm group">
-                <Mail size={16} className="group-hover:scale-110 transition-transform" />
-              </Link>
+
+            {/* Status indicator */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-2 border border-border text-xs font-medium text-ink-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Neural Synthesis Engine: 99.98% Online</span>
+            </div>
+
+            {/* Social & Contact */}
+            <div className="flex items-center gap-3 pt-1">
+              <a 
+                href="https://twitter.com/fishaudio" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-muted hover:text-ink hover:bg-surface-3 transition-colors border border-border"
+                aria-label="Follow Fish Audio on Twitter"
+              >
+                <Globe size={15} />
+              </a>
+              <a 
+                href="mailto:contact@fishaudio.online" 
+                className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-muted hover:text-ink hover:bg-surface-3 transition-colors border border-border"
+                aria-label="Email Fish Audio Support"
+              >
+                <Mail size={15} />
+              </a>
             </div>
           </div>
 
-          {sections.map((section) => (
-            <div key={section.title} className="space-y-6">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-ink">{section.title}</h4>
-              <ul className="space-y-4">
-                {section.links.map((link) => (
+          {/* Nav Columns */}
+          {navGroups.map((group) => (
+            <div key={group.title} className="col-span-1 md:col-span-3 lg:col-span-2 space-y-4">
+              <h3 className="text-xs font-semibold text-ink uppercase tracking-wider">
+                {group.title}
+              </h3>
+              <ul className="space-y-2.5">
+                {group.links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-muted hover:text-ink transition-colors font-medium">
-                      {link.label}
+                    <Link 
+                      href={link.href} 
+                      className="text-xs text-muted hover:text-ink transition-colors font-normal inline-flex items-center gap-1.5"
+                    >
+                      <span>{link.label}</span>
+                      {link.badge && (
+                        <span className="bg-accent-light text-accent-text text-[9px] font-semibold px-1.5 py-0.2 rounded-full border border-accent-subtle">
+                          {link.badge}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+
         </div>
 
-        {/* Big, prominent mobile app CTA — shown on every page via this footer */}
-        <div className="rounded-3xl bg-ink text-paper p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 mb-4">
-          <div className="text-center md:text-left space-y-1.5">
-            <h4 className="text-xl md:text-2xl font-black font-display uppercase tracking-tight">Take Fish Audio Anywhere</h4>
-            <p className="text-sm text-paper/70 font-medium">Clone your voice and generate speech on the go — download the free app.</p>
+        {/* Mid-Row: App CTA & Newsletter */}
+        <div className="py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-b border-border/70">
+          
+          {/* App download teaser */}
+          <div className="lg:col-span-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface-2 border border-border">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+                <Sparkles size={13} className="text-accent" />
+                <span>Fish Audio for Mobile</span>
+              </div>
+              <p className="text-xs text-muted">Clone voices and generate audio on iOS & Android.</p>
+            </div>
+            <AppBadges size="compact" className="shrink-0" />
           </div>
-          <AppBadges size="large" onDark className="justify-center" />
-        </div>
 
-        <div className="border-t border-border/60 pt-8 pb-4">
-          <p className="text-xs text-muted/70 leading-relaxed font-medium">
-            Fish Audio Online is the world&apos;s leading free text to speech platform.
-            Convert text to speech online using 500+ AI voices in 75+ languages. 
-            Our natural voice generator offers realistic AI narration, voice cloning, 
-            and commercial-use audio — all completely free. No registration required.
-          </p>
-        </div>
-
-        {/* Inline Email Capture Form */}
-        <div className="border-t border-border/60 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-1.5 max-w-md">
-            <h4 className="text-sm font-black uppercase tracking-wider text-ink">Subscribe to updates</h4>
-            <p className="text-xs text-muted font-medium">Get notified when we release new voice models and features.</p>
-          </div>
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-            <div className="relative flex-1">
+          {/* Newsletter / Updates Form */}
+          <div className="lg:col-span-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1 max-w-xs">
+              <h4 className="text-xs font-semibold text-ink uppercase tracking-wider">Stay Updated</h4>
+              <p className="text-xs text-muted">Get notified when new neural voice models are released.</p>
+            </div>
+            <form onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto flex-1 sm:max-w-xs">
               <input 
                 type="email" 
                 required
-                placeholder="Your email address" 
+                placeholder="Enter email..." 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="field !py-3 !px-4 !rounded-xl text-xs"
+                className="field !py-2 !px-3.5 !rounded-xl !text-xs flex-1"
                 disabled={status === 'loading'}
               />
-              {status === 'success' && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-green-600 text-[10px] font-bold uppercase tracking-wider bg-paper pl-2">
-                  <CheckCircle2 size={12} />
-                  Subscribed!
-                </div>
-              )}
-            </div>
-            <button 
-              type="submit" 
-              className="btn-primary !px-5 !py-3 !rounded-xl text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2"
-              disabled={status === 'loading'}
-            >
-              {status === 'loading' ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <>
-                  Subscribe
-                  <ArrowRight size={14} />
-                </>
-              )}
-            </button>
-          </form>
+              <button 
+                type="submit" 
+                className="btn-primary !py-2 !px-4 !rounded-xl !text-xs shrink-0"
+                disabled={status === 'loading'}
+              >
+                {status === 'loading' ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : status === 'success' ? (
+                  <CheckCircle2 size={13} className="text-emerald-400" />
+                ) : (
+                  <ArrowRight size={13} />
+                )}
+              </button>
+            </form>
+          </div>
+
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted font-medium">
+        {/* Bottom Metadata & Legal Bar */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={14} className="text-emerald-600" />
+            <span>100% Commercial Rights Included on All Generations.</span>
+          </div>
+          <p>
             &copy; {currentYear} Fish Audio Online. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-             <Link href="/privacy" className="text-[10px] uppercase tracking-wider font-bold text-muted hover:text-ink">Privacy</Link>
-             <Link href="/terms" className="text-[10px] uppercase tracking-wider font-bold text-muted hover:text-ink">Terms</Link>
-          </div>
         </div>
+
       </div>
     </footer>
   );

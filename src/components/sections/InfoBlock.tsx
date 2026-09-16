@@ -1,43 +1,62 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function InfoBlock() {
   const benefits = [
-    'No Registration Required',
-    'Full Commercial Rights',
-    '500+ Premium AI Voices',
-    '75+ Global Languages'
+    { title: 'No Registration Required', desc: 'Instant anonymous creation without email forms.' },
+    { title: 'Full Commercial Rights', desc: '100% royalty-free monetization across all media.' },
+    { title: '500+ Premium AI Voices', desc: 'Diverse character, narration, and ad personas.' },
+    { title: '75+ Global Languages', desc: 'Authentic dialect inflection and accents.' },
   ];
 
   return (
-    <section className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
-      <div className="space-y-8 max-w-2xl">
-        <div className="space-y-4">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight font-display text-ink leading-tight uppercase">
-            Professional Grade <br /><span className="text-muted">Total Freedom.</span>
+    <section className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 py-12">
+      <div className="space-y-6 max-w-xl text-left">
+        <div className="space-y-3">
+          <span className="badge-accent">
+            Built for Creators
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-ink tracking-tight leading-tight">
+            Professional audio quality with <br />
+            <span className="text-muted font-normal">complete creative freedom.</span>
           </h2>
-          <p className="text-muted/80 text-lg leading-relaxed font-medium">
-            Fish Audio Online isn&apos;t just another text-to-speech tool. It&apos;s a professional-grade neural synthesis platform designed for the modern creator economy.
+          <p className="text-base text-ink-2 font-normal leading-relaxed">
+            Fish Audio Online is engineered for the modern content economy. We believe high-quality AI narration should be accessible to every creator, developer, and educator without complex software barriers.
           </p>
         </div>
         
-        <p className="text-muted/70 text-sm md:text-base leading-relaxed font-medium">
-          We believe high-quality AI narration should be accessible to everyone. That&apos;s why we&apos;ve removed all the barriers. No credit cards, no complex subscriptions, and no hidden limitations. Just paste your script and let our advanced neural models bring your words to life in any language you need.
+        <p className="text-sm text-muted leading-relaxed font-normal">
+          No credit card commitments, no artificial download caps, and no watermark restrictions. Simply paste your script and let our neural acoustic models synthesize lifelike vocal performances in any language.
         </p>
 
-        <div className="flex flex-wrap gap-4">
-          <button className="px-8 py-4 rounded-2xl bg-ink text-paper font-bold text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-ink/10">
-            Start Generating
-          </button>
+        <div className="pt-2">
+          <Link 
+            href="/voice-clone" 
+            className="btn-accent !px-6 !py-3 !text-sm group"
+          >
+            <span>Start Voice Studio</span>
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 w-full lg:w-auto">
-        {benefits.map((title, i) => (
-          <div key={i} className="p-8 md:p-10 card-surface flex flex-col items-center justify-center text-center group hover:border-ink/20 transition-all duration-300">
-            <div className="w-12 h-12 rounded-full bg-ink/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <CheckCircle2 className="text-ink" size={24} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:max-w-md">
+        {benefits.map((item) => (
+          <div 
+            key={item.title} 
+            className="card p-6 flex flex-col space-y-3 hover:border-accent/40 group transition-all"
+          >
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <CheckCircle2 size={18} />
             </div>
-            <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-ink leading-tight">{title}</span>
+            <div className="space-y-1">
+              <h4 className="text-sm font-bold font-display text-ink group-hover:text-accent transition-colors">
+                {item.title}
+              </h4>
+              <p className="text-xs text-muted leading-relaxed font-normal">
+                {item.desc}
+              </p>
+            </div>
           </div>
         ))}
       </div>

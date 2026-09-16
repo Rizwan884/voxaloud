@@ -7,6 +7,7 @@ import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
+import { Sparkles, ShieldCheck, Zap, Globe2 } from 'lucide-react';
 
 export const metadata = constructMetadata({
   title: 'Free AI Voice Generator — 500+ Natural Neural Voices | Fish Audio',
@@ -35,7 +36,7 @@ export default async function AIVoiceGeneratorPage() {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Fish Audio AI Voice Generator",
-    "operatingSystem": "All",
+    "operatingSystem": "Web, iOS, Android",
     "applicationCategory": "MultimediaApplication",
     "offers": {
       "@type": "Offer",
@@ -65,7 +66,7 @@ export default async function AIVoiceGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
@@ -75,113 +76,93 @@ export default async function AIVoiceGeneratorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       
-      {/* CSS Grid layout for Sidebar */}
-      <main className="max-w-7xl mx-auto px-4 py-12 md:py-24">
-        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_300px] gap-12 items-start">
-          
-          {/* Main Left Content */}
-          <div className="space-y-24 md:space-y-32 min-w-0">
-            <section className="space-y-12">
-              <div className="text-center space-y-6">
-                <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95] text-left">
-                  Free AI Voice Generator — <br /><span className="text-muted">Natural Neural Voices.</span>
-                </h1>
-                <p className="text-sm md:text-base text-muted/80 max-w-3xl font-medium leading-relaxed text-left">
-                  Welcome to Fish Audio&apos;s AI voice generator — the most advanced free text to speech platform available online. 
-                  Generate realistic AI voices from any text in seconds. Whether you need an AI narrator for YouTube, a natural voice for 
-                  your podcast, or a commercial voiceover for your business, our 500+ premium neural voices have you covered. No login, no limits.
-                </p>
-              </div>
-
-              <div className="hidden md:block">
-                <AdBanner type="728x90" />
-              </div>
-              <div className="md:hidden">
-                <AdBanner type="320x50" />
-              </div>
-
-              <DynamicStudio initialVoices={initialVoices} />
-            </section>
-
-            {/* Normal In-Content ad unit when screen size is below 1200px */}
-            <div className="block min-[1200px]:hidden p-4 border border-border bg-paper/50 rounded-2xl">
-              <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
-              <AdBanner type="300x250" />
-            </div>
-
-            <Features />
-            
-            <SEOArticle 
-              title="Best AI Voice Generator for Content Creators"
-              subtitle="Unlocking professional-grade voice synthesis with neural networks"
-              content={
-                <>
-                  <p>
-                    The search for the <strong>best AI voice generator</strong> ends here. With Fish Audio Online, you get access to a 
-                    premium <strong>free AI voice generator</strong> that requires no registrations or subscriptions. Our technology is 
-                    designed to let you produce natural-sounding <strong>AI voice online</strong> files without the complexity of traditional 
-                    studios. It is the ultimate utility for creators who want to scale their content pipelines efficiently.
-                  </p>
-                  
-                  <h3>Why Use an AI Voice Generator?</h3>
-                  <p>
-                    A high-quality <strong>voice generator</strong> does more than translate text to audio; it adds character, emotion, 
-                    and context. Traditional text-to-speech tools sounded robotic and flat. With modern <strong>voice synthesis</strong> and 
-                    <strong>neural voice generator</strong> models, the synthesized audio sounds indistinguishable from real human speech. 
-                    Whether you need a compelling <strong>AI narrator</strong> for educational guides or professional ads, our tool provides 
-                    the variety you need.
-                  </p>
-                  
-                  <h3>AI Voice Generator Features</h3>
-                  <p>
-                    Our platform stands out by offering robust capabilities completely free. By using Fish Audio Online, you get the benefit of 
-                    <strong>AI voice generator no login</strong> and <strong>AI voice generator free online</strong> generation. We leverage 
-                    sophisticated models to offer:
-                  </p>
-                  <ul>
-                    <li><strong>High-Fidelity Audio:</strong> Synthesized outputs in clear, studio-grade 44kHz quality.</li>
-                    <li><strong>No Restrictions:</strong> Fully functional <strong>AI voice without signup</strong> with high character limits.</li>
-                    <li><strong>Commercial Rights:</strong> Keep and use all generated files commercially without royalty concerns.</li>
-                    <li><strong>Modern Models:</strong> Enjoy advanced <strong>free AI voice 2026</strong> neural synthesis for perfect pronunciation.</li>
-                  </ul>
-
-                  <h3>AI Voice for YouTube, TikTok & Podcasts</h3>
-                  <p>
-                    Content creators are constantly looking for the best audio solutions. If you run a faceless channel, finding the 
-                    <strong>best AI voice generator for YouTube</strong> is critical to keep your audience engaged. Similarly, having a 
-                    reliable <strong>AI voice for TikTok</strong> helps generate viral clips in seconds. 
-                    With Fish Audio, you can customize your narrator style, speed, and pitch to create engaging <strong>AI text to speech free</strong> 
-                    tracks for podcasts, reels, shorts, and corporate training videos.
-                  </p>
-                  
-                  <p>
-                    Ready to transform your scripts into engaging speech? Try our premium <strong>text to speech AI</strong> tools and start 
-                    generating lifelike voiceovers today. No credit cards, no logins — just open the studio and bring your stories to life.
-                  </p>
-                </>
-              }
-            />
-
-            <UseCases />
-            <ConversionPack />
-            <InternalLinks />
-
-            <div className="hidden md:block pt-8">
-              <AdBanner type="728x90" />
-            </div>
-            <div className="md:hidden pt-8">
-              <AdBanner type="320x50" />
-            </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-20 sm:space-y-28">
+        
+        {/* Hero Section */}
+        <section className="text-center space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
+            <Sparkles size={13} className="text-accent" />
+            <span>500+ Neural Voices &bull; 75+ Languages &bull; Zero Login Barrier</span>
           </div>
 
-          {/* Sticky desktop right sidebar */}
-          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[300px] space-y-4">
-            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block">Advertisement</span>
-            <AdBanner type="300x600" />
-          </aside>
-          
-        </div>
-      </main>
-    </div>
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+              Free AI voice generator <br />
+              <span className="text-muted font-normal">with natural neural voices.</span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed max-w-2xl mx-auto">
+              Synthesize realistic, human-like voiceovers from any text in seconds. Whether you need a compelling narrator for YouTube, podcast intros, or business presentations, our studio voices deliver artifact-free speech.
+            </p>
+          </div>
+
+          {/* Value Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-medium text-ink-2 pt-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <ShieldCheck size={13} className="text-emerald-600" />
+              100% Commercial License
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <Zap size={13} className="text-accent" />
+              No Registration Required
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <Globe2 size={13} className="text-indigo-600" />
+              75+ Global Accents
+            </span>
+          </div>
+        </section>
+
+        {/* Studio Panel */}
+        <section className="card-elevated p-2 sm:p-4 bg-surface">
+          <DynamicStudio initialVoices={initialVoices} />
+        </section>
+
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Live Audio Demos */}
+        <ConversionPack />
+
+        {/* Features Bento */}
+        <Features />
+        
+        {/* SEO Explainer Article */}
+        <SEOArticle 
+          title="Best AI Voice Generator for Content Creators & Studios"
+          subtitle="Unlocking broadcast-grade voice synthesis powered by modern neural networks"
+          content={
+            <>
+              <p>
+                The search for the <strong>best AI voice generator</strong> ends here. With Fish Audio Online, you get access to a premium <strong>free AI voice generator</strong> that requires no registrations or forced subscriptions. Our technology is designed to produce natural-sounding <strong>AI voice online</strong> files without the friction or expense of traditional recording studios.
+              </p>
+              
+              <h3>Why Choose Neural Voice Synthesis?</h3>
+              <p>
+                Modern <strong>voice synthesis</strong> does far more than read text out loud; it infuses punctuation, inflection, and cadence into every phrase. Traditional text-to-speech tools sounded robotic and monotonous. Fish Audio&apos;s <strong>neural voice generator</strong> models synthesize natural pauses and breath cadences that sound remarkably human.
+              </p>
+              
+              <h3>High-Fidelity Studio Capabilities</h3>
+              <ul>
+                <li><strong>500+ Ready-to-Use Voices:</strong> Choose from dynamic male, female, youthful, authoritative, and character voices.</li>
+                <li><strong>75+ International Languages:</strong> Localize scripts across English, Spanish, Hindi, French, German, Japanese, and more.</li>
+                <li><strong>Fine-Grained Pitch &amp; Speed Controls:</strong> Tailor audio speed and emotional weight to match your visual video pacing.</li>
+                <li><strong>Full Commercial Rights:</strong> Monetize all synthesized speech on YouTube, TikTok, podcasts, and corporate ads.</li>
+              </ul>
+            </>
+          }
+        />
+
+        {/* Versatility Cases */}
+        <UseCases />
+
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Internal Interlinking */}
+        <InternalLinks />
+
+      </div>
+    </main>
   );
 }

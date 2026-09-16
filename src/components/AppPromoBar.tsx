@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, Gift, ArrowRight } from 'lucide-react';
+import { X, Sparkles, ArrowRight } from 'lucide-react';
 import AppBadges from './AppBadges';
 import { useAuth } from './auth/AuthProvider';
 
@@ -12,8 +12,6 @@ const DISMISS_KEY_LOGGED_IN = 'fishaudio_app_promo_dismissed';
 
 export default function AppPromoBar() {
   const { user, loading: authLoading } = useAuth();
-  // Bumped after a dismiss click to force a re-read of localStorage below —
-  // avoids syncing localStorage into state via an effect entirely.
   const [dismissTick, setDismissTick] = useState(0);
   const dismissKey = user ? DISMISS_KEY_LOGGED_IN : DISMISS_KEY_LOGGED_OUT;
 
@@ -25,7 +23,7 @@ export default function AppPromoBar() {
   } catch {
     dismissed = false;
   }
-  void dismissTick; // referenced only to trigger a re-render after handleDismiss
+  void dismissTick;
 
   if (dismissed) return null;
 
@@ -33,53 +31,64 @@ export default function AppPromoBar() {
     try {
       localStorage.setItem(dismissKey, 'true');
     } catch {
-      // storage unavailable — dismissal just won't persist, non-critical
+      // ignore
     }
     setDismissTick((t) => t + 1);
   };
 
   return (
-    <div className="relative z-40 bg-ink text-paper">
-      <div className="max-w-6xl mx-auto px-3 md:px-6 h-12 flex items-center justify-between gap-3">
+    <div className="relative z-40 bg-ink text-paper text-xs border-b border-paper/10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-11 flex items-center justify-between gap-3">
         {user ? (
           <>
             <div className="flex items-center gap-2.5 min-w-0">
-              <Image src="/branding/app-icon.png" alt="" width={26} height={26} className="rounded-md shrink-0" />
-              <p className="text-[11px] sm:text-xs font-bold truncate">
-                <span className="hidden sm:inline">Fish Audio is now on mobile — </span>
-                Get the app for faster voice cloning on the go.
+              <div className="w-5 h-5 relative rounded overflow-hidden shrink-0">
+                <Image src="/branding/app-icon.png" alt="" fill sizes="20px" className="object-contain" />
+              </div>
+              <p className="text-xs font-medium truncate text-paper/90">
+                <span className="hidden sm:inline">Fish Audio is on mobile &bull; </span>
+                Download the free app for voice cloning on the go.
               </p>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <AppBadges size="compact" onDark className="!gap-2" />
-              <button onClick={handleDismiss} aria-label="Dismiss" className="p-1 text-paper/60 hover:text-paper hover:bg-paper/10 rounded-full transition-all">
-                <X size={15} />
+            <div className="flex items-center gap-2 shrink-0">
+              <AppBadges size="compact" onDark className="!gap-1.5" />
+              <button 
+                onClick={handleDismiss} 
+                aria-label="Dismiss Announcement" 
+                className="p-1 text-paper/60 hover:text-paper hover:bg-paper/10 rounded-full transition-all cursor-pointer"
+              >
+                <X size={14} />
               </button>
             </div>
           </>
         ) : (
           <>
-            <div className="flex items-center gap-2.5 min-w-0">
-              <Gift size={18} className="shrink-0 text-paper" />
-              <p className="text-[11px] sm:text-xs font-bold truncate">
-                100% Free — no cost, no credit card. Sign up and start cloning your voice today.
+            <div className="flex items-center gap-2 min-w-0">
+              <Sparkles size={14} className="shrink-0 text-accent" />
+              <p className="text-xs font-medium truncate text-paper/90">
+                <span className="font-semibold text-white">100% Free Voice Cloning</span> &bull; 500+ natural voices, commercial rights, zero credit card.
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link
                 href="/login"
-                className="hidden sm:inline text-[11px] font-bold text-paper/70 hover:text-paper uppercase tracking-wider transition-colors"
+                className="hidden sm:inline text-xs font-medium text-paper/70 hover:text-paper transition-colors"
               >
-                Log In
+                Sign In
               </Link>
               <Link
                 href="/signup"
-                className="flex items-center gap-1 bg-paper text-ink text-[11px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full hover:opacity-90 active:scale-[0.98] transition-all"
+                className="flex items-center gap-1 bg-white text-ink text-xs font-semibold px-3 py-1 rounded-full hover:bg-paper/90 active:scale-[0.98] transition-all"
               >
-                Sign Up Free <ArrowRight size={12} />
+                <span>Try Free</span>
+                <ArrowRight size={11} />
               </Link>
-              <button onClick={handleDismiss} aria-label="Dismiss" className="p-1 text-paper/60 hover:text-paper hover:bg-paper/10 rounded-full transition-all">
-                <X size={15} />
+              <button 
+                onClick={handleDismiss} 
+                aria-label="Dismiss Announcement" 
+                className="p-1 text-paper/60 hover:text-paper hover:bg-paper/10 rounded-full transition-all cursor-pointer"
+              >
+                <X size={14} />
               </button>
             </div>
           </>

@@ -2,28 +2,31 @@ import React from 'react';
 
 interface SEOArticleProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   content: React.ReactNode;
 }
 
 export default function SEOArticle({ title, subtitle, content }: SEOArticleProps) {
   return (
-    <section className="py-24 border-t border-border mt-24">
-      <div className="max-w-4xl mx-auto space-y-12 px-4 md:px-0">
-        <header className="space-y-4">
-          <h2 className="text-3xl md:text-5xl font-black font-display text-ink uppercase tracking-tight leading-tight">
+    <section className="py-16 sm:py-20 border-t border-border/80">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <header className="space-y-2 text-left">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display text-ink tracking-tight leading-snug">
             {title}
           </h2>
-          <p className="text-lg md:text-xl text-muted font-medium italic">
-            {subtitle}
-          </p>
+          {subtitle && (
+            <p className="text-sm sm:text-base text-muted font-normal">
+              {subtitle}
+            </p>
+          )}
         </header>
-        <article className="prose prose-lg prose-ink max-w-none 
-          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-          prose-p:text-muted/80 prose-p:leading-relaxed prose-p:font-medium
-          prose-strong:text-ink prose-strong:font-black
-          prose-ul:list-none prose-ul:pl-0
-          prose-li:pl-8 prose-li:relative prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.6em] prose-li:before:w-4 prose-li:before:h-[2px] prose-li:before:bg-ink/20
+
+        <article className="prose prose-zinc max-w-none space-y-6 text-ink-2 text-sm sm:text-base leading-relaxed
+          [&>h3]:text-xl [&>h3]:font-bold [&>h3]:font-display [&>h3]:text-ink [&>h3]:pt-4 [&>h3]:tracking-tight
+          [&>p]:text-muted [&>p]:leading-relaxed
+          [&>strong]:text-ink [&>strong]:font-semibold
+          [&>ul]:space-y-2 [&>ul]:pl-5 [&>ul]:list-disc [&>ul]:text-muted
+          [&>ul>li>strong]:text-ink
         ">
           {content}
         </article>

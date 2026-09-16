@@ -10,7 +10,7 @@ export const metadata = constructMetadata({
 
 export default function LoginPage() {
   return (
-    <main className="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-surface dot-grid">
+    <main className="min-h-[75vh] flex items-center justify-center px-4 py-16 bg-canvas dot-grid">
       <AuthForm mode="login" />
     </main>
   );

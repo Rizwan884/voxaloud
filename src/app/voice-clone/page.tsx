@@ -5,7 +5,7 @@ import SEOArticle from '@/components/sections/SEOArticle';
 import InternalLinks from '@/components/sections/InternalLinks';
 import DynamicVoiceClone from '@/components/voice-clone/DynamicVoiceClone';
 import AdBanner from '@/components/AdBanner';
-import { ShieldCheck, Zap, Globe2 } from 'lucide-react';
+import { ShieldCheck, Zap, Globe2, Sparkles, ChevronDown } from 'lucide-react';
 
 export const metadata = constructMetadata({
   title: 'AI Voice Cloning — Clone Your Voice Free in 15 Seconds | Fish Audio',
@@ -33,7 +33,7 @@ const CLONE_FAQS = [
   },
   {
     q: 'How much audio do I need to clone a voice?',
-    a: 'Just 10 to 30 seconds of clear speech is enough to create a usable clone. Longer, cleaner samples with minimal background noise produce the most accurate results.',
+    a: 'Just 10 to 30 seconds of clear speech is enough to create a high-quality clone. Longer, cleaner samples with minimal background noise produce the most accurate results.',
   },
   {
     q: 'Is voice cloning free?',
@@ -41,7 +41,7 @@ const CLONE_FAQS = [
   },
   {
     q: 'Is my cloned voice private?',
-    a: 'Cloned voices are created as private models and are only used to generate audio for you. We never publish or share your voice sample with the public library.',
+    a: 'Cloned voices are created as private models and are only used to generate audio for you. We never publish or share your voice sample with the public library without your permission.',
   },
   {
     q: 'Can I search and use other people’s public voices?',
@@ -58,7 +58,7 @@ export default function VoiceClonePage() {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'Fish Audio Voice Cloning Studio',
-    operatingSystem: 'All',
+    operatingSystem: 'Web, iOS, Android',
     applicationCategory: 'MultimediaApplication',
     offers: { '@type': 'Offer', price: '0.00', priceCurrency: 'USD' },
     description: 'Free AI voice cloning tool. Clone any voice from a short sample and generate natural text to speech with it instantly.',
@@ -96,148 +96,149 @@ export default function VoiceClonePage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <main className="max-w-7xl mx-auto px-4 py-12 md:py-24">
-        <div className="grid grid-cols-1 min-[1200px]:grid-cols-[1fr_300px] gap-12 items-start">
-          <div className="space-y-24 md:space-y-32 min-w-0">
-            <section className="space-y-12">
-              <div className="text-center space-y-6">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-ink/5 border border-ink/10 text-[9px] font-black uppercase tracking-[0.15em] text-ink w-fit mx-auto">
-                  Free &middot; No Login &middot; Full Commercial Rights
-                </div>
-                <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95] text-left md:text-center">
-                  Clone Any Voice — <br /><span className="text-muted">Free AI Voice Cloning.</span>
-                </h1>
-                <p className="text-sm md:text-base text-muted/80 max-w-3xl mx-auto font-medium leading-relaxed text-left md:text-center">
-                  Record or upload a short sample and our neural engine builds a private voice model in seconds.
-                  Type anything and hear it spoken back in that voice — or search 1M+ community voices
-                  in the Discover Library. No signup, no watermark, up to 1,000 characters per generation.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="card p-5 flex items-start gap-3">
-                  <Zap size={18} className="text-ink shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-wide text-ink">Clone in 15 Seconds</p>
-                    <p className="text-[11px] text-muted mt-1 leading-relaxed">Fast training from a single short sample.</p>
-                  </div>
-                </div>
-                <div className="card p-5 flex items-start gap-3">
-                  <Globe2 size={18} className="text-ink shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-wide text-ink">1M+ Community Voices</p>
-                    <p className="text-[11px] text-muted mt-1 leading-relaxed">Search and reuse public voice models instantly.</p>
-                  </div>
-                </div>
-                <div className="card p-5 flex items-start gap-3">
-                  <ShieldCheck size={18} className="text-ink shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-wide text-ink">Private by Default</p>
-                    <p className="text-[11px] text-muted mt-1 leading-relaxed">Your cloned voices are never made public.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="hidden md:block">
-                <AdBanner type="728x90" />
-              </div>
-              <div className="md:hidden">
-                <AdBanner type="320x50" />
-              </div>
-
-              <DynamicVoiceClone variant="full" />
-            </section>
-
-            <div className="block min-[1200px]:hidden p-4 border border-border bg-paper/50 rounded-2xl">
-              <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
-              <AdBanner type="300x250" />
-            </div>
-
-            <Features />
-
-            <SEOArticle
-              title="The Free Way to Clone Your Voice with AI"
-              subtitle="Build a private neural voice model in seconds, no studio required"
-              content={
-                <>
-                  <p>
-                    <strong>AI voice cloning</strong> used to require expensive studio equipment and hours of recorded audio.
-                    With Fish Audio Online&apos;s <strong>voice cloning</strong> studio, all you need is a short, clear sample —
-                    10 to 30 seconds is enough to <strong>clone your voice online</strong> for free. Our neural engine analyzes
-                    the pitch, pacing, and texture of the sample and builds a private voice model you can reuse for any script.
-                  </p>
-
-                  <h3>How AI Voice Cloning Works</h3>
-                  <p>
-                    Record directly in your browser or upload an existing audio file. Our <strong>instant voice cloning</strong>{' '}
-                    pipeline trains a dedicated model from that sample in seconds — no waiting, no queue. Once trained, simply
-                    type any text (up to 1,000 characters per generation) and the studio synthesizes natural speech that carries
-                    your voice&apos;s unique character.
-                  </p>
-
-                  <h3>Search the Community Voice Library</h3>
-                  <p>
-                    Don&apos;t want to record your own sample? The <strong>Discover Library</strong> tab lets you search and
-                    preview over 1 million publicly shared voice models — from narrators and podcast hosts to character voices —
-                    and use any of them instantly for your own <strong>text to speech voice clone</strong> generations.
-                  </p>
-
-                  <h3>What Can You Use a Cloned Voice For?</h3>
-                  <ul>
-                    <li><strong>Narrate your own content</strong> without re-recording every script.</li>
-                    <li><strong>Localize videos and courses</strong> into new languages while keeping your voice.</li>
-                    <li><strong>Prototype voiceovers</strong> for ads, trailers, and product demos.</li>
-                    <li><strong>Accessibility &amp; personalization</strong> — generate messages in a familiar, human voice.</li>
-                  </ul>
-
-                  <p>
-                    All cloned voices are private by default and generated audio comes with full commercial rights —
-                    no royalties, no attribution required. Try the <strong>free AI voice cloning</strong> studio above and
-                    hear your voice say anything in under a minute.
-                  </p>
-                </>
-              }
-            />
-
-            <UseCases />
-
-            <section className="pb-12">
-              <header className="text-center mb-16 space-y-4">
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-ink font-display uppercase">Voice Cloning FAQ</h2>
-                <p className="text-muted/60 text-xs md:text-sm uppercase tracking-[0.3em] font-bold">Everything you need to know</p>
-              </header>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {CLONE_FAQS.map((faq, i) => (
-                  <div key={i} className="card-surface p-10 group hover:bg-ink hover:text-paper transition-all duration-300">
-                    <h4 className="font-bold mb-4 font-display text-lg leading-snug">{faq.q}</h4>
-                    <p className="text-muted group-hover:text-paper/70 text-sm leading-relaxed font-medium">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <InternalLinks />
-
-            <div className="hidden md:block pt-8">
-              <AdBanner type="728x90" />
-            </div>
-            <div className="md:hidden pt-8">
-              <AdBanner type="320x50" />
-            </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-20 sm:space-y-28">
+        
+        {/* Hero Section */}
+        <section className="text-center space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
+            <Sparkles size={13} className="text-accent" />
+            <span>Zero-Shot Cloning &bull; No Login Required &bull; Commercial Rights</span>
           </div>
 
-          <aside className="hidden min-[1200px]:block sticky top-24 self-start w-[300px] space-y-4">
-            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block">Advertisement</span>
-            <AdBanner type="300x600" />
-          </aside>
-        </div>
-      </main>
-    </div>
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+              Clone any voice <br />
+              <span className="text-muted font-normal">in 15 seconds.</span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed max-w-2xl mx-auto">
+              Record or upload a short audio clip. Our neural engine trains a dedicated, private voice model in moments so you can generate natural speech for any script — or explore 1M+ community voices in the Discover Library.
+            </p>
+          </div>
+
+          {/* Quick Value Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left">
+            <div className="card p-4 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-accent-light text-accent flex items-center justify-center shrink-0">
+                <Zap size={16} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-ink">15-Second Zero-Shot</p>
+                <p className="text-[11px] text-muted mt-0.5">Fast synthesis from a single short audio clip.</p>
+              </div>
+            </div>
+
+            <div className="card p-4 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-surface-2 text-ink flex items-center justify-center shrink-0">
+                <Globe2 size={16} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-ink">1M+ Discover Library</p>
+                <p className="text-[11px] text-muted mt-0.5">Search and reuse public voice models instantly.</p>
+              </div>
+            </div>
+
+            <div className="card p-4 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <ShieldCheck size={16} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-ink">Private & Encrypted</p>
+                <p className="text-[11px] text-muted mt-0.5">Your cloned voice models remain private to you.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Full Interactive Voice Clone Studio */}
+        <section className="card-elevated p-2 sm:p-4 bg-surface">
+          <DynamicVoiceClone variant="full" />
+        </section>
+
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Features Bento */}
+        <Features />
+
+        {/* Detailed SEO Explainer Article */}
+        <SEOArticle
+          title="The Free, Professional Way to Clone Your Voice with AI"
+          subtitle="Build a private neural voice model in seconds, without expensive studio hardware"
+          content={
+            <>
+              <p>
+                <strong>AI voice cloning</strong> previously required specialized audio recording setups, hundreds of recorded sentences, and hours of compute. With Fish Audio Online&apos;s <strong>zero-shot voice cloning studio</strong>, all you need is a short, clear 15-second speech sample to <strong>clone your voice online for free</strong>. Our neural engine analyzes the acoustic timbre, pitch variations, rhythm, and unique vocal texture to synthesize a responsive, private voice model.
+              </p>
+
+              <h3>How the Zero-Shot Pipeline Works</h3>
+              <p>
+                Record your voice directly inside your web browser or upload a pre-recorded WAV or MP3 clip. Our <strong>instant voice cloning</strong> pipeline extracts embedding vectors in seconds. Once compiled, type any script (up to 1,000 characters per batch on the free tier) and listen as natural, human-grade speech is synthesized with your authentic tone.
+              </p>
+
+              <h3>Accessing the 1M+ Community Discover Library</h3>
+              <p>
+                Need a specific persona, character, or accent? The <strong>Discover Library</strong> tab gives you direct access to search over 1 million public voice models shared by the community — spanning dynamic narrators, animated characters, podcast hosts, and global accents.
+              </p>
+
+              <h3>Commercial Applications & Content Creation</h3>
+              <ul>
+                <li><strong>YouTube, Shorts & TikTok Narration:</strong> Narrate high-volume scripts without re-recording in front of a microphone.</li>
+                <li><strong>Podcast Editing & Pickups:</strong> Patch audio mistakes or add sponsor mentions seamlessly in your own voice.</li>
+                <li><strong>Localization & Dubbing:</strong> Expand your reach across 75+ global languages while preserving your vocal identity.</li>
+                <li><strong>Commercial Freedom:</strong> All synthesized outputs come with full commercial rights — zero royalties, zero attribution required.</li>
+              </ul>
+            </>
+          }
+        />
+
+        {/* Use Cases */}
+        <UseCases />
+
+        {/* Accordion FAQ */}
+        <section className="space-y-8 max-w-3xl mx-auto">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-ink tracking-tight">
+              Voice Cloning FAQ
+            </h2>
+            <p className="text-xs sm:text-sm text-muted">
+              Frequently asked questions about audio samples, privacy, and commercial rights.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {CLONE_FAQS.map((faq) => (
+              <details 
+                key={faq.q} 
+                className="group card p-5 sm:p-6 transition-all duration-200 open:border-accent/40"
+              >
+                <summary className="font-semibold text-sm sm:text-base text-ink font-display cursor-pointer list-none flex items-center justify-between gap-3">
+                  <span>{faq.q}</span>
+                  <span className="w-7 h-7 rounded-full bg-surface-2 flex items-center justify-center text-muted shrink-0 group-open:rotate-180 transition-transform">
+                    <ChevronDown size={15} />
+                  </span>
+                </summary>
+                <p className="pt-3 text-xs sm:text-sm text-muted leading-relaxed border-t border-border/60 mt-3 font-normal">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Internal Links for SEO Interlinking */}
+        <InternalLinks />
+
+      </div>
+    </main>
   );
 }

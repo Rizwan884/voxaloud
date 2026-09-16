@@ -1,12 +1,13 @@
 import { constructMetadata } from '@/lib/metadata';
 import UseCases from '@/components/sections/UseCases';
-import Features from '@/components/sections/Features';
-import { ShieldCheck, Scale, Globe } from 'lucide-react';
+import InternalLinks from '@/components/sections/InternalLinks';
+import { ShieldCheck, Scale, Globe, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
-  title: 'Commercial Use — Free AI Voice with Full Commercial License | Fish Audio',
-  description: 'Use Fish Audio AI voices freely in YouTube, ads, podcasts, and business projects. Full commercial license. No attribution required. 100% free.',
+  title: 'Commercial Use License — Free AI Voice for YouTube & Ads | Fish Audio',
+  description: 'Use Fish Audio AI voices freely in YouTube monetization, ads, podcasts, and business projects. Full commercial license. No royalties or attribution.',
   path: '/commercial-use',
   useExactTitle: true,
   keywords: [
@@ -41,93 +42,130 @@ export default function CommercialUsePage() {
     ]
   };
 
+  const pillars = [
+    { 
+      icon: ShieldCheck, 
+      title: 'Full Audio Ownership', 
+      desc: 'You own 100% of the synthesized audio files you generate. Monetize on YouTube, podcasts, and client campaigns with zero restrictions.' 
+    },
+    { 
+      icon: Scale, 
+      title: 'Zero Recurring Royalties', 
+      desc: 'Generate as many audio files as your plan allows without worrying about recurring copyright fees or performance residuals.' 
+    },
+    { 
+      icon: Globe, 
+      title: 'Worldwide Media Rights', 
+      desc: 'Broadcast your audio globally across digital streaming, radio, television, video games, mobile apps, and paid marketing channels.' 
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-24">
-        <header className="text-center space-y-6">
-          <h1 className="text-4xl md:text-6xl font-black font-display text-ink uppercase tracking-tight leading-none">
-            Full Commercial License — <br /><span className="text-muted text-3xl md:text-5xl">Use AI Voices in Any Project, Free.</span>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-20 sm:space-y-28">
+        
+        {/* Header */}
+        <header className="text-center space-y-4 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-semibold shadow-xs">
+            <ShieldCheck size={14} className="text-emerald-600" />
+            <span>Commercial Rights Included &bull; 100% Monetization Safe</span>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+            Full commercial license, <br />
+            <span className="text-muted font-normal">built for modern creators.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted/80 max-w-2xl mx-auto font-medium leading-relaxed">
-            Scale your content production with absolute confidence. Our <strong>text to speech commercial use</strong> license has zero fees and requires no attribution.
+
+          <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed">
+            Scale your content production with complete legal confidence. Every generation synthesized on Fish Audio carries full commercial rights without complicated licensing hoops.
           </p>
+
+          <div className="pt-2">
+            <Link href="/" className="btn-accent !px-6 !py-3 !text-xs !font-semibold">
+              <Sparkles size={14} />
+              <span>Create Commercial Audio</span>
+            </Link>
+          </div>
         </header>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { icon: <ShieldCheck className="w-8 h-8 text-ink" />, title: 'Full Ownership', desc: 'You own the audio you generate. Perfect for monetization.' },
-            { icon: <Scale className="w-8 h-8 text-ink" />, title: 'No Royalties', desc: 'Generate as much as you need without recurring royalty fees.' },
-            { icon: <Globe className="w-8 h-8 text-ink" />, title: 'Global Rights', desc: 'Use your generated audio anywhere in the world, on any platform.' }
-          ].map((item, i) => (
-            <div key={i} className="card-surface p-8 space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-surface flex items-center justify-center border border-border shadow-sm">
-                {item.icon}
+        {/* 3 Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {pillars.map((item) => (
+            <div key={item.title} className="card p-7 space-y-4 flex flex-col justify-between hover:border-accent/40 transition-all">
+              <div className="space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-surface-2 text-accent flex items-center justify-center border border-border/80 shadow-xs">
+                  <item.icon size={22} />
+                </div>
+                <h3 className="text-lg font-bold text-ink font-display">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted leading-relaxed font-normal">
+                  {item.desc}
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-ink font-display uppercase tracking-tight">{item.title}</h3>
-              <p className="text-muted text-sm leading-relaxed font-medium">{item.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
-        {/* Detailed commercial policy sections */}
-        <section className="space-y-12 max-w-3xl mx-auto border-t border-border/60 pt-16">
-          <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-black font-display text-ink uppercase tracking-tight">What Is Commercial Text to Speech?</h2>
-            <p className="text-muted/80 leading-relaxed font-medium">
-              Commercial text to speech refers to using synthetic vocal audio in money-generating ventures. If you use synthesized speech for client projects, business announcements, or promotional videos, you need a <strong>tts with commercial license</strong>. With Fish Audio, you get a lifetime <strong>commercial voice license</strong> standard with every generation, allowing you to use <strong>commercial voiceover ai</strong> globally without restrictions.
+        {/* Policy Details Accordion / Sections */}
+        <section className="card p-8 sm:p-12 space-y-10 bg-surface">
+          <div className="space-y-3">
+            <span className="badge-accent">License Scope</span>
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-ink tracking-tight">
+              Permitted Commercial Applications
+            </h2>
+            <p className="text-sm text-muted">
+              Here is a clear summary of how you can utilize audio synthesized via Fish Audio Online:
             </p>
           </div>
 
-          <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-black font-display text-ink uppercase tracking-tight">Can I Use AI Voice for YouTube Monetization?</h2>
-            <p className="text-muted/80 leading-relaxed font-medium">
-              Yes, absolutely! We guarantee <strong>ai voice commercial rights</strong> for all media networks, which makes our platform 
-              highly optimized as an <strong>ai voice for content creators</strong>. You can completely monetize videos on YouTube, 
-              generate background <strong>royalty free ai narration</strong> for TikTok, or create narration for Spotify podcasts.
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { title: 'YouTube & Social Media Monetization', desc: 'Monetize video essays, shorts, educational channels, and podcasts without copyright flags.' },
+              { title: 'Paid Digital Advertisements', desc: 'Use in Facebook, TikTok, Instagram, Google, and television ad campaigns with zero attribution.' },
+              { title: 'Audiobooks & Podcasts', desc: 'Publish audiobooks on Audible, Spotify, Apple Podcasts, or sell digital audio courses directly.' },
+              { title: 'Video Games & Software Apps', desc: 'Integrate into indie games, mobile applications, interactive assistants, and voice agents.' },
+              { title: 'Client Agency Projects', desc: 'Deliver voiceover audio directly to paying clients without requiring separate licensing transfers.' },
+              { title: 'Internal Corporate Training', desc: 'Deploy across company-wide e-learning modules, executive presentations, and video guides.' }
+            ].map((p) => (
+              <div key={p.title} className="p-4 rounded-xl bg-surface-2/60 border border-border/70 space-y-1.5">
+                <div className="flex items-center gap-2 font-semibold text-xs text-ink font-display">
+                  <CheckCircle2 size={14} className="text-emerald-600 shrink-0" />
+                  <span>{p.title}</span>
+                </div>
+                <p className="text-xs text-muted leading-relaxed pl-5 font-normal">
+                  {p.desc}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-black font-display text-ink uppercase tracking-tight">Is Fish Audio TTS Free for Commercial Ads?</h2>
-            <p className="text-muted/80 leading-relaxed font-medium">
-              Yes, Fish Audio Online is free for commercial ads, social promotions, and product branding. You can create <strong>ai voice for ads</strong> and utilize <strong>tts for advertising</strong> campaigns without any attribution or licensing fee. We also support high-volume <strong>text to speech for business</strong> sites.
+          <div className="pt-6 border-t border-border/70 text-xs text-muted leading-relaxed space-y-2">
+            <h4 className="font-bold text-ink text-sm">Restrictions & Responsible Use</h4>
+            <p>
+              While our commercial license grants broad creative freedom, you may not synthesize defamatory, illegal, or fraudulent audio, nor generate unauthorized deepfakes of public figures without consent. Please review our <Link href="/terms" className="text-accent underline font-semibold">Terms of Service</Link> for complete guidelines.
             </p>
-          </div>
-
-          <div className="space-y-6">
-            <h2 className="text-2xl md:text-3xl font-black font-display text-ink uppercase tracking-tight">Commercial Voice License — What&apos;s Included</h2>
-            <p className="text-muted/80 leading-relaxed font-medium">
-              Every download includes a full, royalty-free commercial agreement:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-sm text-muted/80 font-medium">
-              <li><strong>Royalty Free Voice:</strong> Generate unlimited audio files without paying recurring residuals.</li>
-              <li><strong>Lifetime Rights:</strong> Your license does not expire; keep your videos and ads live forever.</li>
-              <li><strong>No Attribution Required:</strong> Use the audio anonymously in client work or public videos.</li>
-            </ul>
           </div>
         </section>
 
-        <UseCases />
-        <Features />
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
-        <div className="hidden md:block pt-8">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden pt-8">
-          <AdBanner type="320x50" />
-        </div>
-      </main>
-    </div>
+        {/* Use Cases */}
+        <UseCases />
+
+        {/* Internal Interlinking */}
+        <InternalLinks />
+
+      </div>
+    </main>
   );
 }

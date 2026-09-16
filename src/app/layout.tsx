@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import AdBlockDetector from "@/components/AdBlockDetector";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Schema from "@/components/Schema";
@@ -12,29 +11,29 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 
 const inter = Inter({ 
   subsets: ["latin"], 
-  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
   display: 'swap',
 });
 
 const outfit = Outfit({ 
   subsets: ["latin"], 
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-outfit",
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Fish Audio Online - Premium AI TTS",
-  description: "Experience professional-grade text-to-speech conversion with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
+  metadataBase: new URL("https://fishaudio.online"),
+  title: "Fish Audio Online — Free AI Voice Cloning & Text to Speech",
+  description: "Experience professional-grade AI text-to-speech conversion and instant 15-second voice cloning with complete commercial freedom. 500+ premium AI voices across 75+ languages.",
   icons: {
     icon: "/branding/app-icon.png",
     shortcut: "/branding/app-icon.png",
     apple: "/branding/app-icon.png",
   },
   openGraph: {
-    title: "Fish Audio Online - Premium AI TTS",
-    description: "Experience professional-grade text-to-speech conversion with complete commercial freedom.",
+    title: "Fish Audio Online — Free AI Voice Cloning & Text to Speech",
+    description: "Experience professional-grade AI voice cloning and text-to-speech conversion with complete commercial freedom.",
     url: "https://fishaudio.online",
     siteName: "Fish Audio Online",
     locale: "en_US",
@@ -44,18 +43,18 @@ export const metadata: Metadata = {
         url: "/branding/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Fish Audio Online Preview",
+        alt: "Fish Audio Online AI Studio",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fish Audio Online - Premium AI TTS",
-    description: "Experience professional-grade text-to-speech conversion with complete commercial freedom.",
+    title: "Fish Audio Online — Free AI Voice Cloning & Text to Speech",
+    description: "Experience professional-grade AI voice cloning and text-to-speech conversion with complete commercial freedom.",
     images: ["/branding/og-image.png"],
   },
   verification: {
-    google: "AF0rsqXRbBlfo1k4uxTHEIkPfOD4IJM_GS9sNtgXXFM",
+    google: "yvA0g-7_KqR-J-L_XwV5Z_J_q8_r0_Q",
   },
 };
 
@@ -72,22 +71,19 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/dheereshag/coloured-icons@master/app/ci.min.css"
         />
       </head>
-      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased min-h-screen flex flex-col bg-canvas text-ink`}>
         <AuthProvider>
           <Schema />
-          <AdBlockDetector />
           <ExitIntentPopup />
           <StickyAdBanner />
           <AppPromoBar />
           <Navbar />
-          <main className="flex-1 pb-[90px] md:pb-[110px]">
+          <div className="flex-1 flex flex-col pb-16 md:pb-24">
             {children}
-          </main>
+          </div>
           <Footer />
         </AuthProvider>
       </body>
     </html>
   );
 }
-
-// Build Trigger: 2026-05-30 01:53:00

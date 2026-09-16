@@ -37,28 +37,16 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <div className="max-w-6xl mx-auto px-4 pt-8">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-12">
+        <ContactClient />
+        <AdBanner type="responsive" label={true} />
       </div>
-      <ContactClient />
-      <div className="max-w-6xl mx-auto px-4 pb-16">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-      </div>
-    </div>
+    </main>
   );
 }

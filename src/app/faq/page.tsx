@@ -1,6 +1,8 @@
 import { constructMetadata } from '@/lib/metadata';
 import FAQ from '@/components/sections/FAQ';
 import { GLOBAL_FAQS } from '@/lib/faqs';
+import { HelpCircle, Sparkles, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
@@ -51,7 +53,7 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -60,33 +62,52 @@ export default function FAQPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-16">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+      
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-16 sm:space-y-24">
+        
+        {/* Header */}
+        <header className="text-center space-y-4 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
+            <HelpCircle size={13} className="text-accent" />
+            <span>Knowledge Base &bull; Frequently Asked Questions</span>
+          </div>
 
-        <header className="text-center space-y-6">
-          <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-none">
-            Text to Speech FAQ — <br /><span className="text-muted text-3xl md:text-6xl">Common Questions.</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+            Common questions, <br />
+            <span className="text-muted font-normal">answered clearly.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted/80 max-w-2xl mx-auto font-medium">
-            Find answers to common questions about free text to speech, AI voice generation, voice cloning, and commercial licensing options.
+
+          <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed">
+            Find immediate answers regarding voice cloning quality, character allowances, language coverage, commercial licensing, and audio exports.
           </p>
         </header>
 
-        {/* FAQ grid with all 20 entries */}
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Complete Accordion FAQ */}
         <FAQ />
 
-        <div className="hidden md:block pt-8">
-          <AdBanner type="728x90" />
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+        {/* Still need help callout */}
+        <div className="card p-8 text-center space-y-4 max-w-xl mx-auto bg-surface-2/60">
+          <h3 className="text-lg font-bold font-display text-ink">
+            Still have a question?
+          </h3>
+          <p className="text-xs sm:text-sm text-muted">
+            Can&apos;t find what you are looking for? Send a message directly to our engineering and support team.
+          </p>
+          <div className="pt-2">
+            <Link href="/contact" className="btn-accent !px-6 !py-2.5 !text-xs !font-semibold inline-flex items-center gap-2">
+              <span>Contact Support</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
-        <div className="md:hidden pt-8">
-          <AdBanner type="320x50" />
-        </div>
-      </main>
-    </div>
+
+      </div>
+    </main>
   );
 }

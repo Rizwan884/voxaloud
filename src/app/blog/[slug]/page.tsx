@@ -1,13 +1,13 @@
 import { getBlogPost, getBlogPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { Calendar, User, ArrowLeft } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { constructMetadata } from '@/lib/metadata';
 import InternalLinks from '@/components/sections/InternalLinks';
-import remarkGfm from 'remark-gfm';
 import AdBanner from '@/components/AdBanner';
+import remarkGfm from 'remark-gfm';
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.metadata.title,
     description: post.metadata.excerpt,
     path: `/blog/${slug}`,
+    image: post.metadata.coverImage,
   });
 }
 
@@ -35,6 +36,31 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   if (!post) {
     notFound();
   }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://fishaudio.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://fishaudio.online/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.metadata.title,
+        "item": `https://fishaudio.online/blog/${slug}`
+      }
+    ]
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -62,36 +88,51 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-12">
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-10">
+        
+        {/* Navigation Breadcrumb Back */}
         <Link 
           href="/blog" 
-          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted hover:text-ink transition-colors group"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted hover:text-ink transition-colors group"
         >
           <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-          Back to Blog
+          <span>Back to Articles</span>
         </Link>
 
-        <header className="space-y-6">
-          <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted/60">
-            <span className="flex items-center gap-1">
-              <Calendar size={14} />
+        {/* Article Header */}
+        <header className="space-y-6 text-left">
+          <div className="flex items-center gap-4 text-xs text-muted">
+            <span className="flex items-center gap-1.5 font-medium">
+              <Calendar size={13} />
               {post.metadata.date}
             </span>
-            <span className="flex items-center gap-1">
-              <User size={14} />
+            <span>&bull;</span>
+            <span className="flex items-center gap-1.5 font-medium">
+              <User size={13} />
               {post.metadata.author}
             </span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black font-display text-ink leading-tight uppercase tracking-tight">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-ink tracking-tight leading-[1.2]">
             {post.metadata.title}
           </h1>
+
+          <p className="text-base sm:text-lg text-muted font-normal leading-relaxed">
+            {post.metadata.excerpt}
+          </p>
+
           {post.metadata.coverImage && (
-            <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-ink/5 border border-border relative">
+            <div className="aspect-[21/9] rounded-3xl overflow-hidden bg-surface-2 border border-border relative shadow-sm">
               <Image 
                 src={post.metadata.coverImage} 
                 alt={post.metadata.title}
@@ -103,24 +144,16 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           )}
         </header>
 
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
-        <article className="prose prose-lg prose-ink max-w-none 
-          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-ink
-          prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-border prose-h2:pb-4
-          prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
-          prose-p:text-muted/90 prose-p:leading-[1.8] prose-p:font-medium prose-p:mb-6
-          prose-strong:text-ink prose-strong:font-black
-          prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-3 prose-ul:mb-8
-          prose-li:text-muted/80 prose-li:font-medium
-          prose-blockquote:border-l-4 prose-blockquote:border-l-ink prose-blockquote:bg-ink/[0.02] prose-blockquote:p-8 prose-blockquote:rounded-r-[2rem] prose-blockquote:italic prose-blockquote:text-ink/80 prose-blockquote:my-10
-          prose-img:rounded-[2.5rem] prose-img:border prose-img:border-border prose-img:shadow-2xl prose-img:my-12
-          prose-a:text-ink prose-a:underline prose-a:underline-offset-4 prose-a:decoration-ink/20 hover:prose-a:decoration-ink transition-colors
+        {/* Article Body */}
+        <article className="prose prose-zinc max-w-none text-ink-2 text-base sm:text-lg leading-relaxed
+          [&>h2]:text-2xl [&>h2]:sm:text-3xl [&>h2]:font-bold [&>h2]:font-display [&>h2]:text-ink [&>h2]:tracking-tight [&>h2]:mt-10 [&>h2]:mb-4
+          [&>h3]:text-xl [&>h3]:font-bold [&>h3]:font-display [&>h3]:text-ink [&>h3]:tracking-tight [&>h3]:mt-8 [&>h3]:mb-3
+          [&>p]:text-muted [&>p]:leading-relaxed [&>p]:mb-6
+          [&>strong]:text-ink [&>strong]:font-semibold
+          [&>ul]:space-y-2 [&>ul]:pl-5 [&>ul]:list-disc [&>ul]:text-muted [&>ul]:mb-6
+          [&>ul>li>strong]:text-ink
+          [&>blockquote]:border-l-4 [&>blockquote]:border-accent [&>blockquote]:bg-accent-light/30 [&>blockquote]:p-5 [&>blockquote]:rounded-r-2xl [&>blockquote]:italic [&>blockquote]:my-8
+          [&>a]:text-accent [&>a]:font-semibold [&>a]:underline hover:[&>a]:text-accent-hover
         ">
           <MDXRemote 
             source={post.content} 
@@ -132,17 +165,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           />
         </article>
 
-        <div className="hidden md:block pt-8">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden pt-8">
-          <AdBanner type="320x50" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
-        <div className="pt-16 border-t border-border">
-          <InternalLinks />
-        </div>
-      </main>
-    </div>
+        {/* Internal SEO Interlinking */}
+        <InternalLinks />
+
+      </div>
+    </main>
   );
 }

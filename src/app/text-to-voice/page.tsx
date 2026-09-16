@@ -6,7 +6,7 @@ import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
-import Link from 'next/link';
+import { Sparkles, ShieldCheck, Zap } from 'lucide-react';
 
 export const metadata = constructMetadata({
   title: 'Text to Voice Online — Convert Text to Speech Free | Fish Audio',
@@ -47,116 +47,89 @@ export default async function TextToVoicePage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-24 md:space-y-32 text-left">
-        <section className="space-y-12">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95]">
-              Instant Text to <br /><span className="text-muted">Voice Conversion.</span>
+      
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-20 sm:space-y-28">
+        
+        {/* Hero Section */}
+        <section className="text-center space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
+            <Sparkles size={13} className="text-accent" />
+            <span>Neural Acoustic Synthesis &bull; Fast Text-to-Voice Conversion</span>
+          </div>
+
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+              Instant text to voice conversion, <br />
+              <span className="text-muted font-normal">crafted for natural flow.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted/80 max-w-2xl mx-auto font-medium">
-              Precision engineering for every syllable. High-fidelity neural conversion that respects the nuance of your script.
+
+            <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed max-w-2xl mx-auto">
+              Precision audio engineering for every syllable. High-fidelity neural voice synthesis that respects natural breath, punctuation pauses, and expressive delivery.
             </p>
           </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-medium text-ink-2 pt-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <Zap size={13} className="text-accent" />
+              Sub-Second Neural Latency
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <ShieldCheck size={13} className="text-emerald-600" />
+              Monetization Safe License
+            </span>
+          </div>
+        </section>
+
+        {/* Studio Panel */}
+        <section className="card-elevated p-2 sm:p-4 bg-surface">
           <DynamicStudio initialVoices={initialVoices} />
         </section>
 
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
+        {/* Info Block */}
         <InfoBlock />
 
-        <div className="w-full py-4 border-t border-b border-border/40 space-y-2 bg-paper/30 rounded-2xl p-6">
-          <div className="text-[9px] font-black uppercase tracking-wider text-muted/50 text-left">Sponsored Advertisements</div>
-          <AdBanner type="native" />
-        </div>
+        {/* Interactive Voice Showcase */}
+        <ConversionPack />
         
+        {/* SEO Explainer Article */}
         <SEOArticle 
-          title="The Ultimate Guide to Text to Voice Conversion"
-          subtitle="Precision Engineering for Every Syllable"
+          title="The Science Behind High-Fidelity Text to Voice Synthesis"
+          subtitle="How deep neural models translate written symbols into nuanced vocal performances"
           content={
             <>
               <p>
-                At its core, <strong>Text to Voice</strong> conversion is the bridge between the written word and the human ear. It is an intricate process of translating static text into a dynamic, rhythmic, and emotive audio experience. At Fish Audio Online, we don&apos;t just read your text—we perform it. Our technology is designed to understand the underlying structure of your language, ensuring that the final output sounds like it was recorded in a studio by a professional narrator.
+                At its foundation, modern <strong>text to voice</strong> conversion acts as the seamless bridge between written thought and audio perception. Rather than standard mechanical reading, Fish Audio Online synthesizes dynamic, rhythmic, and emotive acoustic experiences tailored to human hearing.
               </p>
               
-              <h3>The Neural Conversion Pipeline</h3>
+              <h3>The Neural Synthesis Pipeline</h3>
               <p>
-                Modern <strong>text to voice</strong> technology has moved beyond the simple &quot;text-to-speech&quot; engines of the past. Our pipeline involves multiple layers of neural analysis to ensure peak realism:
+                Advanced speech generation moves far beyond concatenative audio stitching. Our architecture operates in interconnected stages:
               </p>
               
               <ul>
-                <li><strong>Text Normalization:</strong> Our engine correctly interprets abbreviations, dates, and currency symbols, ensuring they are spoken exactly as a human would. This is a critical step in high-quality <strong>text to voice</strong> synthesis.</li>
-                <li><strong>Phonetic Analysis:</strong> We analyze the phonetic breakdown of every word, managing complex pronunciations and regional variations across 75+ languages.</li>
-                <li><strong>Acoustic Modeling:</strong> This is where the magic happens. Our models predict the spectral features of the voice, capturing the unique timbre and resonance of the selected speaker.</li>
+                <li><strong>Contextual Text Normalization:</strong> Interprets dates, acronyms, monetary symbols, and sentence context so numbers and abbreviations are spoken naturally.</li>
+                <li><strong>Phonetic Prosody Mapping:</strong> Predicts syllable stresses, breathing intervals, and punctuation cadences across 75+ world languages.</li>
+                <li><strong>Acoustic Timbre Modeling:</strong> Synthesizes accurate spectral envelopes, capturing the harmonic depth and warmth of each chosen speaker profile.</li>
               </ul>
-
-              <h3>Why Performance Matters in Audio</h3>
-              <p>
-                In a world saturated with digital content, the &quot;feel&quot; of a voice is just as important as the clarity. A robotic voice sends a signal of low quality to your audience. By using our advanced <Link href="/ai-voice-generator">AI voice generator</Link>, you are investing in the credibility of your brand. Our voices carry the weight and authority required for corporate training, the excitement needed for gaming, and the warmth essential for storytelling.
-              </p>
-              <p>
-                This level of <strong>text to voice</strong> performance is what differentiates a viral video from one that is quickly scrolled past. When a voice breathes, pauses, and emphasizes the right words, it builds an emotional connection with the listener that text alone cannot achieve.
-              </p>
-
-              <h3>Industry-Leading Accuracy</h3>
-              <p>
-                Accuracy in <strong>text to voice</strong> conversion is paramount, especially for technical scripts or educational content. Our models are trained on diverse datasets that include medical terminology, legal jargon, and academic prose. This ensures that your specialized content is delivered with the correct intonation and emphasis, maintaining the professional integrity of your work.
-              </p>
-
-              <h4>Accessibility & Inclusion Strategy</h4>
-              <p>
-                <strong>Text to voice</strong> conversion is a transformative tool for accessibility. We help businesses and creators make their content available to everyone, including the 285 million people worldwide who are visually impaired. By providing high-quality, <Link href="/free-text-to-speech">free text to speech</Link> options, we ensure that inclusion is never a budget-line item and that information is accessible to all.
-              </p>
-
-              <h4>Localized Content Strategy</h4>
-              <p>
-                Going global requires more than just translation; it requires localization. Our platform allows you to convert text into voices with authentic local accents. Whether you need a British English narrator for a documentary or a Brazilian Portuguese voice for a social media campaign, we provide the authentic vocal texture that builds trust with local audiences.
-              </p>
-
-              <h3>How to Optimize Your Conversion</h3>
-              <p>
-                To get the most out of our <strong>text to voice</strong> engine, consider the &quot;flow&quot; of your script. Short, punchy sentences often perform best for social media ads, while longer, more rhythmic sentences are ideal for long-form narration like podcasts or audiobooks. Don&apos;t be afraid to use phonetic spellings for unique names or industry-specific terms to guide the AI for a perfect delivery.
-              </p>
-
-              <h3>Integration with Modern Workflows</h3>
-              <p>
-                We designed our <strong>text to voice</strong> studio to fit perfectly into your existing production workflow. Download your audio in standard MP3 formats that are compatible with every major video editor, from Adobe Premiere Pro to DaVinci Resolve. The speed of our conversion means you can iterate on your scripts in real-time, hearing the changes instantly and refining your delivery until it&apos;s perfect.
-              </p>
-
-              <p>
-                Experience the power of neural conversion for yourself. Use the studio above to transform your next script and see why Fish Audio Online is the gold standard for <strong>text to voice</strong> technology. Our commitment to quality and accessibility makes us the ideal partner for your vocal storytelling journey.
-              </p>
             </>
           }
         />
 
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
-        <ConversionPack />
-
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
+        {/* Internal Interlinking */}
         <InternalLinks />
-      </main>
-    </div>
+
+      </div>
+    </main>
   );
 }

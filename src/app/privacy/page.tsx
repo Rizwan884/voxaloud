@@ -1,4 +1,5 @@
 import { constructMetadata } from '@/lib/metadata';
+import { ShieldCheck } from 'lucide-react';
 import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
@@ -38,90 +39,79 @@ export default function PrivacyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12 text-left">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
-        <header className="space-y-4">
-          <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
-            Privacy <span className="text-muted">Policy.</span>
+      
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-12 text-left">
+        
+        <header className="space-y-3 pb-8 border-b border-border/80">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-semibold shadow-xs">
+            <ShieldCheck size={14} className="text-emerald-600" />
+            <span>Data Privacy &bull; GDPR &amp; CCPA Compliant</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-ink tracking-tight">
+            Privacy Policy
           </h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted">
+          <p className="text-xs text-muted font-medium">
             Last Updated: {lastUpdated}
           </p>
         </header>
 
-        <article className="prose prose-ink max-w-none 
-          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-          prose-p:text-muted/80 prose-p:leading-relaxed prose-p:font-medium
-          prose-strong:text-ink prose-strong:font-black
-          prose-li:text-muted/80
+        <article className="prose prose-zinc max-w-none space-y-8 text-sm sm:text-base text-ink-2 leading-relaxed
+          [&>section]:space-y-3
+          [&>section>h2]:text-xl [&>section>h2]:font-bold [&>section>h2]:font-display [&>section>h2]:text-ink
+          [&>section>p]:text-muted [&>section>p]:leading-relaxed
+          [&>section>ul]:space-y-2 [&>section>ul]:pl-5 [&>section>ul]:list-disc [&>section>ul]:text-muted
+          [&>section>ul>li>strong]:text-ink
         ">
-          <p>
-            At Fish Audio Online, we take your privacy seriously. This Privacy Policy describes how your personal information is collected, used, and shared when you visit or use our platform.
-          </p>
+          <section>
+            <h2>1. Information We Collect</h2>
+            <p>
+              When you use Fish Audio Online, we collect minimal data required to provide and improve our service:
+            </p>
+            <ul>
+              <li><strong>Text Inputs & Audio Prompts:</strong> Text scripts and audio recordings submitted for speech synthesis and voice cloning. Text inputs are processed in-memory and are not sold or redistributed.</li>
+              <li><strong>Voice Cloning Audio Samples:</strong> Audio recordings uploaded to create private voice models. These models remain strictly private to your session or account.</li>
+              <li><strong>Usage Analytics & Telemetry:</strong> Anonymized metrics including browser type, synthesis latency, device viewport, and geographic region.</li>
+            </ul>
+          </section>
 
-          <h3>1. Data We Collect</h3>
-          <p>
-            We collect minimal data to ensure the performance and security of our services:
-          </p>
-          <ul>
-            <li><strong>Usage Information:</strong> We collect non-identifiable technical data such as IP addresses, browser types, and usage patterns to optimize our infrastructure.</li>
-            <li><strong>Audio Input:</strong> Text scripts provided for synthesis are processed in real-time. We do not store your scripts permanently on our servers unless specifically requested for custom model training.</li>
-          </ul>
+          <section>
+            <h2>2. How We Use Your Information</h2>
+            <p>
+              We process your data strictly to execute requested text-to-speech conversions, generate cloned acoustic profiles, optimize synthesis speed, and maintain platform security against abuse.
+            </p>
+          </section>
 
-          <h3>2. How We Use Your Information</h3>
-          <p>
-            The information we collect is used solely to:
-          </p>
-          <ul>
-            <li>Provide and maintain our neural speech synthesis service.</li>
-            <li>Analyze usage trends to improve the quality of our AI models.</li>
-            <li>Prevent abuse, spam, or malicious activity on our platform.</li>
-          </ul>
+          <section>
+            <h2>3. Audio Retention & Model Privacy</h2>
+            <p>
+              Cloned voice models created in your personal account are encrypted and private by default. We do not use your private voice samples to train public foundation models without your explicit, voluntary opt-in consent.
+            </p>
+          </section>
 
-          <h3>3. Cookies</h3>
-          <p>
-            We use essential cookies to maintain session states and store your preferences (such as selected voices). You can control cookie settings through your browser, but disabling them may limit some functionality.
-          </p>
+          <section>
+            <h2>4. Third-Party Services & Cookies</h2>
+            <p>
+              We use trusted cloud compute providers and Supabase for session management. We do not sell your personal data or text scripts to third-party data brokers.
+            </p>
+          </section>
 
-          <div className="not-prose my-10 p-4 border border-border bg-paper/50 rounded-2xl">
-            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
-            <AdBanner type="native" />
-          </div>
-
-          <h3>4. Data Security</h3>
-          <p>
-            We implement industry-standard security measures to protect your data during transmission and processing. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.
-          </p>
-
-          <h3>5. Third-Party Services</h3>
-          <p>
-            We may use third-party analytics and advertising partners (such as Google AdSense) to support our free service. These partners may collect information as described in their own privacy policies.
-          </p>
-
-          <h3>6. Contact Us</h3>
-          <p>
-            If you have questions about this policy, please contact us at <strong>contact@fishaudio.online</strong>.
-          </p>
+          <section>
+            <h2>5. Contact & Data Deletion Requests</h2>
+            <p>
+              You have the right to request deletion of your account and associated voice models at any time by contacting our privacy officer at <a href="mailto:contact@fishaudio.online" className="text-accent underline">contact@fishaudio.online</a>.
+            </p>
+          </section>
         </article>
 
-        <div className="hidden md:block pt-8">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden pt-8">
-          <AdBanner type="320x50" />
-        </div>
-      </main>
-    </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+      </div>
+    </main>
   );
 }

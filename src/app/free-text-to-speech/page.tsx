@@ -6,6 +6,7 @@ import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
+import { Sparkles, ShieldCheck, Zap, Download } from 'lucide-react';
 
 export const metadata = constructMetadata({
   title: 'Free Text to Speech Online — No Login, No Limits | Fish Audio',
@@ -51,175 +52,152 @@ export default async function FreeTTSPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 space-y-24 md:space-y-32">
-        <section className="space-y-12">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight leading-[0.95]">
-              Free Text to Speech — <br /><span className="text-muted">No Login, No Watermark, No Limits.</span>
+      
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-20 sm:space-y-28">
+        
+        {/* Hero Section */}
+        <section className="text-center space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
+            <Sparkles size={13} className="text-accent" />
+            <span>Zero Cost &bull; No Login Barrier &bull; No Watermarks</span>
+          </div>
+
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-ink tracking-tight leading-[1.1]">
+              Free text to speech, <br />
+              <span className="text-muted font-normal">unlimited and unwatermarked.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted/80 max-w-3xl mx-auto font-medium leading-relaxed">
-              Experience the best <strong>free text to speech</strong> conversion online. Synthesize 500+ natural voices instantly 
-              using our <strong>text to speech free online</strong> generator. Completely free, no registration required, and full 
-              commercial licensing included.
+
+            <p className="text-base sm:text-lg text-ink-2 font-normal leading-relaxed max-w-2xl mx-auto">
+              Synthesize 500+ natural neural voices online without mandatory signups or hidden download fees. Enjoy full commercial rights and crystal-clear 44.1kHz audio exports.
             </p>
           </div>
+
+          {/* Value Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-medium text-ink-2 pt-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <Zap size={13} className="text-accent" />
+              Instant Anonymous Generation
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <Download size={13} className="text-emerald-600" />
+              Free 44.1kHz MP3 Downloads
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
+              <ShieldCheck size={13} className="text-emerald-600" />
+              Commercial Use Approved
+            </span>
+          </div>
+        </section>
+
+        {/* Studio Panel */}
+        <section className="card-elevated p-2 sm:p-4 bg-surface">
           <DynamicStudio initialVoices={initialVoices} />
         </section>
 
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
+        {/* Competitor Comparison Section */}
+        <section className="space-y-6 max-w-4xl mx-auto">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-ink tracking-tight">
+              Why Fish Audio is the Best Free TTS Platform
+            </h2>
+            <p className="text-xs sm:text-sm text-muted">
+              See how our generous free tier compares to industry alternatives.
+            </p>
+          </div>
+
+          <div className="card overflow-hidden border border-border shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-surface-2/80">
+                    <th className="p-4 sm:p-5 font-bold text-ink w-2/5">Capability</th>
+                    <th className="p-4 sm:p-5 font-bold text-accent text-center w-1/5 bg-accent-light/40">Fish Audio Free</th>
+                    <th className="p-4 sm:p-5 font-bold text-ink text-center w-1/5">ElevenLabs Free</th>
+                    <th className="p-4 sm:p-5 font-bold text-ink text-center w-1/5">Murf Free</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  <tr className="hover:bg-surface-2/30 transition-colors">
+                    <td className="p-4 sm:p-5 font-medium text-ink-2">No Signup Required</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Yes</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Mandatory</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Mandatory</td>
+                  </tr>
+                  <tr className="hover:bg-surface-2/30 transition-colors">
+                    <td className="p-4 sm:p-5 font-medium text-ink-2">Commercial Rights</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Included</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Non-commercial</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Personal only</td>
+                  </tr>
+                  <tr className="hover:bg-surface-2/30 transition-colors">
+                    <td className="p-4 sm:p-5 font-medium text-ink-2">Batch Character Allowance</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Up to 10K chars</td>
+                    <td className="p-4 sm:p-5 text-center text-muted">10K chars / month total</td>
+                    <td className="p-4 sm:p-5 text-center text-muted">10 mins total (no download)</td>
+                  </tr>
+                  <tr className="hover:bg-surface-2/30 transition-colors">
+                    <td className="p-4 sm:p-5 font-medium text-ink-2">Audio Watermarks</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Zero Watermark</td>
+                    <td className="p-4 sm:p-5 text-center text-muted">None</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Download locked</td>
+                  </tr>
+                  <tr className="hover:bg-surface-2/30 transition-colors">
+                    <td className="p-4 sm:p-5 font-medium text-ink-2">Instant Voice Cloning</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; 15s Sample Clone</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Paid tiers only</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Enterprise only</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* 3 Step Workflow */}
+        <HowToUse />
+
+        {/* Demos */}
+        <ConversionPack />
+
+        {/* SEO Explainer */}
         <SEOArticle 
-          title="Why is Fish Audio the Best Free Text to Speech Website?"
-          subtitle="A comparative look at modern speech synthesis options"
+          title="The Premier Free Voice Generator for Digital Media"
+          subtitle="Delivering natural human speech without paywalls or restrictive licenses"
           content={
             <>
               <p>
-                Finding an alternative to paid services doesn&apos;t mean compromising on quality. Fish Audio Online stands as a premier 
-                <strong>free voice generator</strong> that delivers professional, natural-sounding audio with 
-                <strong>text to speech free no signup</strong>. We prioritize user privacy and creative flow, which is why we offer 
-                <strong>text to speech no login</strong> generation that takes seconds.
+                Finding an alternative to expensive subscription voice generators shouldn&apos;t mean compromising on vocal realism. Fish Audio Online delivers natural-sounding, professional <strong>free text to speech</strong> conversion that works right in your browser. By eliminating sign-up walls and credit card requirements, we empower creators to experiment freely and produce broadcast-ready voiceovers.
               </p>
 
-              <h3>Free Text to Speech vs Paid — What You&apos;re Missing Out On</h3>
+              <h3>High-Fidelity Audio Without Watermarks</h3>
               <p>
-                Many platforms offer a <strong>text to speech free trial</strong>, but then restrict downloads with loud watermarks or low quotas. 
-                Our platform provides a true <strong>free tts no watermark</strong> solution. See how we compare below:
+                Many online TTS generators offer &ldquo;free trials&rdquo; that stamp loud watermarks across your audio or disable MP3 downloads entirely. Fish Audio provides clean, unwatermarked 44.1kHz audio files ready for direct integration into Premiere Pro, Final Cut, CapCut, DaVinci Resolve, or podcast DAWs.
               </p>
 
-              <div className="overflow-x-auto my-8 border border-border rounded-2xl">
-                <table className="min-w-full divide-y divide-border text-sm">
-                  <thead className="bg-ink/5">
-                    <tr>
-                      <th className="px-6 py-4 text-left font-bold text-ink uppercase tracking-wider">Features</th>
-                      <th className="px-6 py-4 text-left font-bold text-ink uppercase tracking-wider">Fish Audio Free</th>
-                      <th className="px-6 py-4 text-left font-bold text-ink uppercase tracking-wider">ElevenLabs Free</th>
-                      <th className="px-6 py-4 text-left font-bold text-ink uppercase tracking-wider">Murf Free</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border font-medium text-muted">
-                    <tr>
-                      <td className="px-6 py-4 font-bold text-ink">No Signup Required</td>
-                      <td className="px-6 py-4 text-green-600">✅ Yes</td>
-                      <td className="px-6 py-4 text-red-500">❌ No</td>
-                      <td className="px-6 py-4 text-red-500">❌ No</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-bold text-ink">Commercial License</td>
-                      <td className="px-6 py-4 text-green-600">✅ Included</td>
-                      <td className="px-6 py-4 text-red-500">❌ Non-commercial only</td>
-                      <td className="px-6 py-4 text-red-500">❌ Personal only</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-bold text-ink">Character Limit</td>
-                      <td className="px-6 py-4 text-green-600">✅ 10K / generation</td>
-                      <td className="px-6 py-4 text-red-500">❌ 10K / month total</td>
-                      <td className="px-6 py-4 text-red-500">❌ 10 mins total (no download)</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-bold text-ink">Watermarks</td>
-                      <td className="px-6 py-4 text-green-600">✅ None</td>
-                      <td className="px-6 py-4 text-red-500">❌ Attribution required</td>
-                      <td className="px-6 py-4 text-red-500">❌ Watermarked download</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 font-bold text-ink">Price</td>
-                      <td className="px-6 py-4 text-green-600">✅ $0.00 Forever</td>
-                      <td className="px-6 py-4 text-red-500">❌ Upgrades needed</td>
-                      <td className="px-6 py-4 text-red-500">❌ Upgrades needed</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <h3>How to Use Free Text to Speech Online — Step by Step</h3>
+              <h3>Generous Batch Processing</h3>
               <p>
-                Creating audio using our <strong>free speech synthesis</strong> engine is simple and direct:
-              </p>
-              <ol className="list-decimal pl-6 space-y-3 my-6">
-                <li><strong>Enter Your Script:</strong> Paste your content into our online text editor (up to 10K characters per block).</li>
-                <li><strong>Select a Voice:</strong> Choose from our curated catalog of 500+ voices in 75+ languages.</li>
-                <li><strong>Refine Output:</strong> Adjust speed and pitch parameters to achieve a <strong>free natural voice generator</strong> effect.</li>
-                <li><strong>Download MP3:</strong> Click generate, preview the audio, and trigger a <strong>free text to speech download</strong> instantly.</li>
-              </ol>
-
-              <p>
-                Whether you need a reliable <strong>open source tts alternative</strong>, a <strong>free tts app</strong> experience for your browser, 
-                or a scalable <strong>unlimited text to speech free</strong> platform for your business, Fish Audio Online delivers 
-                <strong>best free tts 2026</strong> standards with zero compromises.
+                Our synthesis engine handles up to 10,000 characters per conversion on standard scripts. Whether you are generating a 30-second TikTok voiceover or a multi-chapter narration, our neural models maintain consistent pacing and pitch from beginning to end.
               </p>
             </>
           }
         />
 
-        <div className="w-full py-4 border-t border-b border-border/40 space-y-2 bg-paper/30 rounded-2xl p-6">
-          <div className="text-[9px] font-black uppercase tracking-wider text-muted/50 text-left">Sponsored Advertisements</div>
-          <AdBanner type="native" />
-        </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
 
-        {/* Local FAQ Section */}
-        <section className="space-y-8">
-          <h2 className="text-3xl font-bold font-display text-ink uppercase tracking-tight">Free TTS FAQ</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="card-surface p-8 space-y-2">
-              <h4 className="font-bold text-ink text-lg">Is there really a completely free text to speech with no limits?</h4>
-              <p className="text-muted text-sm leading-relaxed">
-                Yes! Fish Audio Online offers a <strong>free tts no limit</strong> experience. You can generate files up to 10,000 characters 
-                per block and perform as many conversions as your projects require with our <strong>text to speech free online no limits</strong> editor.
-              </p>
-            </div>
-            <div className="card-surface p-8 space-y-2">
-              <h4 className="font-bold text-ink text-lg">What is the best free text to speech app in 2026?</h4>
-              <p className="text-muted text-sm leading-relaxed">
-                Fish Audio Online is widely considered the <strong>best free tts 2026</strong> platform. It provides a browser-based, lightweight 
-                <strong>free tts app</strong> environment with over 500+ realistic, human-sounding voice profiles.
-              </p>
-            </div>
-            <div className="card-surface p-8 space-y-2">
-              <h4 className="font-bold text-ink text-lg">Can I use free text to speech for commercial YouTube videos?</h4>
-              <p className="text-muted text-sm leading-relaxed">
-                Absolutely! Our <strong>free ai text to speech</strong> outputs are completely commercial-use friendly. You get full ownership 
-                and licensing rights, making it ideal for monetized YouTube content, TikToks, and advertising.
-              </p>
-            </div>
-            <div className="card-surface p-8 space-y-2">
-              <h4 className="font-bold text-ink text-lg">Is Fish Audio free with no watermark?</h4>
-              <p className="text-muted text-sm leading-relaxed">
-                Yes, we guarantee a <strong>free tts no watermark</strong> download experience. The generated MP3 files are clean, high-quality, 
-                and ready to be dropped straight into any editing software.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
-        <HowToUse />
-        <ConversionPack />
-
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
+        {/* Internal Interlinking */}
         <InternalLinks />
-      </main>
-    </div>
+
+      </div>
+    </main>
   );
 }

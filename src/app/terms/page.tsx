@@ -1,4 +1,6 @@
 import { constructMetadata } from '@/lib/metadata';
+import { Scale } from 'lucide-react';
+import Link from 'next/link';
 import AdBanner from '@/components/AdBanner';
 
 export const metadata = constructMetadata({
@@ -38,91 +40,79 @@ export default function TermsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-canvas">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="max-w-4xl mx-auto px-4 py-16 md:py-24 space-y-12 text-left">
-        <div className="hidden md:block">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden">
-          <AdBanner type="320x50" />
-        </div>
-
-        <header className="space-y-4">
-          <h1 className="text-4xl md:text-7xl font-black font-display text-ink uppercase tracking-tight">
-            Terms of <span className="text-muted">Service.</span>
+      
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-12 text-left">
+        
+        <header className="space-y-3 pb-8 border-b border-border/80">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2 border border-border text-ink-2 text-xs font-semibold shadow-xs">
+            <Scale size={14} className="text-accent" />
+            <span>Usage Agreement &bull; Commercial Rights</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-ink tracking-tight">
+            Terms of Service
           </h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted">
+          <p className="text-xs text-muted font-medium">
             Last Updated: {lastUpdated}
           </p>
         </header>
 
-        <article className="prose prose-ink max-w-none 
-          prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-          prose-p:text-muted/80 prose-p:leading-relaxed prose-p:font-medium
-          prose-strong:text-ink prose-strong:font-black
-          prose-li:text-muted/80
+        <article className="prose prose-zinc max-w-none space-y-8 text-sm sm:text-base text-ink-2 leading-relaxed
+          [&>section]:space-y-3
+          [&>section>h2]:text-xl [&>section>h2]:font-bold [&>section>h2]:font-display [&>section>h2]:text-ink
+          [&>section>p]:text-muted [&>section>p]:leading-relaxed
+          [&>section>ul]:space-y-2 [&>section>ul]:pl-5 [&>section>ul]:list-disc [&>section>ul]:text-muted
+          [&>section>ul>li>strong]:text-ink
         ">
-          <p>
-            Welcome to Fish Audio Online. By accessing or using our website, you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.
-          </p>
+          <section>
+            <h2>1. Acceptance of Terms</h2>
+            <p>
+              By accessing or using Fish Audio Online (&ldquo;the Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please discontinue use immediately.
+            </p>
+          </section>
 
-          <h3>1. Description of Service</h3>
-          <p>
-            Fish Audio Online provides a web-based interface that leverages artificial intelligence models to convert text into speech. We offer both standard neural voice outputs and voice cloning features.
-          </p>
+          <section>
+            <h2>2. Commercial License &amp; Audio Ownership</h2>
+            <p>
+              Fish Audio grants you a worldwide, perpetual, royalty-free license to commercially monetize, broadcast, distribute, and publish any synthetic audio you generate through the Service, subject to your adherence to our Acceptable Use Policy. For detailed rights, see our <Link href="/commercial-use" className="text-accent underline">Commercial Use Guide</Link>.
+            </p>
+          </section>
 
-          <h3>2. Content Ownership and Licensing</h3>
-          <p>
-            You retain all rights to any audio content generated using our service. We grant you a non-exclusive, worldwide, royalty-free, perpetual license to use, reproduce, distribute, and monetize the synthesized audio for any personal or commercial projects.
-          </p>
+          <section>
+            <h2>3. Voice Cloning Rights &amp; Consent</h2>
+            <p>
+              You represent and warrant that you possess all necessary rights, consents, and authorizations for any audio recordings you upload for voice cloning. You strictly agree not to:
+            </p>
+            <ul>
+              <li>Upload samples of individuals without their verifiable permission.</li>
+              <li>Impersonate public figures, political candidates, or private individuals for deceptive or fraudulent purposes.</li>
+              <li>Generate defamatory, abusive, threatening, or illegal audio content.</li>
+            </ul>
+          </section>
 
-          <h3>3. Acceptable Use</h3>
-          <p>
-            You agree not to use Fish Audio Online for any unlawful or prohibited activities, including but not limited to:
-          </p>
-          <ul>
-            <li>Generating audio that is defamatory, hateful, or promotes violence.</li>
-            <li>Creating &quot;deepfakes&quot; intended to mislead or harm individuals.</li>
-            <li>Attempting to bypass our security measures or reverse-engineer our AI models.</li>
-          </ul>
+          <section>
+            <h2>4. Service Availability &amp; Limitations</h2>
+            <p>
+              We strive for 99.9% uptime, but the Service is provided on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. We reserve the right to throttle abusive generation requests to protect shared compute resources.
+            </p>
+          </section>
 
-          <div className="not-prose my-10 p-4 border border-border bg-paper/50 rounded-2xl">
-            <span className="text-[9px] font-black uppercase tracking-wider text-muted/40 block mb-1">Sponsored Ad</span>
-            <AdBanner type="native" />
-          </div>
-
-          <h3>4. Service Availability</h3>
-          <p>
-            While we strive to maintain high availability, we provide our services on an &quot;as-is&quot; and &quot;as-available&quot; basis. We reserve the right to modify, suspend, or terminate the service at any time without notice.
-          </p>
-
-          <h3>5. Limitation of Liability</h3>
-          <p>
-            Fish Audio Online and its developers shall not be liable for any indirect, incidental, or consequential damages resulting from the use or inability to use our services.
-          </p>
-
-          <h3>6. Modifications to Terms</h3>
-          <p>
-            We may update these terms from time to time. Continued use of the service after such changes constitutes your acceptance of the new terms.
-          </p>
-
-          <h3>7. Governing Law</h3>
-          <p>
-            These terms are governed by the laws applicable to our primary place of business, without regard to conflict of law principles.
-          </p>
+          <section>
+            <h2>5. Inquiries &amp; Legal Notices</h2>
+            <p>
+              For legal inquiries or copyright concerns, contact us at <a href="mailto:contact@fishaudio.online" className="text-accent underline">contact@fishaudio.online</a>.
+            </p>
+          </section>
         </article>
 
-        <div className="hidden md:block pt-8">
-          <AdBanner type="728x90" />
-        </div>
-        <div className="md:hidden pt-8">
-          <AdBanner type="320x50" />
-        </div>
-      </main>
-    </div>
+        {/* Responsive In-Content Ad */}
+        <AdBanner type="responsive" label={true} />
+
+      </div>
+    </main>
   );
 }

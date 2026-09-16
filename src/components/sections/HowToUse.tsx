@@ -1,39 +1,78 @@
+import { Type, Cpu, Download, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+
 export default function HowToUse() {
   const steps = [
     { 
       step: "01", 
-      title: "Input Your Script", 
-      desc: "Type or paste your text into the studio. Our engine supports up to 10,000 characters per generation for long-form content." 
+      title: "Input Script or Sample", 
+      desc: "Paste your script into the editor up to 10,000 characters, or upload/record a 15-second voice sample for instant zero-shot cloning.",
+      icon: Type,
+      tag: "15s Audio or Text"
     },
     { 
       step: "02", 
-      title: "Select Your Voice", 
-      desc: "Browse our library of 500+ premium AI voices. Filter by language, gender, and style to find the perfect match for your brand." 
+      title: "Select Voice & Customize", 
+      desc: "Choose from 500+ studio voices across 75+ languages or synthesize in your own cloned timbre. Adjust fine-grain pitch and playback rate.",
+      icon: Cpu,
+      tag: "500+ Voices & 75+ Langs"
     },
     { 
       step: "03", 
-      title: "Export & Create", 
-      desc: "Preview your generation in real-time, then download your high-quality MP3 file. It's ready for any project instantly." 
+      title: "Export Studio-Grade MP3", 
+      desc: "Listen with real-time waveform playback. Download 44.1kHz high-fidelity audio with full commercial rights and zero watermarks.",
+      icon: Download,
+      tag: "44.1kHz Master Audio"
     }
   ];
 
   return (
-    <section>
-      <div className="text-center mb-16 space-y-4">
-        <h3 className="text-3xl md:text-5xl font-black tracking-tight font-display text-ink">
-          Seamless <span className="text-muted">Workflow.</span>
-        </h3>
-        <p className="text-muted/80 max-w-2xl mx-auto font-medium">
-          Professional voiceovers in three simple steps. No complex software, no hidden costs.
+    <section className="space-y-12">
+      <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <span className="badge-accent">
+          Workflow
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-bold font-display text-ink tracking-tight">
+          How Fish Audio works in 3 simple steps.
+        </h2>
+        <p className="text-sm sm:text-base text-muted leading-relaxed">
+          From script to master voiceover in under a minute. No complex software installations, no credit card required.
         </p>
       </div>
-      <div className="grid md:grid-cols-3 gap-8">
-        {steps.map((item, i) => (
-          <div key={i} className="relative p-10 card-surface flex flex-col items-center text-center overflow-hidden group hover:border-ink/20 transition-all duration-300">
-            <span className="text-6xl md:text-9xl font-black text-ink/5 absolute -top-4 -left-4 font-display group-hover:scale-110 group-hover:text-ink/10 transition-all duration-500">{item.step}</span>
-            <div className="relative z-10 pt-4 space-y-4">
-              <h4 className="text-xl font-bold font-display text-ink">{item.title}</h4>
-              <p className="text-sm text-muted/80 leading-relaxed font-medium">{item.desc}</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {steps.map((item) => (
+          <div 
+            key={item.step} 
+            className="card p-7 flex flex-col justify-between space-y-6 group relative overflow-hidden"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-accent font-display tracking-wider bg-accent-light px-2.5 py-1 rounded-full border border-accent-subtle">
+                  Step {item.step}
+                </span>
+                <span className="text-[11px] font-medium text-muted">
+                  {item.tag}
+                </span>
+              </div>
+
+              <div className="w-11 h-11 rounded-2xl bg-surface-2 flex items-center justify-center text-ink group-hover:bg-accent group-hover:text-white transition-colors duration-200">
+                <item.icon size={20} />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-lg font-bold font-display text-ink group-hover:text-accent transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-border/60 flex items-center text-xs font-semibold text-muted group-hover:text-ink transition-colors">
+              <span>Try step in Studio</span>
+              <ArrowRight size={13} className="ml-1.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         ))}

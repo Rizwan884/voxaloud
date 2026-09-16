@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { X, Mail, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, Mail, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function ExitIntentPopup() {
@@ -11,24 +11,22 @@ export default function ExitIntentPopup() {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    // Check localStorage to see if user already subscribed/dismissed
+    // Check localStorage
     const hasInteracted = 
       localStorage.getItem('exit_intent_subscribed') === 'true' || 
       localStorage.getItem('exit_intent_dismissed') === 'true';
 
     if (hasInteracted) return;
 
-    // Desktop: Track mouse exit (moving up out of viewport)
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY < 15) {
         setIsOpen(true);
       }
     };
 
-    // Mobile: Trigger timer after 45 seconds
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 45000);
+    }, 60000); // 60s delay
 
     document.addEventListener('mouseleave', handleMouseLeave);
 
@@ -62,13 +60,12 @@ export default function ExitIntentPopup() {
         localStorage.setItem('exit_intent_subscribed', 'true');
         setTimeout(() => {
           setIsOpen(false);
-        }, 2500);
+        }, 2200);
       } else {
         const data = await res.json();
         throw new Error(data.error || 'Failed to subscribe.');
       }
     } catch (err: unknown) {
-      console.error(err);
       setStatus('error');
       setErrorMsg(err instanceof Error ? err.message : 'An error occurred. Please try again.');
     }
@@ -79,87 +76,88 @@ export default function ExitIntentPopup() {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop overlay */}
+        {/* Backdrop */}
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }} 
-          className="absolute inset-0 bg-ink/30 backdrop-blur-sm" 
+          className="absolute inset-0 bg-ink/40 backdrop-blur-sm" 
           onClick={handleDismiss} 
         />
         
-        {/* Content Card */}
+        {/* Card */}
         <motion.div 
           initial={{ scale: 0.95, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
           exit={{ scale: 0.95, opacity: 0 }} 
-          className="card bg-paper w-full max-w-md relative z-10 p-8 shadow-2xl rounded-[2.5rem] border border-border"
+          className="card bg-surface w-full max-w-md relative z-10 p-8 shadow-2xl rounded-3xl border border-border"
         >
           {status !== 'loading' && (
             <button 
               onClick={handleDismiss} 
-              className="absolute top-5 right-5 text-muted hover:text-ink p-1 rounded-full hover:bg-surface-2 transition-all"
+              className="absolute top-5 right-5 text-muted hover:text-ink p-1.5 rounded-full hover:bg-surface-2 transition-all cursor-pointer"
+              aria-label="Close"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           )}
 
           {status === 'success' ? (
-            <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle2 size={32} className="text-green-600" />
+            <div className="text-center py-6 space-y-3">
+              <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto border border-emerald-100">
+                <CheckCircle2 size={28} className="text-emerald-600" />
               </div>
-              <h3 className="text-2xl font-black font-display text-ink uppercase tracking-tight">You&apos;re Subscribed!</h3>
-              <p className="text-sm text-muted">We will keep you updated when we release new neural voices.</p>
+              <h3 className="text-xl font-bold font-display text-ink tracking-tight">You&apos;re Subscribed!</h3>
+              <p className="text-xs text-muted">We&apos;ll notify you when new neural models are released.</p>
             </div>
           ) : (
-            <div className="space-y-6">
-              <div className="w-12 h-12 bg-surface rounded-2xl flex items-center justify-center">
-                <Mail size={22} className="text-ink" />
+            <div className="space-y-5 text-left">
+              <div className="w-11 h-11 rounded-2xl bg-accent-light text-accent flex items-center justify-center">
+                <Sparkles size={20} />
               </div>
               
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black font-display text-ink uppercase tracking-tight leading-tight">
-                  Get notified when we <br /><span className="text-muted">add new voices.</span>
+              <div className="space-y-1.5">
+                <h3 className="text-2xl font-bold font-display text-ink tracking-tight leading-snug">
+                  Get notified when we <br /><span className="text-muted font-normal">release new neural voices.</span>
                 </h3>
-                <p className="text-sm text-muted font-medium">
-                  Stay updated on our latest high-fidelity neural model releases and featured speakers.
+                <p className="text-xs text-muted leading-relaxed font-normal">
+                  Stay updated on our latest high-fidelity voice models, emotion controls, and creator tutorials.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3 pt-1">
                 <input 
                   type="email" 
                   required
-                  placeholder="Enter your email" 
+                  placeholder="Enter your email address" 
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="field !py-3.5 !px-4 !rounded-xl"
+                  className="field !py-2.5 !px-3.5 !text-xs !rounded-xl"
                   disabled={status === 'loading'}
                 />
 
                 {status === 'error' && (
-                  <p className="text-xs font-semibold text-red-500">{errorMsg}</p>
+                  <p className="text-xs font-medium text-rose-600">{errorMsg}</p>
                 )}
 
                 <button 
                   type="submit" 
-                  className="btn-primary w-full !py-3.5 shadow-lg shadow-ink/10 hover:shadow-xl transition-all"
+                  className="btn-accent w-full !py-3 !text-xs !font-semibold shadow-md shadow-accent/20 cursor-pointer"
                   disabled={status === 'loading'}
                 >
                   {status === 'loading' ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 size={16} className="animate-spin" />
-                      Saving...
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 size={15} className="animate-spin" />
+                      Subscribing...
                     </span>
                   ) : (
-                    'Notify Me'
+                    'Get Early Access & Updates'
                   )}
                 </button>
               </form>
 
-              <p className="text-[10px] text-center text-muted/60 font-semibold uppercase tracking-wider">
-                No spam. Unsubscribe at any time.
+              <p className="text-[10px] text-center text-muted font-normal">
+                Zero spam. Unsubscribe at any time with a single click.
               </p>
             </div>
           )}
