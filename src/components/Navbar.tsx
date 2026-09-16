@@ -16,7 +16,6 @@ export default function Navbar() {
     { label: 'Voice Clone', href: '/voice-clone', badge: 'New' },
     { label: 'AI Generator', href: '/ai-voice-generator' },
     { label: 'Languages', href: '/languages' },
-    { label: 'Pricing', href: '/pricing' },
     { label: 'Blog', href: '/blog' },
   ];
 

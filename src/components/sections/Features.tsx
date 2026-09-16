@@ -1,4 +1,4 @@
-import { ShieldCheck, Zap, Mic2, Languages, UserCheck, Sparkles, Sliders, AudioWaveform } from 'lucide-react';
+import { ShieldCheck, Zap, Mic2, Languages, UserCheck, Sparkles, Sliders, AudioWaveform, Check } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Features() {
@@ -63,7 +63,8 @@ export default function Features() {
             </p>
           </div>
           <div className="pt-2 text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
-            <span>&check; 100% Monetization Safe</span>
+            <Check size={14} className="stroke-[2.5]" />
+            <span>100% Monetization Safe</span>
           </div>
         </div>
 

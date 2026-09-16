@@ -6,7 +6,7 @@ import ConversionPack from '@/components/sections/ConversionPack';
 import DynamicStudio from '@/components/DynamicStudio';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
-import { Sparkles, ShieldCheck, Zap, Download } from 'lucide-react';
+import { Sparkles, ShieldCheck, Zap, Download, Check, X } from 'lucide-react';
 
 export const metadata = constructMetadata({
   title: 'Free Text to Speech Online — No Login, No Limits | Fish Audio',
@@ -128,33 +128,57 @@ export default async function FreeTTSPage() {
                 <tbody className="divide-y divide-border/60">
                   <tr className="hover:bg-surface-2/30 transition-colors">
                     <td className="p-4 sm:p-5 font-medium text-ink-2">No Signup Required</td>
-                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Yes</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Mandatory</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Mandatory</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">
+                      <span className="inline-flex items-center justify-center gap-1.5"><Check size={14} className="stroke-[2.5]" /> Yes</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Mandatory</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Mandatory</span>
+                    </td>
                   </tr>
                   <tr className="hover:bg-surface-2/30 transition-colors">
                     <td className="p-4 sm:p-5 font-medium text-ink-2">Commercial Rights</td>
-                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Included</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Non-commercial</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Personal only</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">
+                      <span className="inline-flex items-center justify-center gap-1.5"><Check size={14} className="stroke-[2.5]" /> Included</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Non-commercial</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Personal only</span>
+                    </td>
                   </tr>
                   <tr className="hover:bg-surface-2/30 transition-colors">
                     <td className="p-4 sm:p-5 font-medium text-ink-2">Batch Character Allowance</td>
-                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Up to 10K chars</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">
+                      <span className="inline-flex items-center justify-center gap-1.5"><Check size={14} className="stroke-[2.5]" /> Up to 10K chars</span>
+                    </td>
                     <td className="p-4 sm:p-5 text-center text-muted">10K chars / month total</td>
                     <td className="p-4 sm:p-5 text-center text-muted">10 mins total (no download)</td>
                   </tr>
                   <tr className="hover:bg-surface-2/30 transition-colors">
                     <td className="p-4 sm:p-5 font-medium text-ink-2">Audio Watermarks</td>
-                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; Zero Watermark</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">
+                      <span className="inline-flex items-center justify-center gap-1.5"><Check size={14} className="stroke-[2.5]" /> Zero Watermark</span>
+                    </td>
                     <td className="p-4 sm:p-5 text-center text-muted">None</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Download locked</td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Download locked</span>
+                    </td>
                   </tr>
                   <tr className="hover:bg-surface-2/30 transition-colors">
                     <td className="p-4 sm:p-5 font-medium text-ink-2">Instant Voice Cloning</td>
-                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">&check; 15s Sample Clone</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Paid tiers only</td>
-                    <td className="p-4 sm:p-5 text-center text-rose-500">&cross; Enterprise only</td>
+                    <td className="p-4 sm:p-5 text-center font-bold text-emerald-600 bg-accent-light/20">
+                      <span className="inline-flex items-center justify-center gap-1.5"><Check size={14} className="stroke-[2.5]" /> 15s Sample Clone</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Paid tiers only</span>
+                    </td>
+                    <td className="p-4 sm:p-5 text-center text-rose-500">
+                      <span className="inline-flex items-center justify-center gap-1"><X size={13} /> Enterprise only</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
