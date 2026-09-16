@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function proxy(request: NextRequest) {
+  // Canonicalize www.fishaudio.online -> fishaudio.online. Both were live and
+  // serving identical content independently with no redirect between them,
+  // which splits SEO signal and confuses Google into crawling/indexing the
+  // whole site twice under two hostnames.
+  // request.nextUrl.hostname reflects the internal server address, not the
+  // actual requested domain — must read the real Host header instead.
+  const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || '';
+  if (host === 'www.fishaudio.online') {
+    const target = new URL(`${request.nextUrl.pathname}${request.nextUrl.search}`, 'https://fishaudio.online');
+    return NextResponse.redirect(target, 308);
+  }
+
   // Only apply to API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
     const origin = request.headers.get('origin') ?? '';
@@ -61,5 +73,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  // Runs on every route (not just /api) so the www redirect applies
+  // site-wide; static build assets are excluded for performance.
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
