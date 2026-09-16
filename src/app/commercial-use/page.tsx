@@ -51,7 +51,7 @@ export default function CommercialUsePage() {
     { 
       icon: Scale, 
       title: 'Zero Recurring Royalties', 
-      desc: 'Generate as many audio files as your plan allows without worrying about recurring copyright fees or performance residuals.' 
+      desc: 'Generate as many audio files as you need without worrying about recurring copyright fees or performance residuals.' 
     },
     { 
       icon: Globe, 

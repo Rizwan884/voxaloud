@@ -17,7 +17,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/text-to-voice',
     '/commercial-use',
     '/languages',
-    '/pricing',
     '/faq',
     '/blog',
     '/privacy',

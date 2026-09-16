@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { constructMetadata } from '@/lib/metadata';
 import PricingClient from '@/components/pricing/PricingClient';
 import AdBanner from '@/components/AdBanner';
@@ -47,6 +48,9 @@ const PRICING_FAQS = [
 ];
 
 export default function PricingPage() {
+  // Route temporarily hidden: redirect all traffic to homepage
+  redirect('/');
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

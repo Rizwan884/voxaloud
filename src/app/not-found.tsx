@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { Sparkles, ArrowLeft, Mic2, Compass, Layers, CreditCard } from 'lucide-react';
+import { Sparkles, ArrowLeft, Mic2, Compass, Layers, ShieldCheck } from 'lucide-react';
 
 export default function NotFound() {
   const helpfulLinks = [
     { title: 'Voice Cloning Studio', desc: 'Clone any voice from a 15-second sample', href: '/voice-clone', icon: Mic2 },
     { title: 'AI Voice Generator', desc: '500+ ready-made natural neural voices', href: '/ai-voice-generator', icon: Sparkles },
     { title: '75+ Languages', desc: 'Browse multilingual text-to-speech models', href: '/languages', icon: Layers },
-    { title: 'Pricing & Plans', desc: 'Free plan and creator pro features', href: '/pricing', icon: CreditCard },
+    { title: 'Commercial License', desc: '100% royalty-free monetization rights', href: '/commercial-use', icon: ShieldCheck },
   ];
 
   return (

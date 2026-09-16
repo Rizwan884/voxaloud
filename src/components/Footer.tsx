@@ -43,7 +43,6 @@ export default function Footer() {
         { label: 'Free Text to Speech', href: '/free-text-to-speech' },
         { label: 'Text to Voice Converter', href: '/text-to-voice' },
         { label: '75+ Languages Library', href: '/languages' },
-        { label: 'Pricing & Plans', href: '/pricing' },
       ]
     },
     {
