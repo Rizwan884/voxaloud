@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   FileText, Link2, Mic2, Upload, Loader2, Download, Play, Pause, KeyRound,
-  Eye, EyeOff, Type, Smile, Music2, X, RefreshCw, Film, Sparkles,
+  Type, Smile, Music2, X, RefreshCw, Film, Sparkles,
 } from "lucide-react";
 import VoiceSourcePanel, { LAST_VOICE_STORAGE, readLastUsedVoice, SelectedVoice } from "./VoiceSourcePanel";
 import {
   AspectRatio, OverlayState, Scene, VideoEffect,
   MAX_SCRIPT_WORDS, NARRATION_CHAR_LIMIT, decodeAudioDuration, dimsFor, extractQuery, fmtTime,
-  genericVoiceScenes, pickClip, renderVideo, searchPexels, splitParts, synthesizeNarration, wordCount,
+  genericVoiceScenes, parseApiKeys, pickClip, renderVideo, searchPexelsWithKeys, splitParts, synthesizeNarration, wordCount,
 } from "./engine";
 
 type NarrationMode = "none" | "upload" | "clone";
@@ -100,7 +100,6 @@ export default function VideoMakerStudio() {
   const [pexelsKey, setPexelsKey] = useState(() =>
     typeof window !== "undefined" ? window.localStorage.getItem(PEXELS_KEY_STORAGE) || "" : ""
   );
-  const [showKey, setShowKey] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16:9");
 
   const [voiceUrl, setVoiceUrl] = useState("");
@@ -263,8 +262,9 @@ export default function VideoMakerStudio() {
       setStatusMessage("Write a script or add a narration voice first.");
       return;
     }
-    if (!pexelsKey.trim()) {
-      setStatusMessage("Enter your Pexels API key first (free at pexels.com/api).");
+    const pexelsKeys = parseApiKeys(pexelsKey);
+    if (!pexelsKeys.length) {
+      setStatusMessage("Enter at least one Pexels API key first (free at pexels.com/api).");
       return;
     }
     if (text && wordCount(text) > MAX_SCRIPT_WORDS) {
@@ -329,7 +329,7 @@ export default function VideoMakerStudio() {
             batch.map(async (chunk) => {
               const q = extractQuery(chunk);
               try {
-                return { chunk, q, clip: pickClip(await searchPexels(q, pexelsKey, aspectRatio)) };
+                return { chunk, q, clip: pickClip(await searchPexelsWithKeys(q, pexelsKeys, aspectRatio)) };
               } catch {
                 return { chunk, q, clip: null };
               }
@@ -361,7 +361,7 @@ export default function VideoMakerStudio() {
           const results = await Promise.all(
             batch.map(async (scene) => {
               try {
-                return pickClip(await searchPexels(scene.query, pexelsKey, aspectRatio));
+                return pickClip(await searchPexelsWithKeys(scene.query, pexelsKeys, aspectRatio));
               } catch {
                 return null;
               }
@@ -451,7 +451,7 @@ export default function VideoMakerStudio() {
     const query = window.prompt("New Pexels search keyword:", scenes[index]?.query || "");
     if (!query) return;
     try {
-      const clip = pickClip(await searchPexels(query, pexelsKey, aspectRatio));
+      const clip = pickClip(await searchPexelsWithKeys(query, parseApiKeys(pexelsKey), aspectRatio));
       if (!clip) {
         setStatusMessage("No matching video found for that keyword.");
         return;
@@ -484,7 +484,7 @@ export default function VideoMakerStudio() {
   const canGenerate =
     (!!script.trim() || usingUpload) &&
     (!usingClonedVoice || !!script.trim()) &&
-    !!pexelsKey.trim() &&
+    parseApiKeys(pexelsKey).length > 0 &&
     !isGenerating;
 
   return (
@@ -618,23 +618,27 @@ export default function VideoMakerStudio() {
 
         <div className="card p-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-wider text-muted flex items-center gap-1.5">
-              <KeyRound size={11} /> Pexels API Key
-            </label>
-            <div className="flex gap-2">
-              <input
-                type={showKey ? "text" : "password"}
-                value={pexelsKey}
-                onChange={(e) => setPexelsKey(e.target.value)}
-                placeholder="Paste your free Pexels API key"
-                className="field flex-1"
-              />
-              <button onClick={() => setShowKey((v) => !v)} className="btn-outline !px-3">
-                {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
-              </button>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-[10px] font-black uppercase tracking-wider text-muted flex items-center gap-1.5">
+                <KeyRound size={11} /> Pexels API Key(s)
+              </label>
+              {pexelsKey.trim() && (
+                <span className="text-[10px] font-bold text-muted">
+                  {parseApiKeys(pexelsKey).length} key{parseApiKeys(pexelsKey).length === 1 ? "" : "s"} detected
+                </span>
+              )}
             </div>
+            <textarea
+              value={pexelsKey}
+              onChange={(e) => setPexelsKey(e.target.value)}
+              placeholder={"Paste one or more Pexels API keys, one per line…\nkey_one\nkey_two\nkey_three"}
+              rows={3}
+              className="field resize-y font-mono !text-xs"
+            />
             <p className="text-[10px] text-muted/70">
-              Used only in your browser so Shad Video Maker can fetch matching footage — get a free key at{" "}
+              Used only in your browser so Shad Video Maker can fetch matching footage — paste multiple keys (one per
+              line, or comma-separated) and if one fails or hits its limit, the next is tried automatically. Get a
+              free key at{" "}
               <a href="https://www.pexels.com/api/" target="_blank" rel="noopener noreferrer" className="underline">
                 pexels.com/api
               </a>

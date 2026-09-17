@@ -97,7 +97,7 @@ interface PexelsResponse {
   videos?: PexelsVideo[];
 }
 
-export async function searchPexels(query: string, apiKey: string, aspectRatio: AspectRatio): Promise<PexelsResponse> {
+async function searchPexels(query: string, apiKey: string, aspectRatio: AspectRatio): Promise<PexelsResponse> {
   const orientation = aspectRatio === "9:16" ? "portrait" : aspectRatio === "1:1" ? "square" : "landscape";
   const res = await fetch(
     `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=8&orientation=${orientation}`,
@@ -105,6 +105,27 @@ export async function searchPexels(query: string, apiKey: string, aspectRatio: A
   );
   if (!res.ok) throw new Error(`Pexels API error ${res.status}. Check that your API key is correct.`);
   return res.json();
+}
+
+// Splits a pasted key list on newlines/commas and drops blanks/duplicates.
+export function parseApiKeys(raw: string): string[] {
+  return Array.from(new Set(raw.split(/[\n,]+/).map((k) => k.trim()).filter(Boolean)));
+}
+
+// Tries each key in order — if one is invalid, rate-limited, or otherwise
+// fails, the next key is tried automatically until one succeeds or the
+// list is exhausted.
+export async function searchPexelsWithKeys(query: string, apiKeys: string[], aspectRatio: AspectRatio): Promise<PexelsResponse> {
+  if (!apiKeys.length) throw new Error("No Pexels API key provided.");
+  let lastError: unknown = null;
+  for (const key of apiKeys) {
+    try {
+      return await searchPexels(query, key, aspectRatio);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("All Pexels API keys failed.");
 }
 
 export function pickClip(data: PexelsResponse): { url: string; thumb: string } | null {
