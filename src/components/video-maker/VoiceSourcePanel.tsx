@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, LogIn, PlusCircle, Loader2, CheckCircle2, History, Volume2 } from "lucide-react";
+import { Search, LogIn, PlusCircle, Loader2, CheckCircle2, History, Volume2, Play, Pause } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { ClonedVoice, getClonedVoices, saveClonedVoice } from "@/lib/cloneStorage";
 
@@ -16,6 +16,7 @@ interface PublicVoice {
   title: string;
   languages: string[];
   author: string;
+  sampleAudioUrl: string | null;
 }
 
 export const LAST_VOICE_STORAGE = "shad_video_maker_last_voice";
@@ -42,7 +43,9 @@ export default function VoiceSourcePanel({ selectedVoice, onSelectVoice, onClear
   const [query, setQuery] = useState("");
   const [publicResults, setPublicResults] = useState<PublicVoice[]>([]);
   const [searching, setSearching] = useState(false);
+  const [playingId, setPlayingId] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastUsed = readLastUsedVoice();
 
   useEffect(() => {
@@ -94,8 +97,22 @@ export default function VoiceSourcePanel({ selectedVoice, onSelectVoice, onClear
     onSelectVoice({ id: voice.id, name: voice.title });
   }
 
+  function togglePreview(voice: PublicVoice) {
+    if (!voice.sampleAudioUrl || !audioRef.current) return;
+    if (playingId === voice.id) {
+      audioRef.current.pause();
+      setPlayingId(null);
+      return;
+    }
+    audioRef.current.src = voice.sampleAudioUrl;
+    audioRef.current.play();
+    setPlayingId(voice.id);
+  }
+
   return (
     <div className="space-y-3">
+      <audio ref={audioRef} onEnded={() => setPlayingId(null)} />
+
       {selectedVoice ? (
         <div className="flex items-center justify-between gap-3 bg-ink text-paper rounded-xl px-4 py-2.5">
           <span className="text-xs font-semibold flex items-center gap-2 truncate">
@@ -162,22 +179,39 @@ export default function VoiceSourcePanel({ selectedVoice, onSelectVoice, onClear
             <div className="space-y-1.5">
               {publicMatches.map((v) => {
                 const isSelected = selectedVoice?.id === v.id;
+                const isPlaying = playingId === v.id;
                 return (
-                  <button
+                  <div
                     key={v.id}
-                    onClick={() => handlePickPublic(v)}
-                    className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-left transition-all ${
+                    className={`flex items-center gap-2 px-2 py-2 rounded-lg border transition-all ${
                       isSelected ? "bg-ink text-paper border-ink" : "bg-paper border-border hover:border-ink/30"
                     }`}
                   >
-                    <span className="min-w-0">
-                      <span className="block text-[11px] font-bold uppercase tracking-wide truncate">{v.title}</span>
-                      <span className={`block text-[9px] truncate ${isSelected ? "text-paper/60" : "text-muted"}`}>
-                        {v.languages.join(", ") || "Multilingual"} · by {v.author}
+                    <button
+                      type="button"
+                      onClick={() => togglePreview(v)}
+                      disabled={!v.sampleAudioUrl}
+                      title={v.sampleAudioUrl ? "Preview voice sample" : "No preview available"}
+                      className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 border transition-all disabled:opacity-30 ${
+                        isPlaying
+                          ? "bg-accent border-accent text-white"
+                          : isSelected
+                          ? "border-paper/30 text-paper hover:border-paper/60"
+                          : "border-border text-muted hover:border-ink/30"
+                      }`}
+                    >
+                      {isPlaying ? <Pause size={11} fill="currentColor" /> : <Play size={11} fill="currentColor" className="ml-0.5" />}
+                    </button>
+                    <button type="button" onClick={() => handlePickPublic(v)} className="flex-1 min-w-0 flex items-center justify-between gap-2 text-left">
+                      <span className="min-w-0">
+                        <span className="block text-[11px] font-bold uppercase tracking-wide truncate">{v.title}</span>
+                        <span className={`block text-[9px] truncate ${isSelected ? "text-paper/60" : "text-muted"}`}>
+                          {v.languages.join(", ") || "Multilingual"} · by {v.author}
+                        </span>
                       </span>
-                    </span>
-                    {isSelected ? <CheckCircle2 size={14} className="shrink-0" /> : <PlusCircle size={14} className="shrink-0 text-muted" />}
-                  </button>
+                      {isSelected ? <CheckCircle2 size={14} className="shrink-0" /> : <PlusCircle size={14} className="shrink-0 text-muted" />}
+                    </button>
+                  </div>
                 );
               })}
             </div>
