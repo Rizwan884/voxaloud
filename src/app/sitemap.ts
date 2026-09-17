@@ -12,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/about',
     '/contact',
     '/voice-clone',
+    '/video-maker',
     '/ai-voice-generator',
     '/free-text-to-speech',
     '/text-to-voice',
@@ -30,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (route === '') {
       priority = 1.0;
       changeFrequency = 'weekly';
-    } else if (route === '/voice-clone') {
+    } else if (route === '/voice-clone' || route === '/video-maker') {
       priority = 1.0;
       changeFrequency = 'weekly';
     } else if (route === '/ai-voice-generator' || route === '/free-text-to-speech') {

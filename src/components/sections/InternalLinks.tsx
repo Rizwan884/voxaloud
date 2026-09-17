@@ -4,6 +4,7 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 export default function InternalLinks() {
   const links = [
     { href: '/voice-clone', label: 'AI Voice Cloning Studio', desc: 'Clone any voice from a 15-second sample' },
+    { href: '/video-maker', label: 'Shad Auto Video Maker', desc: 'Script or cloned voice to finished video' },
     { href: '/ai-voice-generator', label: 'AI Voice Generator', desc: '500+ ready-to-use neural studio voices' },
     { href: '/free-text-to-speech', label: 'Free Text to Speech', desc: 'Zero-cost generation with no watermarks' },
     { href: '/text-to-voice', label: 'Text to Voice Converter', desc: 'Instant audio narration in 75+ languages' },

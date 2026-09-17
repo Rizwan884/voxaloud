@@ -8,6 +8,7 @@ import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
 import HomeStudioSwitcher from '@/components/HomeStudioSwitcher';
 import ConversionPack from '@/components/sections/ConversionPack';
+import VideoMakerBanner from '@/components/sections/VideoMakerBanner';
 import AdBanner from '@/components/AdBanner';
 import { getVoices } from '@/lib/voices';
 import { constructMetadata } from '@/lib/metadata';
@@ -115,7 +116,10 @@ export default async function Home() {
 
       {/* Main Page Flow with Disciplined Section Rhythm */}
       <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-16 sm:py-24 space-y-24 sm:space-y-32">
-        
+
+        {/* Shad Auto Video Maker promo */}
+        <VideoMakerBanner />
+
         {/* Interactive Voice Showcase with live audio player */}
         <ConversionPack />
 

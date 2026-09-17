@@ -13,7 +13,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { label: 'Voice Clone', href: '/voice-clone', badge: 'New' },
+    { label: 'Voice Clone', href: '/voice-clone' },
+    { label: 'Video Maker', href: '/video-maker', badge: 'New' },
     { label: 'AI Generator', href: '/ai-voice-generator' },
     { label: 'Languages', href: '/languages' },
     { label: 'Blog', href: '/blog' },
