@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  FileText, Link2, Mic2, Loader2, Download, Play, Pause, KeyRound,
+  FileText, Link2, Mic2, Upload, Loader2, Download, Play, Pause, KeyRound,
   Eye, EyeOff, Type, Smile, Music2, X, RefreshCw, Film, Sparkles,
 } from "lucide-react";
-import VoiceSourcePanel from "./VoiceSourcePanel";
+import VoiceSourcePanel, { LAST_VOICE_STORAGE, readLastUsedVoice, SelectedVoice } from "./VoiceSourcePanel";
 import {
   AspectRatio, OverlayState, Scene, VideoEffect,
-  MAX_SCRIPT_WORDS, decodeAudioDuration, dimsFor, extractQuery, fmtTime,
-  genericVoiceScenes, pickClip, renderVideo, searchPexels, splitParts, wordCount,
+  MAX_SCRIPT_WORDS, NARRATION_CHAR_LIMIT, decodeAudioDuration, dimsFor, extractQuery, fmtTime,
+  genericVoiceScenes, pickClip, renderVideo, searchPexels, splitParts, synthesizeNarration, wordCount,
 } from "./engine";
+
+type NarrationMode = "none" | "upload" | "clone";
 
 const PEXELS_KEY_STORAGE = "shad_video_maker_pexels_key";
 
@@ -85,11 +87,15 @@ function DraggableOverlay({
 }
 
 export default function VideoMakerStudio() {
-  const [activeTab, setActiveTab] = useState<"script" | "url" | "voice">("script");
   const [script, setScript] = useState("");
+  const [showYoutubeImport, setShowYoutubeImport] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [transcriptBusy, setTranscriptBusy] = useState(false);
   const [transcriptStatus, setTranscriptStatus] = useState("");
+
+  const [selectedVoice, setSelectedVoice] = useState<SelectedVoice | null>(() => readLastUsedVoice());
+  const [narrationMode, setNarrationMode] = useState<NarrationMode>(() => (readLastUsedVoice() ? "clone" : "none"));
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
 
   const [pexelsKey, setPexelsKey] = useState(() =>
     typeof window !== "undefined" ? window.localStorage.getItem(PEXELS_KEY_STORAGE) || "" : ""
@@ -153,21 +159,22 @@ export default function VideoMakerStudio() {
     setStatusMessage("Voice ready. You can generate now.");
   }
 
-  async function applyVoiceGenerated(blob: Blob, voiceName: string) {
-    if (voiceUrl) URL.revokeObjectURL(voiceUrl);
-    const url = URL.createObjectURL(blob);
-    const duration = await decodeAudioDuration(url);
-    setVoiceUrl(url);
-    setVoiceDuration(duration);
-    setVoiceLabel(`Generated · ${voiceName}`);
-    setStatusMessage("Speech generated. You can generate the video now.");
-  }
-
   function clearVoice() {
     if (voiceUrl) URL.revokeObjectURL(voiceUrl);
     setVoiceUrl("");
     setVoiceDuration(0);
     setVoiceLabel("");
+  }
+
+  function selectVoice(voice: SelectedVoice) {
+    setSelectedVoice(voice);
+    try {
+      window.localStorage.setItem(LAST_VOICE_STORAGE, JSON.stringify(voice));
+    } catch {}
+  }
+
+  function clearSelectedVoice() {
+    setSelectedVoice(null);
   }
 
   function applyMusicFile(file: File) {
@@ -233,7 +240,7 @@ export default function VideoMakerStudio() {
       const clean = cleanTranscript(text);
       if (!clean) throw new Error("Transcript is empty or unavailable for this video.");
       setScript(clean);
-      setActiveTab("script");
+      setShowYoutubeImport(false);
       setTranscriptStatus("✓ Transcript loaded into your script.");
     } catch (err) {
       setTranscriptStatus(err instanceof Error ? err.message : "Couldn't fetch transcript for this video.");
@@ -245,8 +252,14 @@ export default function VideoMakerStudio() {
   async function handleGenerate() {
     if (isGenerating) return;
     const text = script.trim();
-    const hasVoice = !!voiceUrl && voiceDuration > 0;
-    if (!text && !hasVoice) {
+    const usingUpload = narrationMode === "upload" && !!voiceUrl && voiceDuration > 0;
+    const usingClonedVoice = narrationMode === "clone" && !!selectedVoice;
+
+    if (usingClonedVoice && !text) {
+      setStatusMessage("Write a script first — it's used both for narration and to find matching B-roll.");
+      return;
+    }
+    if (!text && !usingUpload) {
       setStatusMessage("Write a script or add a narration voice first.");
       return;
     }
@@ -258,6 +271,10 @@ export default function VideoMakerStudio() {
       setStatusMessage(`Script limit is ${MAX_SCRIPT_WORDS.toLocaleString()} words.`);
       return;
     }
+    if (usingClonedVoice && text.length > NARRATION_CHAR_LIMIT) {
+      setStatusMessage(`Narration is limited to ${NARRATION_CHAR_LIMIT.toLocaleString()} characters.`);
+      return;
+    }
 
     setIsGenerating(true);
     setProgress(1);
@@ -266,7 +283,23 @@ export default function VideoMakerStudio() {
     setPreviewUrl("");
 
     try {
-      let duration = voiceDuration;
+      let narrationUrl = usingUpload ? voiceUrl : "";
+      let duration = usingUpload ? voiceDuration : 0;
+
+      if (usingClonedVoice) {
+        setIsSynthesizing(true);
+        setStatusMessage(`Generating narration with ${selectedVoice!.name}…`);
+        const blob = await synthesizeNarration(text, selectedVoice!.id);
+        if (voiceUrl) URL.revokeObjectURL(voiceUrl);
+        narrationUrl = URL.createObjectURL(blob);
+        duration = await decodeAudioDuration(narrationUrl);
+        setVoiceUrl(narrationUrl);
+        setVoiceDuration(duration);
+        setVoiceLabel(`Generated · ${selectedVoice!.name}`);
+        setIsSynthesizing(false);
+      }
+
+      const hasVoice = !!narrationUrl && duration > 0;
       let nextScenes: Scene[] = [];
 
       if (!hasVoice && text) {
@@ -354,7 +387,7 @@ export default function VideoMakerStudio() {
 
       const blob = await renderVideo({
         scenes: nextScenes,
-        voiceUrl,
+        voiceUrl: narrationUrl,
         aspectRatio,
         musicUrl,
         textOverlay: textClip ? { ...textPos, text: textClip } : null,
@@ -376,6 +409,7 @@ export default function VideoMakerStudio() {
       console.error(err);
       setStatusMessage(err instanceof Error ? err.message : "Video generation failed.");
     } finally {
+      setIsSynthesizing(false);
       setIsGenerating(false);
     }
   }
@@ -445,66 +479,33 @@ export default function VideoMakerStudio() {
   }
 
   const dims = dimsFor(aspectRatio);
-  const canGenerate = (!!script.trim() || (!!voiceUrl && voiceDuration > 0)) && !!pexelsKey.trim() && !isGenerating;
+  const usingUpload = narrationMode === "upload" && !!voiceUrl && voiceDuration > 0;
+  const usingClonedVoice = narrationMode === "clone" && !!selectedVoice;
+  const canGenerate =
+    (!!script.trim() || usingUpload) &&
+    (!usingClonedVoice || !!script.trim()) &&
+    !!pexelsKey.trim() &&
+    !isGenerating;
 
   return (
     <div className="grid lg:grid-cols-12 gap-5">
       {/* Left: input + settings */}
       <div className="lg:col-span-5 space-y-5">
-        <div className="card p-5 space-y-4">
-          <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-xl w-fit">
+        <div className="card p-5 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-[10px] font-black uppercase tracking-wider text-muted flex items-center gap-1.5">
+              <FileText size={12} /> Script
+            </label>
             <button
-              onClick={() => setActiveTab("script")}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${activeTab === "script" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
+              onClick={() => setShowYoutubeImport((v) => !v)}
+              className="text-[10px] font-bold text-accent hover:underline flex items-center gap-1"
             >
-              <FileText size={13} /> Script
-            </button>
-            <button
-              onClick={() => setActiveTab("url")}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${activeTab === "url" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
-            >
-              <Link2 size={13} /> YouTube URL
-            </button>
-            <button
-              onClick={() => setActiveTab("voice")}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${activeTab === "voice" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
-            >
-              <Mic2 size={13} /> Voice
+              <Link2 size={11} /> Import from YouTube
             </button>
           </div>
 
-          {activeTab === "script" && (
-            <div className="space-y-3">
-              <div className="relative">
-                <textarea
-                  value={script}
-                  onChange={(e) => setScript(e.target.value)}
-                  placeholder="Enter your script, topic or ideas here…"
-                  className="field min-h-[150px] resize-y"
-                />
-                <span className="absolute bottom-2.5 right-3 text-[10px] font-mono text-muted/70">
-                  {wordCount(script).toLocaleString()} / {MAX_SCRIPT_WORDS.toLocaleString()} words
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {TEMPLATES.map((t) => (
-                  <button
-                    key={t.label}
-                    onClick={() => setScript(t.text)}
-                    className="chip !py-1 !px-2.5 text-[10px] hover:border-ink/40 hover:bg-surface-2 transition-colors"
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === "url" && (
-            <div className="space-y-2.5">
-              <p className="text-[11px] text-muted leading-relaxed">
-                Paste a YouTube video URL to pull its transcript into the script box.
-              </p>
+          {showYoutubeImport && (
+            <div className="space-y-2 bg-surface-2 border border-border rounded-xl p-3">
               <div className="flex gap-2">
                 <input
                   type="url"
@@ -527,14 +528,91 @@ export default function VideoMakerStudio() {
             </div>
           )}
 
-          {activeTab === "voice" && (
-            <VoiceSourcePanel
-              label={voiceLabel}
-              duration={voiceDuration}
-              onFile={applyVoiceFile}
-              onGenerated={applyVoiceGenerated}
-              onClear={clearVoice}
+          <div className="relative">
+            <textarea
+              value={script}
+              onChange={(e) => setScript(e.target.value)}
+              placeholder="Enter your script, topic or ideas here…"
+              className="field min-h-[150px] resize-y"
             />
+            <span className="absolute bottom-2.5 right-3 text-[10px] font-mono text-muted/70">
+              {wordCount(script).toLocaleString()} / {MAX_SCRIPT_WORDS.toLocaleString()} words
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {TEMPLATES.map((t) => (
+              <button
+                key={t.label}
+                onClick={() => setScript(t.text)}
+                className="chip !py-1 !px-2.5 text-[10px] hover:border-ink/40 hover:bg-surface-2 transition-colors"
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="card p-5 space-y-3">
+          <label className="text-[10px] font-black uppercase tracking-wider text-muted">Narration Voice</label>
+          <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-xl w-fit">
+            <button
+              onClick={() => setNarrationMode("none")}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${narrationMode === "none" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
+            >
+              No Voice
+            </button>
+            <button
+              onClick={() => setNarrationMode("upload")}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${narrationMode === "upload" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
+            >
+              <Upload size={13} /> Upload File
+            </button>
+            <button
+              onClick={() => setNarrationMode("clone")}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${narrationMode === "clone" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
+            >
+              <Mic2 size={13} /> Choose Voice
+            </button>
+          </div>
+
+          {narrationMode === "none" && (
+            <p className="text-[11px] text-muted">No narration — video length is estimated from your script.</p>
+          )}
+
+          {narrationMode === "upload" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 border border-dashed border-border rounded-xl px-4 py-4 cursor-pointer hover:border-ink/30 hover:bg-surface-2/60 transition-all">
+                <Upload size={16} className="text-muted shrink-0" />
+                <span className="text-xs text-muted">Click to upload a narration audio file (MP3, WAV, M4A, AAC, OGG)</span>
+                <input
+                  type="file"
+                  accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.webm,.flac"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) applyVoiceFile(file);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              {voiceLabel && (
+                <div className="flex items-center justify-between gap-3 bg-surface-2 border border-border rounded-xl px-4 py-2.5">
+                  <span className="text-xs text-ink font-medium truncate">
+                    {voiceLabel} <span className="text-muted font-normal">· {fmtTime(voiceDuration)}</span>
+                  </span>
+                  <button onClick={clearVoice} className="p-1 text-muted hover:text-red-500 shrink-0" title="Remove voice">
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {narrationMode === "clone" && (
+            <div className="space-y-2">
+              <p className="text-[11px] text-muted">Uses the script above as the narration text.</p>
+              <VoiceSourcePanel selectedVoice={selectedVoice} onSelectVoice={selectVoice} onClearVoice={clearSelectedVoice} />
+            </div>
           )}
         </div>
 
@@ -576,7 +654,7 @@ export default function VideoMakerStudio() {
           <button onClick={handleGenerate} disabled={!canGenerate} className="btn-primary w-full !py-3 text-sm">
             {isGenerating ? (
               <>
-                <Loader2 size={16} className="animate-spin" /> Generating Video…
+                <Loader2 size={16} className="animate-spin" /> {isSynthesizing ? "Generating Narration…" : "Generating Video…"}
               </>
             ) : (
               <>

@@ -1,176 +1,198 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Upload, Mic2, Wand2, Loader2, X, LogIn, PlusCircle } from "lucide-react";
+import { Search, LogIn, PlusCircle, Loader2, CheckCircle2, History, Volume2 } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { ClonedVoice, getClonedVoices } from "@/lib/cloneStorage";
-import { fmtTime } from "./engine";
+import { ClonedVoice, getClonedVoices, saveClonedVoice } from "@/lib/cloneStorage";
 
-const TTS_CHAR_LIMIT = 1000;
-
-interface VoiceSourcePanelProps {
-  label: string;
-  duration: number;
-  onFile: (file: File) => void;
-  onGenerated: (blob: Blob, voiceName: string) => void;
-  onClear: () => void;
+export interface SelectedVoice {
+  id: string;
+  name: string;
 }
 
-export default function VoiceSourcePanel({ label, duration, onFile, onGenerated, onClear }: VoiceSourcePanelProps) {
+interface PublicVoice {
+  id: string;
+  title: string;
+  languages: string[];
+  author: string;
+}
+
+export const LAST_VOICE_STORAGE = "shad_video_maker_last_voice";
+
+export function readLastUsedVoice(): SelectedVoice | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(LAST_VOICE_STORAGE);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+interface VoiceSourcePanelProps {
+  selectedVoice: SelectedVoice | null;
+  onSelectVoice: (voice: SelectedVoice) => void;
+  onClearVoice: () => void;
+}
+
+export default function VoiceSourcePanel({ selectedVoice, onSelectVoice, onClearVoice }: VoiceSourcePanelProps) {
   const { user, loading: authLoading } = useAuth();
-  const [mode, setMode] = useState<"upload" | "clone">("upload");
-  const [voices] = useState<ClonedVoice[]>(() => getClonedVoices());
-  const [selectedId, setSelectedId] = useState(() => getClonedVoices()[0]?.id || "");
-  const [text, setText] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [myVoices, setMyVoices] = useState<ClonedVoice[]>(() => getClonedVoices());
+  const [query, setQuery] = useState("");
+  const [publicResults, setPublicResults] = useState<PublicVoice[]>([]);
+  const [searching, setSearching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastUsed = readLastUsedVoice();
 
-  const selectedVoice = voices.find((v) => v.id === selectedId) || null;
-
-  async function handleGenerate() {
-    if (!text.trim() || !selectedVoice || busy) return;
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/voice-clone/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), referenceId: selectedVoice.id }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Speech generation failed.");
+  useEffect(() => {
+    if (!user) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const res = await fetch(`/api/voice-clone/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        setPublicResults(data.items || []);
+      } catch {
+        setPublicResults([]);
+      } finally {
+        setSearching(false);
       }
-      const blob = await res.blob();
-      onGenerated(blob, selectedVoice.name);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Speech generation failed.");
-    } finally {
-      setBusy(false);
-    }
+    }, query ? 400 : 0);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, user]);
+
+  if (authLoading) return <div className="h-24 bg-ink/5 animate-pulse rounded-xl" />;
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center text-center gap-2 py-6 border border-border rounded-xl bg-surface-2/40">
+        <p className="text-xs font-semibold text-ink">Sign in to use your cloned voices</p>
+        <p className="text-[11px] text-muted max-w-xs">
+          Log in to search your voices and the community library to narrate this video.
+        </p>
+        <Link href="/login" className="btn-outline !text-[11px] !py-2 !px-4 mt-1">
+          <LogIn size={12} /> Log In
+        </Link>
+      </div>
+    );
+  }
+
+  const myMatches = query ? myVoices.filter((v) => v.name.toLowerCase().includes(query.toLowerCase())) : myVoices;
+  const publicMatches = publicResults.filter((p) => !myVoices.some((v) => v.id === p.id));
+
+  function handlePickMine(voice: ClonedVoice) {
+    onSelectVoice({ id: voice.id, name: voice.name });
+  }
+
+  function handlePickPublic(voice: PublicVoice) {
+    const cloned: ClonedVoice = { id: voice.id, name: voice.title, createdAt: new Date().toISOString(), source: "library" };
+    setMyVoices(saveClonedVoice(cloned));
+    onSelectVoice({ id: voice.id, name: voice.title });
   }
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-xl w-fit">
-        <button
-          type="button"
-          onClick={() => setMode("upload")}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${mode === "upload" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
-        >
-          <Upload size={13} /> Upload File
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("clone")}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-all ${mode === "clone" ? "bg-paper text-ink shadow-sm" : "text-muted hover:text-ink"}`}
-        >
-          <Mic2 size={13} /> Generate From My Voice
-        </button>
-      </div>
-
-      {mode === "upload" && (
-        <label className="flex items-center gap-3 border border-dashed border-border rounded-xl px-4 py-4 cursor-pointer hover:border-ink/30 hover:bg-surface-2/60 transition-all">
-          <Upload size={16} className="text-muted shrink-0" />
-          <span className="text-xs text-muted">
-            Click to upload a narration audio file (MP3, WAV, M4A, AAC, OGG)
+      {selectedVoice ? (
+        <div className="flex items-center justify-between gap-3 bg-ink text-paper rounded-xl px-4 py-2.5">
+          <span className="text-xs font-semibold flex items-center gap-2 truncate">
+            <Volume2 size={13} className="shrink-0" /> Narrating with <span className="uppercase">{selectedVoice.name}</span>
           </span>
-          <input
-            type="file"
-            accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.webm,.flac"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) onFile(file);
-              e.target.value = "";
-            }}
-          />
-        </label>
-      )}
-
-      {mode === "clone" && (
-        <div className="space-y-3 border border-border rounded-xl p-4 bg-surface-2/40">
-          {authLoading ? (
-            <div className="h-24 bg-ink/5 animate-pulse rounded-lg" />
-          ) : !user ? (
-            <div className="flex flex-col items-center text-center gap-2 py-4">
-              <p className="text-xs font-semibold text-ink">Sign in to use your cloned voices</p>
-              <p className="text-[11px] text-muted max-w-xs">
-                Log in to pick from the voices you&apos;ve cloned and turn any script into narration.
-              </p>
-              <Link href="/login" className="btn-outline !text-[11px] !py-2 !px-4 mt-1">
-                <LogIn size={12} /> Log In
-              </Link>
-            </div>
-          ) : voices.length === 0 ? (
-            <div className="flex flex-col items-center text-center gap-2 py-4">
-              <p className="text-xs font-semibold text-ink">No cloned voices yet</p>
-              <p className="text-[11px] text-muted max-w-xs">
-                Clone a voice first, then come back here to narrate this video with it.
-              </p>
-              <Link href="/voice-clone" className="btn-outline !text-[11px] !py-2 !px-4 mt-1">
-                <PlusCircle size={12} /> Clone a Voice
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-wrap gap-2">
-                {voices.map((v) => (
-                  <button
-                    type="button"
-                    key={v.id}
-                    onClick={() => setSelectedId(v.id)}
-                    className={`px-3 py-1.5 rounded-lg border text-[11px] font-bold uppercase tracking-wide transition-all ${
-                      selectedId === v.id ? "bg-ink text-paper border-ink" : "bg-paper border-border text-ink hover:border-ink/30"
-                    }`}
-                  >
-                    {v.name}
-                  </button>
-                ))}
-              </div>
-              <div className="relative">
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value.slice(0, TTS_CHAR_LIMIT))}
-                  placeholder={selectedVoice ? `Type the narration for ${selectedVoice.name}…` : "Select a voice above first…"}
-                  className="field min-h-[100px] resize-none"
-                />
-                <span className="absolute bottom-2.5 right-2.5 text-[10px] font-mono text-muted/70">
-                  {text.length}/{TTS_CHAR_LIMIT}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleGenerate}
-                disabled={!text.trim() || !selectedVoice || busy}
-                className="btn-primary w-full !py-2.5 text-xs uppercase tracking-wider"
-              >
-                {busy ? (
-                  <>
-                    <Loader2 size={14} className="animate-spin" /> Generating Speech…
-                  </>
-                ) : (
-                  <>
-                    <Wand2 size={14} /> Generate Speech
-                  </>
-                )}
-              </button>
-            </>
-          )}
-          {error && <p className="text-[11px] text-red-600 font-medium">{error}</p>}
-        </div>
-      )}
-
-      {label && (
-        <div className="flex items-center justify-between gap-3 bg-surface-2 border border-border rounded-xl px-4 py-2.5">
-          <span className="text-xs text-ink font-medium truncate">
-            {label} <span className="text-muted font-normal">· {fmtTime(duration)}</span>
-          </span>
-          <button type="button" onClick={onClear} className="p-1 text-muted hover:text-red-500 shrink-0" title="Remove voice">
-            <X size={14} />
+          <button onClick={onClearVoice} className="text-[10px] font-bold uppercase tracking-wider text-paper/70 hover:text-paper shrink-0">
+            Change
           </button>
         </div>
+      ) : (
+        lastUsed && (
+          <button
+            type="button"
+            onClick={() => onSelectVoice(lastUsed)}
+            className="w-full flex items-center justify-between gap-2 border border-dashed border-border rounded-xl px-4 py-2.5 hover:border-ink/30 hover:bg-surface-2/60 transition-all"
+          >
+            <span className="text-[11px] text-muted flex items-center gap-1.5">
+              <History size={12} /> Last used: <span className="font-semibold text-ink">{lastUsed.name}</span>
+            </span>
+            <span className="text-[10px] font-bold text-accent">Use again</span>
+          </button>
+        )
+      )}
+
+      <div className="relative">
+        <Search size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your voices or the community library…"
+          className="field !pl-9"
+        />
+      </div>
+
+      <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+        {myMatches.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted">My Voices</p>
+            <div className="flex flex-wrap gap-1.5">
+              {myMatches.map((v) => {
+                const isSelected = selectedVoice?.id === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    onClick={() => handlePickMine(v)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold uppercase tracking-wide transition-all ${
+                      isSelected ? "bg-ink text-paper border-ink" : "bg-paper border-border text-ink hover:border-ink/30"
+                    }`}
+                  >
+                    {isSelected && <CheckCircle2 size={12} />}
+                    {v.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {(searching || publicMatches.length > 0) && (
+          <div className="space-y-1.5">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted flex items-center gap-1.5">
+              Community Library {searching && <Loader2 size={10} className="animate-spin" />}
+            </p>
+            <div className="space-y-1.5">
+              {publicMatches.map((v) => {
+                const isSelected = selectedVoice?.id === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    onClick={() => handlePickPublic(v)}
+                    className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-left transition-all ${
+                      isSelected ? "bg-ink text-paper border-ink" : "bg-paper border-border hover:border-ink/30"
+                    }`}
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-[11px] font-bold uppercase tracking-wide truncate">{v.title}</span>
+                      <span className={`block text-[9px] truncate ${isSelected ? "text-paper/60" : "text-muted"}`}>
+                        {v.languages.join(", ") || "Multilingual"} · by {v.author}
+                      </span>
+                    </span>
+                    {isSelected ? <CheckCircle2 size={14} className="shrink-0" /> : <PlusCircle size={14} className="shrink-0 text-muted" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {myMatches.length === 0 && !searching && publicMatches.length === 0 && (
+          <p className="text-[11px] text-muted py-2">No voices found for &quot;{query}&quot;.</p>
+        )}
+      </div>
+
+      {myVoices.length === 0 && (
+        <Link href="/voice-clone" className="inline-flex items-center gap-1.5 text-[10px] font-bold text-muted hover:text-ink uppercase tracking-wider">
+          <PlusCircle size={11} /> Clone your first voice
+        </Link>
       )}
     </div>
   );

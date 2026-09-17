@@ -6,8 +6,50 @@ const FISH_API_ROOT = "https://api.fish.audio";
 // Free-tier engine: high quality, zero credit cost on this account.
 export const FISH_MODEL = "s2.1-pro-free";
 
-// Hard cap enforced both client and server side for the clone studio.
+// Per-request cap for a single upstream Fish Audio TTS call.
 export const CLONE_CHAR_LIMIT = 1000;
+
+// Overall cap accepted per generate call — longer text is split into
+// CLONE_CHAR_LIMIT-sized chunks, synthesized in parallel, then merged.
+export const NARRATION_CHAR_LIMIT = 20000;
+
+// Packs text into chunks (<= limit chars each), breaking on sentence
+// boundaries first and falling back to word boundaries for any single
+// sentence that's still too long.
+export function chunkTextForTts(text: string, limit: number = CLONE_CHAR_LIMIT): string[] {
+  const sentences = (text.match(/[^.!?]+[.!?]?/g) || [text]).map((s) => s.trim()).filter(Boolean);
+  const chunks: string[] = [];
+  let current = "";
+
+  const flush = () => {
+    if (current) chunks.push(current);
+    current = "";
+  };
+
+  for (const sentence of sentences) {
+    if (sentence.length > limit) {
+      flush();
+      const words = sentence.split(/\s+/);
+      let piece = "";
+      for (const word of words) {
+        const test = piece ? piece + " " + word : word;
+        if (test.length > limit) {
+          if (piece) chunks.push(piece);
+          piece = word;
+        } else piece = test;
+      }
+      if (piece) chunks.push(piece);
+      continue;
+    }
+    const test = current ? current + " " + sentence : sentence;
+    if (test.length > limit) {
+      flush();
+      current = sentence;
+    } else current = test;
+  }
+  flush();
+  return chunks;
+}
 
 export function getFishApiKey(): string {
   const key = process.env.FISH_AUDIO_API_KEY;

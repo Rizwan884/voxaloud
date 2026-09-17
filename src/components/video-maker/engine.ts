@@ -20,6 +20,11 @@ export interface OverlayState {
 
 export const MAX_SCRIPT_WORDS = 20000;
 
+// Matches the server's NARRATION_CHAR_LIMIT (src/lib/fish.ts). The server
+// splits anything this long into smaller chunks and synthesizes them in
+// parallel, so callers only ever make one request for one merged track.
+export const NARRATION_CHAR_LIMIT = 20000;
+
 export function fmtTime(sec: number) {
   if (!Number.isFinite(sec) || sec <= 0) return "--:--";
   return `${Math.floor(sec / 60)}:${Math.floor(sec % 60).toString().padStart(2, "0")}`;
@@ -40,6 +45,22 @@ export function splitParts(text: string): string[] {
     for (let i = 0; i < words.length; i += chunkSize) parts.push(words.slice(i, i + chunkSize).join(" "));
   }
   return parts;
+}
+
+// Synthesizes narration for an entire script in one request — the server
+// splits long text into chunks, generates them in parallel, and merges the
+// result, so this always resolves to a single playable audio track.
+export async function synthesizeNarration(text: string, referenceId: string): Promise<Blob> {
+  const res = await fetch("/api/voice-clone/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, referenceId }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Speech generation failed. Please try again.");
+  }
+  return res.blob();
 }
 
 const STOPWORDS = new Set(
