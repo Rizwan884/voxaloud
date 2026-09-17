@@ -13,8 +13,8 @@ export default function VideoMakerBanner() {
         </p>
         <h2 className="text-xl sm:text-2xl font-bold font-display text-white tracking-tight">Shad Auto Video Maker</h2>
         <p className="text-sm text-paper/70 max-w-xl">
-          Turn a script or a YouTube link into a finished video with matching B-roll — or narrate it with one of
-          your cloned voices instead of uploading audio.
+          Turn a script or a YouTube link into a finished video with Shad Video Maker&apos;s automatic footage
+          matching — or narrate it with one of your cloned voices instead of uploading audio.
         </p>
       </div>
       <Link

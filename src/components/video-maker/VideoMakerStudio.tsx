@@ -256,7 +256,7 @@ export default function VideoMakerStudio() {
     const usingClonedVoice = narrationMode === "clone" && !!selectedVoice;
 
     if (usingClonedVoice && !text) {
-      setStatusMessage("Write a script first — it's used both for narration and to find matching B-roll.");
+      setStatusMessage("Write a script first — it's used both for narration and for Shad Video Maker to find matching footage.");
       return;
     }
     if (!text && !usingUpload) {
@@ -349,7 +349,7 @@ export default function VideoMakerStudio() {
           });
           setScenes([...nextScenes]);
           setProgress(5 + (Math.min(base + batch.length, parts.length) / parts.length) * 45);
-          setStatusMessage(`Finding B-roll: ${Math.min(base + batch.length, parts.length)}/${parts.length}`);
+          setStatusMessage(`Shad Video Maker is finding footage: ${Math.min(base + batch.length, parts.length)}/${parts.length}`);
         }
       }
 
@@ -375,7 +375,7 @@ export default function VideoMakerStudio() {
           });
           setScenes([...nextScenes]);
           setProgress(5 + (Math.min(base + batch.length, nextScenes.length) / nextScenes.length) * 45);
-          setStatusMessage(`Finding B-roll: ${Math.min(base + batch.length, nextScenes.length)}/${nextScenes.length}`);
+          setStatusMessage(`Shad Video Maker is finding footage: ${Math.min(base + batch.length, nextScenes.length)}/${nextScenes.length}`);
         }
       }
 
@@ -383,7 +383,7 @@ export default function VideoMakerStudio() {
       if (!found) throw new Error("Pexels didn't return any usable clips. Check your API key or wording.");
 
       setScenes([...nextScenes]);
-      setStatusMessage(`Rendering ${found} B-roll clips…`);
+      setStatusMessage(`Shad Video Maker is rendering ${found} clips…`);
 
       const blob = await renderVideo({
         scenes: nextScenes,
@@ -634,7 +634,7 @@ export default function VideoMakerStudio() {
               </button>
             </div>
             <p className="text-[10px] text-muted/70">
-              Used only in your browser to fetch stock B-roll — get a free key at{" "}
+              Used only in your browser so Shad Video Maker can fetch matching footage — get a free key at{" "}
               <a href="https://www.pexels.com/api/" target="_blank" rel="noopener noreferrer" className="underline">
                 pexels.com/api
               </a>

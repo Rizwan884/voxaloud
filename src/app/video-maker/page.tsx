@@ -5,7 +5,7 @@ import { Sparkles, Film, Mic2, Clapperboard } from "lucide-react";
 export const metadata = constructMetadata({
   title: "Shad Auto Video Maker — Script or Voice to Video, Free",
   description:
-    "Turn a script, a YouTube transcript, or your own cloned voice into a finished video automatically — matched with stock B-roll, captions, music and effects.",
+    "Turn a script, a YouTube transcript, or your own cloned voice into a finished video automatically — Shad Video Maker matches every scene with footage, captions, music and effects.",
   path: "/video-maker",
   useExactTitle: true,
   keywords: [
@@ -27,7 +27,7 @@ export default function VideoMakerPage() {
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0.00", priceCurrency: "USD" },
     description:
-      "Free browser-based tool that turns a script, YouTube transcript, or cloned AI voice into a finished video with matching stock B-roll.",
+      "Free browser-based tool that turns a script, YouTube transcript, or cloned AI voice into a finished video with Shad Video Maker's automatic scene matching.",
   };
 
   return (
@@ -38,7 +38,7 @@ export default function VideoMakerPage() {
         <section className="text-center space-y-5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-light border border-accent-subtle text-accent-text text-xs font-semibold shadow-xs">
             <Sparkles size={13} className="text-accent" />
-            <span>Script or Voice &bull; Auto B-Roll &bull; Runs Fully in Your Browser</span>
+            <span>Script or Voice &bull; Shad Video Maker &bull; Runs Fully in Your Browser</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl font-bold font-display text-ink tracking-tight leading-[1.1]">
@@ -46,13 +46,13 @@ export default function VideoMakerPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-ink-2 leading-relaxed max-w-2xl mx-auto">
-            Write a script, paste a YouTube URL, or narrate it with one of your cloned voices — this tool matches
-            every scene with stock B-roll, mixes in your narration and music, and exports a finished video.
+            Write a script, paste a YouTube URL, or narrate it with one of your cloned voices — Shad Video Maker
+            matches every scene with footage, mixes in your narration and music, and exports a finished video.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-medium text-ink-2 pt-1">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
-              <Film size={13} className="text-accent" /> Auto Stock B-Roll
+              <Film size={13} className="text-accent" /> Shad Video Maker
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border shadow-xs">
               <Mic2 size={13} className="text-accent" /> Narrate With Your Cloned Voice
