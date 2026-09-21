@@ -11,7 +11,7 @@ export const CLONE_CHAR_LIMIT = 1000;
 
 // Overall cap accepted per generate call — longer text is split into
 // CLONE_CHAR_LIMIT-sized chunks, synthesized in parallel, then merged.
-export const NARRATION_CHAR_LIMIT = 20000;
+export const NARRATION_CHAR_LIMIT = 25000;
 
 // Packs text into chunks (<= limit chars each), breaking on sentence
 // boundaries first and falling back to word boundaries for any single

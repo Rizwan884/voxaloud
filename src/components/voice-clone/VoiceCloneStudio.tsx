@@ -19,7 +19,7 @@ import {
   blobToDataUrl,
 } from '@/lib/cloneStorage';
 
-const CHAR_LIMIT = 1000;
+const CHAR_LIMIT = 25000;
 
 interface PublicVoice { id: string; title: string; }
 
@@ -339,7 +339,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
               className="w-full min-h-[120px] px-5 py-4 text-sm text-ink placeholder:text-muted/40 bg-paper resize-none outline-none leading-relaxed disabled:opacity-50"
             />
             <span className={`absolute bottom-3 right-3 text-[9px] font-black font-mono px-2.5 py-1 rounded-full border ${counterClass}`}>
-              {text.length}/{CHAR_LIMIT}
+              {text.length.toLocaleString()}/{CHAR_LIMIT.toLocaleString()}
             </span>
           </div>
           <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-border/60 bg-paper/50">
@@ -492,7 +492,7 @@ export default function VoiceCloneStudio({ variant = 'full' }: { variant?: 'full
 
       {isFull && (
         <p className="text-[10px] text-muted/50 font-medium leading-relaxed flex items-center gap-1.5">
-          <Sparkles size={11} /> Powered by Fish Audio&apos;s S2.1 engine · {CHAR_LIMIT} characters per generation
+          <Sparkles size={11} /> Powered by Fish Audio&apos;s S2.1 engine · {CHAR_LIMIT.toLocaleString()} characters per generation
         </p>
       )}
     </div>

@@ -18,12 +18,12 @@ export interface OverlayState {
   size: number;
 }
 
-export const MAX_SCRIPT_WORDS = 20000;
+export const MAX_SCRIPT_WORDS = 25000;
 
 // Matches the server's NARRATION_CHAR_LIMIT (src/lib/fish.ts). The server
 // splits anything this long into smaller chunks and synthesizes them in
 // parallel, so callers only ever make one request for one merged track.
-export const NARRATION_CHAR_LIMIT = 20000;
+export const NARRATION_CHAR_LIMIT = 25000;
 
 export function fmtTime(sec: number) {
   if (!Number.isFinite(sec) || sec <= 0) return "--:--";

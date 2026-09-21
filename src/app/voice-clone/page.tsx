@@ -37,7 +37,7 @@ const CLONE_FAQS = [
   },
   {
     q: 'Is voice cloning free?',
-    a: 'Yes. Cloning a voice and generating speech with it is completely free on Fish Audio Online, with no signup, no watermark, and up to 1,000 characters per generation.',
+    a: 'Yes. Cloning a voice and generating speech with it is completely free on Fish Audio Online, with no signup, no watermark, and up to 25,000 characters per generation.',
   },
   {
     q: 'Is my cloned voice private?',
@@ -72,7 +72,7 @@ export default function VoiceClonePage() {
       { '@type': 'HowToStep', name: 'Record or upload a sample', text: 'Record 10-30 seconds of clear speech, or upload an existing audio file.' },
       { '@type': 'HowToStep', name: 'Name your voice', text: 'Give your new voice model a name so you can find it later.' },
       { '@type': 'HowToStep', name: 'Clone it', text: 'Our AI trains a private voice model from your sample in seconds.' },
-      { '@type': 'HowToStep', name: 'Generate speech', text: 'Type any text (up to 1,000 characters) and generate natural speech in the cloned voice.' },
+      { '@type': 'HowToStep', name: 'Generate speech', text: 'Type any text (up to 25,000 characters) and generate natural speech in the cloned voice.' },
     ],
   };
 
@@ -179,7 +179,7 @@ export default function VoiceClonePage() {
 
               <h3>How the Zero-Shot Pipeline Works</h3>
               <p>
-                Record your voice directly inside your web browser or upload a pre-recorded WAV or MP3 clip. Our <strong>instant voice cloning</strong> pipeline extracts embedding vectors in seconds. Once compiled, type any script (up to 1,000 characters per batch on the free tier) and listen as natural, human-grade speech is synthesized with your authentic tone.
+                Record your voice directly inside your web browser or upload a pre-recorded WAV or MP3 clip. Our <strong>instant voice cloning</strong> pipeline extracts embedding vectors in seconds. Once compiled, type any script (up to 25,000 characters per batch on the free tier) and listen as natural, human-grade speech is synthesized with your authentic tone.
               </p>
 
               <h3>Accessing the 1M+ Community Discover Library</h3>

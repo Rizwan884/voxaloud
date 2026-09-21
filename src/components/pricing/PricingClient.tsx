@@ -23,7 +23,7 @@ export default function PricingClient() {
         '10,000 characters per month',
         'Access to 500+ standard neural voices',
         '1 instant voice clone slot (15s sample)',
-        'Up to 1,000 chars per generation',
+        'Up to 25,000 chars per generation',
         'Full commercial rights (attribution appreciated)',
         'Standard 44.1kHz MP3 download',
         'Community support forum',
@@ -79,7 +79,7 @@ export default function PricingClient() {
       category: 'Usage & Compute',
       features: [
         { name: 'Monthly Character Allowance', free: '10,000', pro: '150,000', ent: 'Unlimited / Custom' },
-        { name: 'Single Generation Limit', free: '1,000 chars', pro: '10,000 chars', ent: '50,000+ chars' },
+        { name: 'Single Generation Limit', free: '25,000 chars', pro: '25,000 chars', ent: '50,000+ chars' },
         { name: 'GPU Queue Priority', free: 'Standard', pro: 'High (0s latency)', ent: 'Dedicated Cluster' },
         { name: 'Audio Export Quality', free: '44.1kHz MP3', pro: '44.1kHz MP3 & WAV', ent: 'Lossless 48kHz WAV' },
       ],
