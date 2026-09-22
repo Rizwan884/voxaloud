@@ -7,6 +7,7 @@ import Schema from "@/components/Schema";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import StickyAdBanner from "@/components/StickyAdBanner";
 import AppPromoBar from "@/components/AppPromoBar";
+import AdBlockDetector from "@/components/AdBlockDetector";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 
 const inter = Inter({ 
@@ -76,6 +77,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased min-h-screen flex flex-col bg-canvas text-ink`}>
         <AuthProvider>
+          <AdBlockDetector />
           <Schema />
           <ExitIntentPopup />
           <StickyAdBanner />
